@@ -409,7 +409,7 @@ LUA_API lua_State* UILuaCreateLuaVM(const char* szVMName);
 LUA_API lua_State* UILuaGetLuaVM(const char* szVMName);
 LUA_API void UILuaDestroyLuaVM(const char* szVMName);
 LUA_API int UILuaDoFile(const char* szFilePath, const char* szVMName);
-LUA_API void UILuaPushClassObj(lua_State* luaState, void* obj);
+LUA_API void UILuaPushClassObj(lua_State* luaState, const void* obj);
 LUA_API void UILuaUnRegisterClass(void* obj, const char* szVMName);
 LUA_API int UILuaCall(int args, int results, const char* szVMName);
 

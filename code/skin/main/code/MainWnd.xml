@@ -11,12 +11,28 @@
 		<uitree>
 			<obj id="image.bkg" class="UIImage">
 				<attr>
-					<left>100</left>
-					<top>100</top>
-					<width>200</width>
-					<height>200</height>
+					<left>0</left>
+					<top>0</top>
+					<width>400</width>
+					<height>400</height>
 					<image>bitmap.mainwnd.background.png</image>
 					<stretch>false</stretch>
+					<visible>true</visible>
+				</attr>
+				<!--
+				<evenlist>
+					<event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" />
+				</evenlist>
+				-->
+			</obj>
+			<obj id="image.title" class="UIImage">
+				<attr>
+					<left>0</left>
+					<top>0</top>
+					<width>400</width>
+					<height>35</height>
+					<image>bitmap.mainwnd.title.png</image>
+					<visible>true</visible>
 				</attr>
 				<!--
 				<evenlist>

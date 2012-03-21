@@ -2,6 +2,7 @@
 #include "UILuaManager.h"
 #include <Util.h>
 
+class CUIWindowBase;
 typedef struct tagEventNode
 {
 	std::string strPath;
@@ -17,7 +18,7 @@ class CUIEventBase
 {
 public:
 	CUIEventBase();
-	CUIEventBase(void* p) : m_pUserData(p) {};
+	CUIEventBase(CUIWindowBase* p) : m_pBindWnd(p) {};
 	virtual ~CUIEventBase();
 public:
 	virtual void AttachListener(const LPXMLAttrMap pAttrMap, LPEventNode& pEventNode);
@@ -25,9 +26,9 @@ public:
 	virtual void DispatchListener(const std::string& strEventName);
 	virtual BOOL ParserEvent(LPXMLDOMNode pNode) = 0;
 	virtual BOOL OnInitEvent(const std::string& strPath);
-	void* GetUserData();
+	void* GetBindWnd();
 private:
-	void* m_pUserData;
+	CUIWindowBase* m_pBindWnd;
 	LuaEventMap m_mapEvent;
 public:
 	LOG_CLS_DEC();

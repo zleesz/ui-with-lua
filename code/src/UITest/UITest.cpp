@@ -6,7 +6,7 @@
 #include <atlframe.h>
 #include <atlctrls.h>
 #include <atldlgs.h>
-#include "..\common\inc\Util.h"
+#include <Util.h>
 #include "..\UI\UI.h"
 #include "..\UI\UI_i.c"
 
@@ -42,8 +42,11 @@ void InitUIModule()
 	ATLASSERT(spManager);
 	// initial instance
 	CUILuaClass* pUILuaClass = CUILuaClass::GetInstance();
-
+#ifdef _DEBUG
+	::PathAppend(tszSkinPath, _T("..\\..\\code\\skin\\main"));
+#else
 	::PathAppend(tszSkinPath, _T("skin"));
+#endif
 	ATLASSERT(::PathFileExists(tszSkinPath));
 	CComBSTR bstrPath(tszSkinPath);
 	spManager->LoadSkin(bstrPath);

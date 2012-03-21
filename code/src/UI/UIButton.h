@@ -2,13 +2,14 @@
 #include "uicontrolbase.h"
 #include <uiluax.h>
 #include <Util.h>
+#include "UITreeContainer.h"
 
 class CUIButton :
 	public CUIControlBase
 {
 public:
 	CUIButton(void);
-	CUIButton(LPXMLDOMNode pNode);
+	CUIButton(CUITreeContainer* pTree, LPXMLDOMNode pNode);
 	virtual ~CUIButton(void);
 public:
 	virtual ControlType GetType() { return CT_UIButton; };

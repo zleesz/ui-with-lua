@@ -2,6 +2,7 @@
 #include "UIEventBase.h"
 
 CUIEventBase::CUIEventBase()
+	: m_pBindWnd(NULL)
 {
 	
 }
@@ -78,7 +79,7 @@ BOOL CUIEventBase::OnInitEvent(const std::string& strPath)
 	return TRUE;
 }
 
-void* CUIEventBase::GetUserData()
+void* CUIEventBase::GetBindWnd()
 {
-	return m_pUserData;
+	return m_pBindWnd;
 }

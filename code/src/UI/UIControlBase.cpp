@@ -5,7 +5,8 @@ CUIControlBase::CUIControlBase(void)
 {
 }
 
-CUIControlBase::CUIControlBase(LPXMLDOMNode pNode)
+CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
+	: m_pTree(pTree)
 {
 	if(pNode == NULL || pNode->pMapAttr == NULL)
 		return;
@@ -81,4 +82,9 @@ const std::string& CUIControlBase::GetID()
 void CUIControlBase::SetID(std::string strID)
 {
 	m_strID = strID;
+}
+
+const CUITreeContainer* CUIControlBase::GetOwnerTree()
+{
+	return m_pTree;
 }
