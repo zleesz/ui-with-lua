@@ -1,0 +1,37 @@
+// UI.idl : IDL source for UI
+//
+
+// This file will be processed by the MIDL tool to
+// produce the type library (UI.tlb) and marshalling code.
+
+import "oaidl.idl";
+import "ocidl.idl";
+
+[
+	object,
+	uuid(9BAE15EF-A463-4EEF-ABEC-445C2ADEC8E8),
+	dual,
+	nonextensible,
+	helpstring("IUIManager Interface"),
+	pointer_default(unique)
+]
+interface IUIManager : IDispatch{
+	[id(1), helpstring("method LoadSkin")] HRESULT LoadSkin([in] BSTR bstrPath);
+};
+[
+	uuid(C6D3BE22-3348-4818-901E-129832E991DA),
+	version(1.0),
+	helpstring("UI 1.0 Type Library")
+]
+library UILib
+{
+	importlib("stdole2.tlb");
+	[
+		uuid(724CEFF8-BDAC-470E-A0B5-12F01A9C5DF0),
+		helpstring("UIManager Class")
+	]
+	coclass UIManager
+	{
+		[default] interface IUIManager;
+	};
+};
