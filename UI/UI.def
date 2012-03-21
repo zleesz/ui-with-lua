@@ -1,0 +1,9 @@
+; UI.def : Declares the module parameters.
+
+LIBRARY      "UI.DLL"
+
+EXPORTS
+	DllCanUnloadNow		PRIVATE
+	DllGetClassObject	PRIVATE
+	DllRegisterServer	PRIVATE
+	DllUnregisterServer	PRIVATE

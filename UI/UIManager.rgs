@@ -1,0 +1,27 @@
+HKCR
+{
+	UI.UIManager.1 = s 'UIManager Class'
+	{
+		CLSID = s '{724CEFF8-BDAC-470E-A0B5-12F01A9C5DF0}'
+	}
+	UI.UIManager = s 'UIManager Class'
+	{
+		CLSID = s '{724CEFF8-BDAC-470E-A0B5-12F01A9C5DF0}'
+		CurVer = s 'UI.UIManager.1'
+	}
+	NoRemove CLSID
+	{
+		ForceRemove {724CEFF8-BDAC-470E-A0B5-12F01A9C5DF0} = s 'UIManager Class'
+		{
+			ProgID = s 'UI.UIManager.1'
+			VersionIndependentProgID = s 'UI.UIManager'
+			ForceRemove 'Programmable'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Apartment'
+			}
+			val AppID = s '%APPID%'
+			'TypeLib' = s '{C6D3BE22-3348-4818-901E-129832E991DA}'
+		}
+	}
+}

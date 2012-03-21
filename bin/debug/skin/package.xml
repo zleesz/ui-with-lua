@@ -1,0 +1,4 @@
+<config name="default" author="zlee" copyright="@home" >
+	<res package="res" />
+	<script package="code" onload=".\onload.lua" />
+</config>
