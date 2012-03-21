@@ -113,7 +113,7 @@ int UILuaClassFactory::proxy(lua_State* L)
 	return pTheObj->MemberFunctions[i].func(L);
 }
 
-void UILuaClassFactory::PushClassObj(lua_State* L, void* obj)
+void UILuaClassFactory::PushClassObj(lua_State* L, const void* obj)
 {
 	assert(obj);
 	LOG_TRACE(_T("PushClassObj obj:") << obj);
@@ -134,7 +134,7 @@ void UILuaClassFactory::PushClassObj(lua_State* L, void* obj)
 					return;
 				}
 				void* p = lua_newuserdata(L, sizeof(void*));
-				p = obj;
+				p = (void*)obj;
 				luaL_getmetatable(L, pTheObj->ObjName);
 				lua_setmetatable(L, -2);
 				return;
@@ -171,7 +171,7 @@ LUA_API void UILuaUnRegisterClass(void* obj, const char* szVMName)
 	}
 }
 
-LUA_API void UILuaPushClassObj(lua_State* luaState, void* obj)
+LUA_API void UILuaPushClassObj(lua_State* luaState, const void* obj)
 {
 	assert(luaState);
 	if(luaState)

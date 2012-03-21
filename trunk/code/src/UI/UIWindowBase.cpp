@@ -6,6 +6,7 @@ CUIWindowBase::CUIWindowBase(void)
 }
 
 CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
+	: m_pUITreeContainer(NULL), m_pUIEventWindow(NULL)
 {
 	if(pNode == NULL || pNode->pMapAttr == NULL)
 		return;
@@ -17,7 +18,8 @@ CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
 	{
 		return;
 	}
-	m_pUIEventWindow = new CUIEventWindow((void*)this);
+	m_pUIEventWindow = new CUIEventWindow(this);
+	m_pUITreeContainer = new CUITreeContainer(this);
 	SetID((*pMapAttr)["id"]);
 	m_strXMLPath = strPath;
 	std::transform(strPath.begin(),strPath.end(),m_strXMLPath.begin(),tolower);
@@ -41,6 +43,14 @@ CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
 
 CUIWindowBase::~CUIWindowBase(void)
 {
+	if(NULL != m_pUIEventWindow)
+	{
+		delete m_pUIEventWindow;
+	}
+	if(NULL != m_pUITreeContainer)
+	{
+		delete m_pUITreeContainer;
+	}
 }
 
 void CUIWindowBase::SetAttr(std::string strName, std::string strValue)
@@ -99,7 +109,7 @@ BOOL CUIWindowBase::ParserUITree(LPXMLDOMNode pNode)
 {
 	if (NULL == pNode || pNode->strName != "uitree")
 		return FALSE;
-	return m_UITreeContainer.ParserUITree(pNode);
+	return m_pUITreeContainer->ParserUITree(pNode);
 }
 
 BOOL CUIWindowBase::ParserEvent(LPXMLDOMNode pNode)

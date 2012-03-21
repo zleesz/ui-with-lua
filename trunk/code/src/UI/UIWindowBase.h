@@ -43,7 +43,7 @@ public:
 	virtual BOOL ParserUITree(LPXMLDOMNode pNode);
 	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
 public:
-	CUITreeContainer m_UITreeContainer;
+	CUITreeContainer* m_pUITreeContainer;
 	CUIEventWindow* m_pUIEventWindow;
 private:
 	virtual DWORD GetStyle() = 0;

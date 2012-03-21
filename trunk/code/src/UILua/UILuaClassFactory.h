@@ -21,14 +21,14 @@ private:
 		// delete all ...
 	};
 private:
-	typedef std::map<void*, UILuaObject*> Obj2LuaObjectMap;
+	typedef std::map<const void*, UILuaObject*> Obj2LuaObjectMap;
 	typedef std::map<lua_State*, Obj2LuaObjectMap*> LuaVM2MapLuaObjectMap;
 	LuaVM2MapLuaObjectMap m_mapClassObject;
 public:
 	bool IsClassRegistered(lua_State* L, void* obj);
 	void UnRegisterClass(lua_State* L, void* obj);
 	void RegisterClass(lua_State* L, UILuaObject theObj);
-	void PushClassObj(lua_State* luaState, void* obj);
+	void PushClassObj(lua_State* luaState, const void* obj);
 	static int gc_obj(lua_State* L);
 	static int proxy(lua_State* L);
 public:

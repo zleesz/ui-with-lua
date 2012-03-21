@@ -17,7 +17,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../bin/Debug"
+			OutputDirectory="..\..\..\bin\$(ConfigurationName)"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -51,7 +51,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../common/inc;../UILua/lua;"
+				AdditionalIncludeDirectories="../../common/inc;../UILua/lua;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;STRICT;_DEBUG"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -75,8 +75,9 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="UILua.lib"
+				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../common/lib"
+				AdditionalLibraryDirectories="../../common/lib/$(ConfigurationName)"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"

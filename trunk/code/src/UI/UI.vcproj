@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="..\bin\Debug"
+			OutputDirectory="..\..\..\bin\$(ConfigurationName)"
 			IntermediateDirectory="Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -53,7 +53,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="../common/inc;../UILua/lua;../UI_CxImage/cximage;"
+				AdditionalIncludeDirectories="../../common/inc;../UILua/lua;../UI_CxImage/cximage;"
 				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_USRDLL;_MERGE_PROXYSTUB;LOG4CPLUS_BUILD_DLL;"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -79,9 +79,9 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="log4cplusud.lib libexpat.lib UILua.lib UI_CxImage.lib"
-				OutputFile="$(OutDir)/UI.dll"
+				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../common/lib;../bin/Debug;"
+				AdditionalLibraryDirectories="../../common/lib;../../common/lib/$(ConfigurationName);../../../bin/$(ConfigurationName);"
 				ModuleDefinitionFile=".\UI.def"
 				DelayLoadDLLs=""
 				GenerateDebugInformation="true"
@@ -272,6 +272,10 @@
 				RelativePath=".\UIManager.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\UIText.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -292,6 +296,10 @@
 			</File>
 			<File
 				RelativePath=".\UIManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIText.h"
 				>
 			</File>
 		</Filter>
@@ -443,6 +451,14 @@
 			</File>
 			<File
 				RelativePath=".\UIButton.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UICaption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UICaption.h"
 				>
 			</File>
 			<File

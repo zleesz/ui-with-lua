@@ -76,7 +76,7 @@ BOOL CUIFrameWindow::CreateWnd(HWND hParent)
 {
 	LOG_AUTO();
 	m_pUIEventWindow->OnInitEvent(GetXMLPath());
-	m_UITreeContainer.OnPreCreate();
+	m_pUITreeContainer->OnPreCreate();
 	if (hParent != NULL)
 	{
 		ATLASSERT(::IsWindow(hParent));
@@ -153,11 +153,15 @@ int CUIFrameWindow::GetTreeContainer(lua_State* L)
 {
 	CUIWindowBase* pThis = (CUIWindowBase*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
-	UILuaPushClassObj(L, (void*)&pThis->m_UITreeContainer);
+	UILuaPushClassObj(L, (void*)pThis->m_pUITreeContainer);
 	return 1;
 }
 
 void CUIFrameWindow::DoPaint(CDCHandle dc)
 {
-	m_UITreeContainer.Render(dc);
+	assert(m_pUITreeContainer);
+	if(NULL != m_pUITreeContainer)
+	{
+		m_pUITreeContainer->Render(dc);
+	}
 }

@@ -6,10 +6,12 @@ function bbbb()
 	local windowFactory = UILuaGetObject("UI.WindowFactory")
 	local mainwnd = windowFactory:Create("mainwnd")
 	local tree = mainwnd:GetTreeContainer()
-	UIMessageBox(tostring(tree))
 	if tree then
 		local bkg = tree:GetUIObject("image.bkg")
 		UIMessageBox(bkg:GetID())
+		local ownertree = bkg:GetOwnerTree()
+		local wnd = ownertree:GetOwnerWnd()
+		UIMessageBox(wnd:GetID())
 	end
 	--[[
 	local resFactory = UILuaGetObject("UI.ResFactory")

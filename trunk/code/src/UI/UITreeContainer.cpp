@@ -5,6 +5,11 @@
 
 CUITreeContainer::CUITreeContainer(void)
 {
+}
+
+CUITreeContainer::CUITreeContainer(CUIWindowBase* p)
+	: m_pBindWnd(p)
+{
 	LOG_AUTO();
 	RegisterClass(this);
 }
@@ -39,11 +44,11 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 				CUIControlBase* pUICtrl = NULL;
 				if((*pAttrObj)["class"] == "UIImage")
 				{
-					pUICtrl = new CUIImage(pObjNode2);
+					pUICtrl = new CUIImage(this, pObjNode2);
 				}
 				else if((*pAttrObj)["class"] == "UIButton")
 				{
-					pUICtrl = new CUIButton(pObjNode2);
+					pUICtrl = new CUIButton(this, pObjNode2);
 				}
 				if(pUICtrl == NULL)
 					continue;
@@ -86,6 +91,11 @@ int CUITreeContainer::GetUIObject(lua_State* L)
 {
 	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
 	const char* pszID = lua_tostring(L, -2);
+	if(pszID == NULL)
+	{
+		assert(false);
+		return 0;
+	}
 	ID2ControlMap::const_iterator it = pThis->m_mapCtrl.find(pszID);
 	if(it == pThis->m_mapCtrl.end())
 	{
@@ -95,5 +105,13 @@ int CUITreeContainer::GetUIObject(lua_State* L)
 	{
 		UILuaPushClassObj(L, it->second);
 	}
+	return 1;
+}
+
+int CUITreeContainer::GetOwnerWnd(lua_State* L)
+{
+	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	UILuaPushClassObj(L, (const void*)pThis->m_pBindWnd);
 	return 1;
 }

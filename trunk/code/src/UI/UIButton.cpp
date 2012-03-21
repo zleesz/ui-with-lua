@@ -6,7 +6,8 @@ CUIButton::CUIButton(void)
 	RegisterClass(this);
 }
 
-CUIButton::CUIButton(LPXMLDOMNode pNode) : CUIControlBase(pNode)
+CUIButton::CUIButton(CUITreeContainer* pTree, LPXMLDOMNode pNode)
+	: CUIControlBase(pTree, pNode)
 {
 	RegisterClass(this);
 	if(pNode == NULL || pNode->pMapAttr == NULL)
@@ -30,7 +31,7 @@ CUIButton::CUIButton(LPXMLDOMNode pNode) : CUIControlBase(pNode)
 	if(it2 != pAttrChildNodes->end())
 	{
 		LPXMLDOMNode pImageNode = it2->second;
-		m_strImageID = pImageNode->strUData;
+		// m_strImageID = pImageNode->strUData;
 	}
 }
 
@@ -50,7 +51,7 @@ int CUIButton::GetID(lua_State* L)
 
 void CUIButton::SetAttr(std::string strName, std::string strValue)
 {
-	
+	__super::SetAttr(strName, strValue);
 }
 
 void CUIButton::Render(CDCHandle dc)

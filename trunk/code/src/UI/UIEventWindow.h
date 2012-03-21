@@ -12,7 +12,7 @@ class CUIEventWindow :
 {
 public:
 	CUIEventWindow(void);
-	CUIEventWindow(void* p) : CUIEventBase(p){};
+	CUIEventWindow(CUIWindowBase* p) : CUIEventBase(p){};
 	virtual ~CUIEventWindow(void);
 public:
 	BEGIN_MSG_MAP(CUIEventWindow)
