@@ -272,10 +272,6 @@
 				RelativePath=".\UIManager.cpp"
 				>
 			</File>
-			<File
-				RelativePath=".\UIText.cpp"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -296,10 +292,6 @@
 			</File>
 			<File
 				RelativePath=".\UIManager.h"
-				>
-			</File>
-			<File
-				RelativePath=".\UIText.h"
 				>
 			</File>
 		</Filter>
@@ -470,11 +462,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UIEdit.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIEdit.h"
+				>
+			</File>
+			<File
 				RelativePath=".\UIImage.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\UIImage.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIText.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIText.h"
 				>
 			</File>
 		</Filter>

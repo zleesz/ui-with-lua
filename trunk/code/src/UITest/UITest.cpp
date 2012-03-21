@@ -43,7 +43,7 @@ void InitUIModule()
 	// initial instance
 	CUILuaClass* pUILuaClass = CUILuaClass::GetInstance();
 #ifdef _DEBUG
-	::PathAppend(tszSkinPath, _T("..\\..\\code\\skin\\main"));
+	::PathAppend(tszSkinPath, _T("..\\..\\code\\skin\\test"));
 #else
 	::PathAppend(tszSkinPath, _T("skin"));
 #endif
