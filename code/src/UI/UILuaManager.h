@@ -7,7 +7,7 @@ typedef std::map<lua_State*, LPPath2FuncMap> LuaVM2Path2FuncMap, *LPLuaVM2Path2F
 class CUILuaManager
 {
 private:
-	CUILuaManager(){};
+	CUILuaManager();
 	CUILuaManager(CUILuaManager&){};
 	CUILuaManager& operator=(CUILuaManager&){};
 	~CUILuaManager()
@@ -17,7 +17,7 @@ private:
 	};
 private:
 	int UIDoLuaFile(lua_State* luaState);
-	int UILuaCall(lua_State* luaState);
+	int UILuaCall(lua_State* luaState, int nArgs, int nRet);
 	static void call_stack(lua_State* L, int n, std::string &strStack);
 	static int on_error(lua_State *L);
 private:
@@ -26,8 +26,10 @@ private:
 public:
 	int DoXmlLuaFile(const char* szFilePath, const char* szVMName);
 	int GetLuaFuncIndex(const std::string& strPath, const std::string& strFuncName, const char* szVMName);
-	BOOL CallLuaFuncByIndex(int nIndex, const char* szVMName);
-	BOOL CallLuaFunc(const std::string& strPath, const std::string& strFuncName, const char* szVMName);
+	BOOL CallLuaFuncByIndex(int nIndex, int nArgs, int nRet, const char* szVMName);
+	BOOL CallLuaFunc(const std::string& strPath, const std::string& strFuncName, int nArgs, int nRet, const char* szVMName);
+	void RegisterLuaFunc(const UILuaGlobalAPI& globalAPI);
+public:
 	static CUILuaManager& GetInstance();
 public:
 	LOG_CLS_DEC();

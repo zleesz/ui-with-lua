@@ -3,13 +3,24 @@
 #include <Util.h>
 
 class CUIWindowBase;
+typedef struct tagUIDISPPARAMS
+{
+	VARIANTARG *rgvarg;
+	std::string strName;
+	UINT nArgs;
+	UINT nRet;
+}UIDISPPARAMS;
+
+typedef enum enumEventType {
+	ET_Window = 1,
+	ET_Control,
+} EventType;
+
 typedef struct tagEventNode
 {
 	std::string strPath;
 	std::string strFuncName;
 	int nFuncIndex;
-	int nArgs;
-	int nRet;
 }EventNode, *LPEventNode;
 typedef std::vector<LPEventNode> VecEvent, *LPVecEvent; // event veclist
 typedef std::map<std::string, LPVecEvent> LuaEventMap; // event name 2 veclist 
@@ -23,12 +34,15 @@ public:
 public:
 	virtual void AttachListener(const LPXMLAttrMap pAttrMap, LPEventNode& pEventNode);
 	virtual void DetachListener();
-	virtual void DispatchListener(const std::string& strEventName);
+	virtual void DispatchListener(UIDISPPARAMS& params);
 	virtual BOOL ParserEvent(LPXMLDOMNode pNode) = 0;
-	virtual BOOL OnInitEvent(const std::string& strPath);
+	virtual BOOL OnBindEvent(const std::string& strPath);
+	virtual EventType GetType() = 0;
+	virtual void PushEventParams(UIDISPPARAMS& params);
 	void* GetBindWnd();
-private:
+public:
 	CUIWindowBase* m_pBindWnd;
+private:
 	LuaEventMap m_mapEvent;
 public:
 	LOG_CLS_DEC();

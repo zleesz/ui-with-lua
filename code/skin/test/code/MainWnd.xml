@@ -7,6 +7,7 @@
 			<height>400</height>
 			<visible>1</visible>
 			<appwindow>1</appwindow>
+			<title>测试窗口</title>
 		</attr>
 		<uitree>
 			<obj id="image.bkg" class="UIImage">
@@ -57,6 +58,10 @@
 		<eventlist>
 			<event name="OnCreate" file="MainWnd.xml.lua" func="OnCreate" />
 			<event name="OnClose" file="MainWnd.xml.lua" func="OnClose" />
+			<event name="OnShowWindow" file="MainWnd.xml.lua" func="OnShowWindow" />
+			<event name="OnMove" file="MainWnd.xml.lua" func="OnMove" />
+			<event name="OnMoving" file="MainWnd.xml.lua" func="OnMoving" />
+			<event name="OnFocusChange" file="MainWnd.xml.lua" func="OnFocusChange" />
 		</eventlist>
 	</hostwnd>
 </ui>

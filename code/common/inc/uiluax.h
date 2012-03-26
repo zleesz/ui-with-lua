@@ -37,6 +37,9 @@ public: \
 	}; \
 	static void UnRegisterClass(void* p) { \
 		UILuaUnRegisterClass(p, NULL); \
+	}; \
+	const std::string& GetRigisterClassName() { \
+		return #classname; \
 	};
 
 #define LUA_CALL_GETSINGLETON(x) \
@@ -61,6 +64,40 @@ public: \
 		theObject.userData = NULL; \
 		theObject.pfnGetObject = (fnGetObject)x::_GetInstance; \
 		UILuaRegisterGlobalObj(theObject, NULL);  \
-};
-
+	}; \
+	const char* GetRigisterClassName() { \
+		return #classname; \
+	};
+#include "Util.h"
+namespace Util
+{
+	static void PushVariantToLuaStack(lua_State* L, VARIANT* pv)
+	{
+		switch(pv->vt)
+		{
+		case VT_I2:
+			lua_pushboolean(L, (pv->iVal == 0) ? 0 : 1);
+			break;
+		case VT_I4:
+			lua_pushinteger(L,pv->intVal);
+			break;
+		case VT_BSTR:
+			{
+				std::string str;
+				Util::BSTRToString(pv->bstrVal,str);
+				lua_pushlstring(L, str.c_str(), str.length());
+			}				
+			break;
+		case VT_BOOL:
+			lua_pushboolean(L, (pv->boolVal == VARIANT_FALSE) ? 0 : 1 );
+			break;
+		case VT_BYREF | VT_I4:
+			UILuaPushClassObj(L, (void*)pv->lVal);
+			break;
+		default:
+			lua_pushnil(L);
+			break;
+		}
+	}
+}
 //////////////////////////////////////////////////////////////////////////

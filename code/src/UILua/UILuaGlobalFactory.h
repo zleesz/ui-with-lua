@@ -31,6 +31,7 @@ public:
 	static int gc_obj(lua_State* L);
 	static int proxy(lua_State* L);
 	int GetGlobalObject(lua_State* L, const char* szObjName);
+	void PushGlobalObj(lua_State* luaState, const char* szName);
 public:
 	static UILuaGlobalFactory& GetInstance();
 public:

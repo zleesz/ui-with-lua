@@ -126,6 +126,38 @@ int UILuaGlobalFactory::proxy(lua_State* L)
 	return pTheObj->MemberFunctions[i].func(L);
 }
 
+void UILuaGlobalFactory::PushGlobalObj(lua_State* L,const char* szName)
+{
+	assert(szName);
+	LOG_TRACE(_T("PushGlobalObj name:") << szName);
+	if(NULL != szName)
+	{
+		LuaVM2MapLuaObjectMap::const_iterator it = m_mapGlobalObject.find(L);
+		if(it != m_mapGlobalObject.end())
+		{
+			ID2LuaObjectMap::const_iterator it2 = it->second->find(szName);
+			if(it2 != it->second->end())
+			{
+				UILuaObject* pTheObj = it2->second;
+				assert(pTheObj);
+				LOG_TRACE(_T("PushGlobalObj pTheObj:") << pTheObj);
+				if(NULL == pTheObj)
+				{
+					lua_pushnil(L);
+					return;
+				}
+				void* p = lua_newuserdata(L, sizeof(void*));
+				p = (void*)pTheObj->pfnGetObject(NULL);
+				luaL_getmetatable(L, pTheObj->ObjName);
+				lua_setmetatable(L, -2);
+				return;
+			}
+		}
+		assert(false);
+	}
+	lua_pushnil(L);
+}
+
 UILuaGlobalFactory& UILuaGlobalFactory::GetInstance()
 {
 	static UILuaGlobalFactory s_UILuaGlobalFactory;
@@ -139,5 +171,14 @@ LUA_API void UILuaRegisterGlobalObj(UILuaObject theObj, const char* szVMName)
 	if(luaState)
 	{
 		UILuaGlobalFactory::GetInstance().RegisterGlobal(luaState, theObj);
+	}
+}
+
+LUA_API void UILuaPushGlobalObj(lua_State* luaState, const char* szName)
+{
+	assert(luaState);
+	if(luaState)
+	{
+		UILuaGlobalFactory::GetInstance().PushGlobalObj(luaState, szName);
 	}
 }

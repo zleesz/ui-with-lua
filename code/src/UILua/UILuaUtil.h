@@ -24,6 +24,7 @@ public:
 	static int UILuaDoFile(lua_State* luaState);
 	static int UILuaGetObject(lua_State* luaState);
 	static int UILuaCall(lua_State* luaState, int args, int results);
+	static int UILuaLog(lua_State* luaState);
 public:
 	LOG_CLS_DEC();
 };

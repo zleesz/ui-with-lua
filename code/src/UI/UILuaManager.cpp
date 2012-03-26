@@ -1,6 +1,10 @@
 #include "StdAfx.h"
 #include "UILuaManager.h"
 
+CUILuaManager::CUILuaManager()
+{
+}
+
 int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 {
 	int top = lua_gettop(luaState);
@@ -141,13 +145,13 @@ int CUILuaManager::on_error(lua_State *L)
 }
 
 
-BOOL CUILuaManager::UILuaCall(lua_State* luaState)
+BOOL CUILuaManager::UILuaCall(lua_State* luaState, int nArgs, int nRet)
 {
 	int top = lua_gettop(luaState);
 	assert(top > 0);
 	if(top <= 0)
 		return FALSE;
-	bool bIsFunc = lua_isfunction(luaState, -1);
+	bool bIsFunc = lua_isfunction(luaState, top-nArgs);
 	assert(bIsFunc);
 	if(!bIsFunc)
 		return FALSE;
@@ -155,9 +159,9 @@ BOOL CUILuaManager::UILuaCall(lua_State* luaState)
 	lua_pushlightuserdata(luaState, (void*)this);
 	lua_pushcclosure(luaState, on_error, 1);
 	int errfunc = lua_gettop(luaState);
-	lua_insert(luaState, errfunc-1);
+	lua_insert(luaState, errfunc-1-nArgs);
 	int errfunc1 = lua_gettop(luaState);
-	int ret = lua_pcall(luaState, 0, 0, errfunc-1);
+	int ret = lua_pcall(luaState, nArgs, nRet, errfunc-1-nArgs);
 	if(ret == 0)
 	{
 		lua_pop(luaState, 1);
@@ -248,25 +252,33 @@ int CUILuaManager::GetLuaFuncIndex(const std::string& strPath, const std::string
 	return it3->second;
 }
 
-BOOL CUILuaManager::CallLuaFuncByIndex(int nIndex, const char* szVMName)
+BOOL CUILuaManager::CallLuaFuncByIndex(int nIndex, int nArgs, int nRet, const char* szVMName)
 {
 	lua_State* L = UILuaGetLuaVM(szVMName);
 	lua_rawgeti(L, LUA_REGISTRYINDEX, nIndex);
-	return UILuaCall(L);
+	int top = lua_gettop(L);
+	lua_insert(L, top-nArgs);
+	return UILuaCall(L, nArgs, nRet);
 }
 
-BOOL CUILuaManager::CallLuaFunc(const std::string& strPath, const std::string& strFuncName, const char* szVMName)
+BOOL CUILuaManager::CallLuaFunc(const std::string& strPath, const std::string& strFuncName, int nArgs, int nRet, const char* szVMName)
 {
 	int nIndex = GetLuaFuncIndex(strPath, strFuncName, szVMName);
 	if(nIndex <= 0)
 	{
 		return FALSE;
 	}
-	return CallLuaFuncByIndex(nIndex, szVMName);
+	return CallLuaFuncByIndex(nIndex, nArgs, nRet, szVMName);
 }
 
 CUILuaManager& CUILuaManager::GetInstance()
 {
 	static CUILuaManager s_UILuaManager;
 	return s_UILuaManager;
+}
+
+void CUILuaManager::RegisterLuaFunc(const UILuaGlobalAPI& globalAPI)
+{
+	lua_State* luaState = UILuaGetLuaVM(NULL);
+	lua_register(luaState, globalAPI.name, globalAPI.func);
 }

@@ -19,7 +19,8 @@ typedef enum enumWindowType {
 	WT_TipHostWnd,
 } WindowType;
 
-class CUIWindowBase
+class CUIWindowBase :
+	public CWindowImpl<CUIWindowBase>
 {
 public:
 	CUIWindowBase(void);
@@ -42,6 +43,8 @@ public:
 	virtual BOOL ParserAttr(LPXMLDOMNode pAttrNode);
 	virtual BOOL ParserUITree(LPXMLDOMNode pNode);
 	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
+public:
+	static int AddInputFilter(lua_State* L);
 public:
 	CUITreeContainer* m_pUITreeContainer;
 	CUIEventWindow* m_pUIEventWindow;
