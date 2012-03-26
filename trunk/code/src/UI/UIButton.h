@@ -9,11 +9,14 @@ class CUIButton :
 {
 public:
 	CUIButton(void);
+public:
 	CUIButton(CUITreeContainer* pTree, LPXMLDOMNode pNode);
 	virtual ~CUIButton(void);
 public:
 	virtual ControlType GetType() { return CT_UIButton; };
 	void Render(CDCHandle dc);
+	virtual void OnInitControl();
+	virtual BOOL OnHitTest(int x, int y);
 	static int GetID(lua_State* L);
 private:
 	void SetAttr(std::string strName, std::string strValue);

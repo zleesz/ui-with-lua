@@ -19,6 +19,13 @@ private:
 	ID2ControlMap m_mapCtrl;
 	CUIWindowBase* m_pBindWnd;
 public:
+	BEGIN_MSG_MAP(CUITreeContainer)
+		MESSAGE_HANDLER(WM_CREATE, OnCreate)
+		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
+	END_MSG_MAP()
+	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnMouseMove(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+public:
 	BOOL ParserUITree(LPXMLDOMNode pNode);
 	BOOL OnPreCreate();
 	BOOL OnCreate();

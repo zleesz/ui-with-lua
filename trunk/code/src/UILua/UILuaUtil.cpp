@@ -199,6 +199,72 @@ int UILuaUtil::UILuaCall(lua_State* luaState, int args, int results)
 	}
 }
 
+int UILuaUtil::UILuaLog(lua_State* luaState)
+{
+	int top = lua_gettop(luaState);
+	std::string strInfo("<UILOG> ");
+	for(int i = 1; i <= top; i++)
+	{
+		int t = lua_type(luaState, i);
+		if(lua_isnumber(luaState, i) && t==LUA_TNUMBER)
+		{
+			int n = (int)lua_tointeger(luaState, i);
+			char szN[30] = {0};
+			itoa(n, szN, 10);
+			strInfo += szN;
+		}
+		else if(lua_isstring(luaState, i))
+		{
+			size_t nLen = 0;
+			const char* sz = (const char*)lua_tolstring(luaState, i, &nLen);
+			strInfo += sz;
+		}
+		else if(lua_isboolean(luaState, i))
+		{
+			int b = lua_toboolean(luaState, i);
+			if(b == 0)
+			{
+				strInfo += "false";
+			}
+			else
+			{
+				strInfo += "true";
+			}
+		}
+		else if(lua_isnoneornil(luaState, i))
+		{
+			strInfo += "nil";
+		}
+		else if(lua_islightuserdata(luaState, i))
+		{
+			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
+			char szLn[30] = {0};
+			sprintf_s(szLn, 30, "lightuserdata:%x", ln);
+			strInfo += szLn;
+		}
+		else if(lua_isuserdata(luaState, i))
+		{
+			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
+			char szLn[30] = {0};
+			sprintf_s(szLn, 30, "userdata:%x", ln);
+			strInfo += szLn;
+		}
+		else if(lua_istable(luaState, i))
+		{
+			strInfo += "?table?";
+		}
+		else
+		{
+			char szLn[30] = {0};
+			sprintf_s(szLn, 30, "unknown:t=%d", t);
+			strInfo += szLn;
+		}
+		strInfo += " ";
+	}
+	LOG_DEBUG(strInfo.c_str());
+	return 0;
+}
+
 int UILuaUtil::UILuaGetObject(lua_State* luaState)
 {
 	int top = lua_gettop(luaState);
@@ -219,6 +285,7 @@ void UILuaUtil::InitUtilFunc(lua_State* luaState)
 		{"UIMessageBox", UILuaUtil::UIMessageBox},
 		{"UILuaDoFile", UILuaUtil::UILuaDoFile},
 		{"UILuaGetObject", UILuaUtil::UILuaGetObject},
+		{"UILog", UILuaUtil::UILuaLog},
 		{NULL,NULL}
 	};
 	for (int i = 0; UILuaUtilFunc[i].name; i++)

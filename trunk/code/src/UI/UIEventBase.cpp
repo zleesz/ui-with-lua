@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "UIEventBase.h"
+#include "UIWindowBase.h"
 
 CUIEventBase::CUIEventBase()
 	: m_pBindWnd(NULL)
@@ -40,22 +41,23 @@ void CUIEventBase::DetachListener()
 	
 }
 
-void CUIEventBase::DispatchListener(const std::string& strEventName)
+void CUIEventBase::DispatchListener(UIDISPPARAMS& params)
 {
 	LOG_AUTO();
-	LuaEventMap::const_iterator it = m_mapEvent.find(strEventName);
-	if (it != m_mapEvent.end())
+	PushEventParams(params);
+	LuaEventMap::const_iterator itLuaEvent = m_mapEvent.find(params.strName);
+	if (itLuaEvent != m_mapEvent.end())
 	{
-		LPVecEvent pVecEvent = it->second;
+		LPVecEvent pVecEvent = itLuaEvent->second;
 		for(VecEvent::size_type st = 0; st < pVecEvent->size(); st ++)
 		{
 			LPEventNode pEventNode = (*pVecEvent)[st];
-			CUILuaManager::GetInstance().CallLuaFunc(pEventNode->strPath, pEventNode->strFuncName, NULL);
+			CUILuaManager::GetInstance().CallLuaFunc(pEventNode->strPath, pEventNode->strFuncName, params.nArgs, params.nRet, NULL);
 		}
 	}
 }
 
-BOOL CUIEventBase::OnInitEvent(const std::string& strPath)
+BOOL CUIEventBase::OnBindEvent(const std::string& strPath)
 {
 	char szPath[MAX_PATH] = {0};
 	strcpy_s(szPath, MAX_PATH, strPath.c_str());
@@ -82,4 +84,13 @@ BOOL CUIEventBase::OnInitEvent(const std::string& strPath)
 void* CUIEventBase::GetBindWnd()
 {
 	return m_pBindWnd;
+}
+
+void CUIEventBase::PushEventParams(UIDISPPARAMS& params)
+{
+	lua_State* L = UILuaGetLuaVM(NULL);
+	for(int i = 0; i < params.nArgs; i++)
+	{
+		Util::PushVariantToLuaStack(L, &params.rgvarg[i]);
+	}
 }

@@ -1,8 +1,8 @@
 #pragma once
 
-class CMenuParser
+class CUIMenuWindow
 {
 public:
-	CMenuParser(void);
-	virtual ~CMenuParser(void);
+	CUIMenuWindow(void);
+	virtual ~CUIMenuWindow(void);
 };

@@ -5,7 +5,6 @@
 
 CUIImage::CUIImage(void)
 {
-	RegisterClass(this);
 }
 
 CUIImage::CUIImage(CUITreeContainer* pTree, LPXMLDOMNode pNode)
@@ -141,4 +140,14 @@ int CUIImage::GetOwnerTree(lua_State* L)
 	const CUITreeContainer* pTree = pThis->GetOwnerTree();
 	UILuaPushClassObj(L, pTree);
 	return 1;
+}
+
+void CUIImage::OnInitControl()
+{
+
+}
+
+BOOL CUIImage::OnHitTest(int x, int y)
+{
+	return FALSE;
 }

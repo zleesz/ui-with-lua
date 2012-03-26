@@ -4,6 +4,18 @@
 CUITimerManger::CUITimerManger(void) : m_lnTimerID(0)
 {
 	Create(HWND_MESSAGE, NULL, NULL, WS_POPUP, WS_EX_TOOLWINDOW);
+	static UILuaGlobalAPI UILuaUtilFunc[] = 
+	{
+		{"SetTimer", CUITimerManger::_SetTimer},
+		{"SetOnceTimer", CUITimerManger::_SetOnceTimer},
+		{"KillTimer", CUITimerManger::_KillTimer},
+		{"AsynCall", CUITimerManger::AsynCall},
+		{NULL,NULL}
+	};
+	for (int i = 0; UILuaUtilFunc[i].name; i++)
+	{
+		CUILuaManager::GetInstance().RegisterLuaFunc(UILuaUtilFunc[i]);
+	}
 }
 
 CUITimerManger::~CUITimerManger(void)
@@ -17,14 +29,13 @@ CUITimerManger::~CUITimerManger(void)
 int CUITimerManger::_SetTimer(lua_State* L)
 {
 	int top = lua_gettop(L);
-	ATLASSERT(top >= 3);
-	if(top < 3)
+	ATLASSERT(top >= 2);
+	if(top < 2)
 		return 0;
-	CUITimerManger* pThis = (CUITimerManger*)lua_touserdata(L, -1);
+	CUITimerManger* pThis = CUITimerManger::GetInstance();
 	if(pThis == NULL)
 		return 0;
-	int t = lua_type(L, -4);
-	if(!lua_isfunction(L, -3))
+	if(!lua_isfunction(L, top >= 3 ? 2 : 1))
 	{
 		ATLASSERT(FALSE);
 		return 0;
@@ -32,8 +43,8 @@ int CUITimerManger::_SetTimer(lua_State* L)
 	pThis->m_lnTimerID++;
 	TimerData td;
 	td.lnId = pThis->m_lnTimerID;
-	td.lnElapse = lua_tointeger(L, -2);
-	lua_pushvalue(L, -3);
+	td.lnElapse = lua_tointeger(L, top >= 3 ? 3 : 2);
+	lua_pushvalue(L, top >= 3 ? 2 : 1);
 	td.nFuncIndex = luaL_ref(L, LUA_REGISTRYINDEX);
 	pThis->SetTimer(td.lnId, td.lnElapse, NULL);
 	pThis->m_mapID2TimerData.insert(std::make_pair(td.lnId, td));
@@ -43,13 +54,13 @@ int CUITimerManger::_SetTimer(lua_State* L)
 int CUITimerManger::_SetOnceTimer(lua_State* L)
 {
 	int top = lua_gettop(L);
-	ATLASSERT(top >= 3);
-	if(top < 3)
+	ATLASSERT(top >= 2);
+	if(top < 2)
 		return 0;
-	CUITimerManger* pThis = (CUITimerManger*)lua_touserdata(L, -1);
+	CUITimerManger* pThis = CUITimerManger::GetInstance();
 	if(pThis == NULL)
 		return 0;
-	if(!lua_isfunction(L, -3))
+	if(!lua_isfunction(L, top >= 3 ? 2 : 1))
 	{
 		ATLASSERT(FALSE);
 		return 0;
@@ -58,8 +69,34 @@ int CUITimerManger::_SetOnceTimer(lua_State* L)
 	TimerData td;
 	td.bOnce = TRUE;
 	td.lnId = pThis->m_lnTimerID;
-	td.lnElapse = lua_tointeger(L, -2);
-	lua_pushvalue(L, -3);
+	td.lnElapse = lua_tointeger(L, top >= 3 ? 3 : 2);
+	lua_pushvalue(L, top >= 3 ? 2 : 1);
+	td.nFuncIndex = luaL_ref(L, LUA_REGISTRYINDEX);
+	pThis->SetTimer(td.lnId, td.lnElapse, NULL);
+	pThis->m_mapID2TimerData.insert(std::make_pair(td.lnId, td));
+	return 1;
+}
+
+int CUITimerManger::AsynCall(lua_State* L)
+{
+	int top = lua_gettop(L);
+	ATLASSERT(top >= 1);
+	if(top < 1)
+		return 0;
+	CUITimerManger* pThis = CUITimerManger::GetInstance();
+	if(pThis == NULL)
+		return 0;
+	if(!lua_isfunction(L, -1))
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	pThis->m_lnTimerID++;
+	TimerData td;
+	td.bOnce = TRUE;
+	td.lnId = pThis->m_lnTimerID;
+	td.lnElapse = 0;
+	lua_pushvalue(L, -1);
 	td.nFuncIndex = luaL_ref(L, LUA_REGISTRYINDEX);
 	pThis->SetTimer(td.lnId, td.lnElapse, NULL);
 	pThis->m_mapID2TimerData.insert(std::make_pair(td.lnId, td));
@@ -69,13 +106,13 @@ int CUITimerManger::_SetOnceTimer(lua_State* L)
 int CUITimerManger::_KillTimer(lua_State* L)
 {
 	int top = lua_gettop(L);
-	ATLASSERT(top >= 2);
-	if(top < 2)
+	ATLASSERT(top >= 1);
+	if(top < 1)
 		return 0;
-	CUITimerManger* pThis = (CUITimerManger*)lua_touserdata(L, -1);
+	CUITimerManger* pThis = CUITimerManger::GetInstance();
 	if(pThis == NULL)
 		return 0;
-	ULONG lnID = (ULONG)lua_tointeger(L, -2);
+	ULONG lnID = (ULONG)lua_tointeger(L, top >= 2 ? 2 : 1);
 	if(lnID <= 0)
 		return 0;
 	ID2TimerDataMap::iterator it = pThis->m_mapID2TimerData.find(lnID);
@@ -97,7 +134,11 @@ LRESULT CUITimerManger::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 		return 0;
 	}
 
-	CUILuaManager::GetInstance().CallLuaFuncByIndex(it->second.nFuncIndex, NULL);
+	const char* szName = GetRigisterClassName();
+	lua_State* luaState = UILuaGetLuaVM(NULL);
+	UILuaPushGlobalObj(luaState, GetRigisterClassName());
+	lua_pushinteger(luaState, lnID);
+	CUILuaManager::GetInstance().CallLuaFuncByIndex(it->second.nFuncIndex, 2, 0, NULL);
 	if(it->second.bOnce)
 	{
 		KillTimer(lnID);

@@ -19,6 +19,9 @@ public:
 	void SetAttr(std::string strName, std::string strValue);
 	void GetAttr(std::string strName, VARIANT* v);
 	virtual BOOL ParserAttr(LPXMLDOMNode pAttrNode);
+public:
+	BEGIN_MSG_MAP(CUIModalWindow)
+	END_MSG_MAP()
 private:
 	virtual DWORD GetStyle();
 	virtual DWORD GetStyleEx();

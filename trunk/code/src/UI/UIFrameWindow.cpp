@@ -75,7 +75,7 @@ DWORD CUIFrameWindow::GetStyleEx()
 BOOL CUIFrameWindow::CreateWnd(HWND hParent)
 {
 	LOG_AUTO();
-	m_pUIEventWindow->OnInitEvent(GetXMLPath());
+	m_pUIEventWindow->OnBindEvent(GetXMLPath());
 	m_pUITreeContainer->OnPreCreate();
 	if (hParent != NULL)
 	{
@@ -118,6 +118,16 @@ void CUIFrameWindow::GetAttr(std::string strName, VARIANT* v)
 
 BOOL CUIFrameWindow::ParserAttr(LPXMLDOMNode pAttrNode)
 {
+	if (NULL == pAttrNode || pAttrNode->strName != "attr")
+		return FALSE;
+	LPXMLChildNodes pChildNodes = pAttrNode->pMapChildNode;
+	if(NULL == pChildNodes)
+		return FALSE;
+	XMLChildNodes::const_iterator it = pChildNodes->begin();
+	for(; it != pChildNodes->end(); it++)
+	{
+		SetAttr(it->first, it->second->strUData);
+	}
 	return TRUE;
 }
 
@@ -140,6 +150,17 @@ LRESULT CUIFrameWindow::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 	return 0;
 }
 
+LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	CComVariant vTitle = m_mapAttr["title"];
+	if(vTitle.vt == VT_BSTR)
+	{
+		SetWindowText(vTitle.bstrVal);
+	}
+	bHandled = FALSE;
+	return 0;
+}
+
 int CUIFrameWindow::GetID(lua_State* L)
 {
 	CUIWindowBase* pThis = (CUIWindowBase*) lua_touserdata(L, -1);
@@ -147,6 +168,61 @@ int CUIFrameWindow::GetID(lua_State* L)
 	std::string strID = pThis->GetID();
 	lua_pushstring(L, strID.c_str());
 	return 1;
+}
+
+int CUIFrameWindow::GetTitle(lua_State* L)
+{
+	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	CComVariant vTitle = pThis->m_mapAttr["title"];
+	if(vTitle.vt == VT_BSTR)
+	{
+		std::string strTitle;
+		Util::BSTRToString(vTitle.bstrVal, strTitle);
+		lua_pushstring(L, strTitle.c_str());
+	}
+	return 1;
+}
+
+int CUIFrameWindow::SetTitle(lua_State* L)
+{
+	CUIWindowBase* pParent = (CUIWindowBase*) lua_touserdata(L, -1);
+	ATLASSERT(pParent);
+	const char* pszTitle = lua_tostring(L, -1);
+	pParent->SetAttr("title", pszTitle);
+	CUIFrameWindow* pThis = (CUIFrameWindow*)pParent;
+	if(pThis->m_hWnd)
+	{
+		CComVariant vTitle = pThis->m_mapAttr["title"];
+		if(vTitle.vt == VT_BSTR)
+		{
+			pThis->SetWindowText(vTitle.bstrVal);
+		}
+	}
+	return 0;
+}
+
+int CUIFrameWindow::GetVisible(lua_State* L)
+{
+	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
+	lua_pushboolean(L, pThis->IsWindowVisible());
+	return 1;
+}
+
+int CUIFrameWindow::SetVisible(lua_State* L)
+{
+	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
+	int bVisible = lua_toboolean(L, 2);
+	pThis->ShowWindow(bVisible == 0 ? SW_HIDE : SW_SHOWNORMAL);
+	return 0;
+}
+
+int CUIFrameWindow::Show(lua_State* L)
+{
+	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
+	int nCmd = lua_tointeger(L, -2);
+	pThis->ShowWindow(nCmd);
+	return 0;
 }
 
 int CUIFrameWindow::GetTreeContainer(lua_State* L)

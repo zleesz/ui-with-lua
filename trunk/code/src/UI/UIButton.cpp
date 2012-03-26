@@ -3,7 +3,6 @@
 
 CUIButton::CUIButton(void)
 {
-	RegisterClass(this);
 }
 
 CUIButton::CUIButton(CUITreeContainer* pTree, LPXMLDOMNode pNode)
@@ -57,4 +56,14 @@ void CUIButton::SetAttr(std::string strName, std::string strValue)
 void CUIButton::Render(CDCHandle dc)
 {
 	
+}
+
+void CUIButton::OnInitControl()
+{
+
+}
+
+BOOL CUIButton::OnHitTest(int x, int y)
+{
+	return FALSE;
 }

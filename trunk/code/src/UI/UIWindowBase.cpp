@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include "UIWindowBase.h"
+#include "Util.h"
 
 CUIWindowBase::CUIWindowBase(void)
 {
@@ -76,6 +77,13 @@ void CUIWindowBase::SetAttr(std::string strName, std::string strValue)
 		}
 		v.Detach(&m_mapAttr[strName]);
 	}
+	else if(strName == "title")
+	{
+		std::wstring wstrValue;
+		Util::StringToWideString(strValue.c_str(), wstrValue);
+		CComVariant v(wstrValue.c_str());
+		v.Detach(&m_mapAttr[strName]);
+	}
 }
 
 void CUIWindowBase::GetAttr(std::string strName, VARIANT* v)
@@ -117,4 +125,11 @@ BOOL CUIWindowBase::ParserEvent(LPXMLDOMNode pNode)
 	if (NULL == pNode || pNode->strName != "eventlist")
 		return FALSE;
 	return m_pUIEventWindow->ParserEvent(pNode);
+}
+
+int CUIWindowBase::AddInputFilter(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	pThis->m_pUIEventWindow->AddInputFilter(L);
+	return 0;
 }

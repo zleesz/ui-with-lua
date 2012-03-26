@@ -514,6 +514,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UIToolWindow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIToolWindow.h"
+				>
+			</File>
+			<File
 				RelativePath=".\UIWindowBase.cpp"
 				>
 			</File>
@@ -570,7 +578,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\common\inc\uiluax.h"
+				RelativePath="..\..\common\inc\uiluax.h"
 				>
 			</File>
 		</Filter>
@@ -587,7 +595,7 @@
 			</File>
 		</Filter>
 		<Filter
-			Name="ImageTool"
+			Name="Tool"
 			>
 			<File
 				RelativePath=".\ImageTool.cpp"

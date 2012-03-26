@@ -7,14 +7,16 @@
 class CUIImage :
 	public CUIControlBase
 {
-private:
-	CUIImage(void);
 public:
+	CUIImage(void);
 	CUIImage(CUITreeContainer* pTree, LPXMLDOMNode pNode);
 	virtual ~CUIImage(void);
 public:
 	virtual ControlType GetType() { return CT_UIImage; };
 	void Render(CDCHandle dc);
+	virtual void OnInitControl();
+	virtual BOOL OnHitTest(int x, int y);
+public:
 	static int GetID(lua_State* L);
 	static int GetStretch(lua_State* L);
 	static int SetStretch(lua_State* L);

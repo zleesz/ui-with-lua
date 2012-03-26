@@ -6,9 +6,8 @@
 #include <map>
 #include <vector>
 
-class Util
+namespace Util
 {
-public:
 	static bool BSTRToString( BSTR src, std::string& dest)
 	{
 		if(!src)

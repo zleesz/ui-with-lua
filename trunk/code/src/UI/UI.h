@@ -4,7 +4,7 @@
 
 
  /* File created by MIDL compiler version 7.00.0500 */
-/* at Wed Mar 21 22:03:30 2012
+/* at Sun Mar 25 00:33:30 2012
  */
 /* Compiler settings for .\UI.idl:
     Oicf, W1, Zp8, env=Win32 (32b run)

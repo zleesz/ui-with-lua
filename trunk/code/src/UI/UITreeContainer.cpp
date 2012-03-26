@@ -115,3 +115,21 @@ int CUITreeContainer::GetOwnerWnd(lua_State* L)
 	UILuaPushClassObj(L, (const void*)pThis->m_pBindWnd);
 	return 1;
 }
+
+LRESULT CUITreeContainer::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	ID2ControlMap::const_iterator it = m_mapCtrl.begin();
+	for(; it != m_mapCtrl.end(); it++)
+	{
+		CUIControlBase* pUICtrl = it->second;
+	}
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	int xPos = GET_X_LPARAM(lParam); 
+	int yPos = GET_Y_LPARAM(lParam); 
+	
+	return 0;
+}

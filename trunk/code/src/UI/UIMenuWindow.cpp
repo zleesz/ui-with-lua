@@ -1,10 +1,10 @@
 #include "StdAfx.h"
 #include ".\UIMenuWindow.h"
 
-CMenuParser::CMenuParser(void)
+CUIMenuWindow::CUIMenuWindow(void)
 {
 }
 
-CMenuParser::~CMenuParser(void)
+CUIMenuWindow::~CUIMenuWindow(void)
 {
 }

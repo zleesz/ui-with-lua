@@ -16,6 +16,7 @@ public:
 	static int _SetTimer(lua_State* L);
 	static int _SetOnceTimer(lua_State* L);
 	static int _KillTimer(lua_State* L);
+	static int AsynCall(lua_State* L);
 private:
 	typedef struct tagTimerData
 	{
