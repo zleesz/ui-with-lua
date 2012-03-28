@@ -617,6 +617,14 @@
 				RelativePath=".\UITreeContainer.h"
 				>
 			</File>
+			<File
+				RelativePath=".\ZorderIndexer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\ZorderIndexer.h"
+				>
+			</File>
 		</Filter>
 		<File
 			RelativePath=".\ReadMe.txt"

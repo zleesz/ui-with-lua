@@ -45,4 +45,6 @@ public:
 	void SetAttr(std::string strName, std::string strValue);
 	void GetAttr(std::string strName, VARIANT* v);
 	const CUITreeContainer* GetOwnerTree();
+public:
+	void GetZorder(std::string strID);
 };

@@ -6,6 +6,7 @@
 #include "UIFont.h"
 #include "UIBitmap.h"
 #include "UIIcon.h"
+#include "UIImageList.h"
 
 class CUIResFactory
 {

@@ -37,6 +37,10 @@ void CUIResFactory::AddResElement(LPXMLDOMNode pNode, const char* pszPath)
 	{
 		pUIBase = new CUIIcon(pNode, pszPath);
 	}
+	else if(pNode->strName == "imagelist")
+	{
+		pUIBase = new CUIImageList(pNode, pszPath);
+	}
 	if(NULL != pUIBase)
 	{
 		ResourceType pt = pUIBase->GetType();
