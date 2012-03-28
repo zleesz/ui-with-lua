@@ -64,6 +64,7 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 			}
 		}
 	}
+	m_ZorderIndexer.Init(&m_mapCtrl);
 	return TRUE;
 }
 

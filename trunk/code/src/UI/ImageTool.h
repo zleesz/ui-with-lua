@@ -5,6 +5,6 @@
 class CImageTool
 {
 public:
-	CImageTool(void);
-	~CImageTool(void);
+	static void GetVLeftPos(CxImage* pImage, int& left1, int& left2);
+	static void GetHTopPos(CxImage* pImage, int& top1, int& top2);
 };

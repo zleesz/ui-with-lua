@@ -5,8 +5,10 @@
 #include "UIControlBase.h"
 #include <map>
 #include <string>
+#include "ZorderIndexer.h"
 
 class CUIWindowBase;
+
 class CUITreeContainer
 {
 private:
@@ -15,9 +17,9 @@ public:
 	CUITreeContainer(CUIWindowBase* p);
 	virtual ~CUITreeContainer(void);
 private:
-	typedef std::map<std::string, CUIControlBase*> ID2ControlMap;
 	ID2ControlMap m_mapCtrl;
 	CUIWindowBase* m_pBindWnd;
+	CZorderIndexer m_ZorderIndexer;
 public:
 	BEGIN_MSG_MAP(CUITreeContainer)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
