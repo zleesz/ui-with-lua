@@ -1,21 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UI_CxImage", "ui_cximage.vcproj", "{8C3B975B-AB80-4A11-9655-D45FD576B692}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UI_CxImage", "UI_CxImage\cximage\ui_cximage.vcproj", "{8C3B975B-AB80-4A11-9655-D45FD576B692}"
 	ProjectSection(ProjectDependencies) = postProject
 		{086AE82B-CF41-4740-9A8D-C6C223E0394F} = {086AE82B-CF41-4740-9A8D-C6C223E0394F}
 		{DB784346-75D0-439F-A6BF-FFEA6EA09506} = {DB784346-75D0-439F-A6BF-FFEA6EA09506}
 		{67D0A3CF-8A1F-46C2-994F-12A4F383EEC5} = {67D0A3CF-8A1F-46C2-994F-12A4F383EEC5}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "jpeg\jpeg.vcproj", "{DB784346-75D0-439F-A6BF-FFEA6EA09506}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jpeg", "UI_CxImage\jpeg\jpeg.vcproj", "{DB784346-75D0-439F-A6BF-FFEA6EA09506}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "png", "png\png.vcproj", "{67D0A3CF-8A1F-46C2-994F-12A4F383EEC5}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "png", "UI_CxImage\png\png.vcproj", "{67D0A3CF-8A1F-46C2-994F-12A4F383EEC5}"
 	ProjectSection(ProjectDependencies) = postProject
 		{086AE82B-CF41-4740-9A8D-C6C223E0394F} = {086AE82B-CF41-4740-9A8D-C6C223E0394F}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "zlib\zlib.vcproj", "{086AE82B-CF41-4740-9A8D-C6C223E0394F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zlib", "UI_CxImage\zlib\zlib.vcproj", "{086AE82B-CF41-4740-9A8D-C6C223E0394F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

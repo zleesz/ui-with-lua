@@ -18,7 +18,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="../../../bin/$(ConfigurationName)"
+			OutputDirectory="../../../../bin/$(ConfigurationName)"
 			IntermediateDirectory="Debug"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
@@ -42,7 +42,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="./zlib"
+				AdditionalIncludeDirectories="../zlib"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;UI_CXIMAGE_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -68,7 +68,7 @@
 				AdditionalDependencies="jpeg.lib png.lib zlib.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../../common/lib/$(ConfigurationName)"
+				AdditionalLibraryDirectories="../../../common/lib/$(ConfigurationName)"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/ui_cximage.pdb"
 				SubSystem="2"
@@ -191,75 +191,75 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\cximage\ximabmp.cpp"
+				RelativePath=".\ximabmp.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximadsp.cpp"
+				RelativePath=".\ximadsp.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximaenc.cpp"
+				RelativePath=".\ximaenc.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximaexif.cpp"
+				RelativePath=".\ximaexif.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximage.cpp"
+				RelativePath=".\ximage.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximaico.cpp"
+				RelativePath=".\ximaico.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximainfo.cpp"
+				RelativePath=".\ximainfo.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximaint.cpp"
+				RelativePath=".\ximaint.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximajpg.cpp"
+				RelativePath=".\ximajpg.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximalpha.cpp"
+				RelativePath=".\ximalpha.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximalyr.cpp"
+				RelativePath=".\ximalyr.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximapal.cpp"
+				RelativePath=".\ximapal.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximapng.cpp"
+				RelativePath=".\ximapng.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximasel.cpp"
+				RelativePath=".\ximasel.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximath.cpp"
+				RelativePath=".\ximath.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximatran.cpp"
+				RelativePath=".\ximatran.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximawnd.cpp"
+				RelativePath=".\ximawnd.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\xmemfile.cpp"
+				RelativePath=".\xmemfile.cpp"
 				>
 			</File>
 		</Filter>
@@ -269,55 +269,55 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\cximage\stdint.h"
+				RelativePath=".\stdint.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\xfile.h"
+				RelativePath=".\xfile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximabmp.h"
+				RelativePath=".\ximabmp.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximacfg.h"
+				RelativePath=".\ximacfg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximadef.h"
+				RelativePath=".\ximadef.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximage.h"
+				RelativePath=".\ximage.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximaico.h"
+				RelativePath=".\ximaico.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximaiter.h"
+				RelativePath=".\ximaiter.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximajpg.h"
+				RelativePath=".\ximajpg.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximapng.h"
+				RelativePath=".\ximapng.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\ximath.h"
+				RelativePath=".\ximath.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\xiofile.h"
+				RelativePath=".\xiofile.h"
 				>
 			</File>
 			<File
-				RelativePath=".\cximage\xmemfile.h"
+				RelativePath=".\xmemfile.h"
 				>
 			</File>
 		</Filter>
