@@ -77,7 +77,7 @@
 				AdditionalDependencies="UILua.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="../../common/lib/$(ConfigurationName)"
+				AdditionalLibraryDirectories="../../common/lib/$(ConfigurationName);../../../bin/$(ConfigurationName);"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				RandomizedBaseAddress="1"
