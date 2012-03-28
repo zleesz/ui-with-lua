@@ -68,6 +68,7 @@ public: \
 	const char* GetRigisterClassName() { \
 		return #classname; \
 	};
+
 #include "Util.h"
 namespace Util
 {

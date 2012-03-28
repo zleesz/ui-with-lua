@@ -41,6 +41,7 @@ public:
 		LUA_CALL_ENTRY2(SetTimer, _SetTimer)
 		LUA_CALL_ENTRY2(SetOnceTimer, _SetOnceTimer)
 		LUA_CALL_ENTRY2(KillTimer, _KillTimer)
+		LUA_CALL_ENTRY2(AsynCall, AsynCall)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_SINGLETON_OBJECT(CUITimerManger, UI.TimerManager)
 public:
