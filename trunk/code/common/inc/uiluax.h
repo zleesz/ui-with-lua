@@ -72,6 +72,8 @@ public: \
 #include "Util.h"
 namespace Util
 {
+namespace lua
+{
 	static void PushVariantToLuaStack(lua_State* L, VARIANT* pv)
 	{
 		switch(pv->vt)
@@ -100,5 +102,6 @@ namespace Util
 			break;
 		}
 	}
+}
 }
 //////////////////////////////////////////////////////////////////////////
