@@ -61,7 +61,7 @@ CUIBitmapBase::~CUIBitmapBase()
 		delete m_pImage;
 		m_pImage = NULL;
 	}
-	int nSize = m_vecImage.size();
+	int nSize = (int)m_vecImage.size();
 	if(nSize > 1)
 	{
 		for(int i = 0; i < nSize; i++)
@@ -168,7 +168,7 @@ void CUIBitmapThreeInOneV::CropBitmap()
 
 }
 
-void CUIBitmapThreeInOneV::Render(HDC dc, const RECT& rc, BOOL bStretch)
+void CUIBitmapThreeInOneV::Render(HDC /*dc*/, const RECT& /*rc*/, BOOL /*bStretch*/)
 {
 	CropBitmap();
 }
@@ -245,7 +245,7 @@ void CUIBitmapNineInOne::CropBitmap()
 	m_vecImage.push_back(pDrawImage33);
 }
 
-void CUIBitmapNineInOne::Render(HDC dc, const RECT& rc, BOOL bStretch)
+void CUIBitmapNineInOne::Render(HDC dc, const RECT& rc, BOOL /*bStretch*/)
 {
 	CropBitmap();
 	RECT lrc = {0};

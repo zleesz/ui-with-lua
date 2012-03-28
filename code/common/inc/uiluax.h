@@ -38,7 +38,7 @@ public: \
 	static void UnRegisterClass(void* p) { \
 		UILuaUnRegisterClass(p, NULL); \
 	}; \
-	const std::string& GetRigisterClassName() { \
+	const char* GetRigisterClassName() { \
 		return #classname; \
 	};
 
@@ -95,7 +95,7 @@ namespace lua
 			lua_pushboolean(L, (pv->boolVal == VARIANT_FALSE) ? 0 : 1 );
 			break;
 		case VT_BYREF | VT_I4:
-			UILuaPushClassObj(L, (void*)pv->lVal);
+			UILuaPushClassObj(L, (void*)(LONG_PTR)pv->lVal);
 			break;
 		default:
 			lua_pushnil(L);

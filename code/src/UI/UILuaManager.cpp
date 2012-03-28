@@ -160,7 +160,6 @@ BOOL CUILuaManager::UILuaCall(lua_State* luaState, int nArgs, int nRet)
 	lua_pushcclosure(luaState, on_error, 1);
 	int errfunc = lua_gettop(luaState);
 	lua_insert(luaState, errfunc-1-nArgs);
-	int errfunc1 = lua_gettop(luaState);
 	int ret = lua_pcall(luaState, nArgs, nRet, errfunc-1-nArgs);
 	if(ret == 0)
 	{
@@ -281,4 +280,13 @@ void CUILuaManager::RegisterLuaFunc(const UILuaGlobalAPI& globalAPI)
 {
 	lua_State* luaState = UILuaGetLuaVM(NULL);
 	lua_register(luaState, globalAPI.name, globalAPI.func);
+}
+
+void CUILuaManager::RegisterLuaFuncs(const UILuaGlobalAPI* pGlobalAPI)
+{
+	lua_State* luaState = UILuaGetLuaVM(NULL);
+	for(int i = 0; pGlobalAPI[i].name; i++)
+	{
+		lua_register(luaState, pGlobalAPI[i].name, pGlobalAPI[i].func);
+	}
 }

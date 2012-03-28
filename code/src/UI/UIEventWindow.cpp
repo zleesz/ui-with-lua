@@ -50,7 +50,7 @@ BOOL CUIEventWindow::ParserEvent(LPXMLDOMNode pNode)
 	return TRUE;
 }
 
-LRESULT CUIEventWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWindow::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[1];
@@ -62,7 +62,7 @@ LRESULT CUIEventWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnClose(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWindow::OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[1];
@@ -81,14 +81,14 @@ LRESULT CUIEventWindow::OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
 	avarParams[1].vt = VT_I2;
-	avarParams[1].boolVal = wParam;
+	avarParams[1].boolVal = (VARIANT_BOOL)wParam;
 
 	UIDISPPARAMS params = { avarParams, "OnShowWindow", 2, 0 };
 	DispatchListener(params);
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnMove(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWindow::OnMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[3];
@@ -102,7 +102,7 @@ LRESULT CUIEventWindow::OnMove(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnMoving(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWindow::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[5];
@@ -125,7 +125,7 @@ LRESULT CUIEventWindow::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL
 	CComVariant avarParams[4];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
-	avarParams[1] = wParam;
+	avarParams[1] = (LONG)wParam;
 	avarParams[2] = (int)(short) LOWORD(lParam);
 	avarParams[3] = (int)(short) HIWORD(lParam);
 
@@ -134,14 +134,14 @@ LRESULT CUIEventWindow::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnEnableChange(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWindow::OnEnableChange(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[2];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
 	avarParams[1].vt = VT_I2;
-	avarParams[1].boolVal = wParam;
+	avarParams[1].boolVal = (VARIANT_BOOL)wParam;
 
 	UIDISPPARAMS params = { avarParams, "OnEnableChange", 2, 0 };
 	DispatchListener(params);
@@ -158,7 +158,7 @@ LRESULT CUIEventWindow::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam
 	avarParams[1].boolVal = VARIANT_TRUE;
 	if(wParam != NULL)
 	{
-		avarParams[2] = wParam;
+		avarParams[2] = (LONG)(LONG_PTR)wParam;
 	}
 
 	UIDISPPARAMS params = { avarParams, "OnFocusChange", 3, 0 };
@@ -176,7 +176,7 @@ LRESULT CUIEventWindow::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPara
 	avarParams[1].boolVal = VARIANT_FALSE;
 	if(wParam != NULL)
 	{
-		avarParams[2] = wParam;
+		avarParams[2] = (LONG)(LONG_PTR)wParam;
 	}
 
 	UIDISPPARAMS params = { avarParams, "OnFocusChange", 3, 0 };
@@ -188,7 +188,7 @@ LRESULT CUIEventWindow::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 {
 	LOG_AUTO();
 	lua_State* L = UILuaGetLuaVM(NULL);
-	for(int i = 0; i < m_vecFilter.size(); i++)
+	for(int i = 0; i < (int)m_vecFilter.size(); i++)
 	{
 		UILuaPushClassObj(L, (void*)m_pBindWnd);
 		lua_pushinteger(L, uMsg);

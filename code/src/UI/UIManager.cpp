@@ -57,7 +57,7 @@ STDMETHODIMP CUIManager::LoadSkin(BSTR bstrPath)
 
 	if(strOnload.length() > 0 && ::PathFileExistsA(strOnload.c_str()))
 	{
-		lua_State* luaState = UILuaGetLuaVM(NULL);
+		//lua_State* luaState = UILuaGetLuaVM(NULL);
 		int b = UILuaDoFile(strOnload.c_str(), NULL);
 		ATLASSERT(b == 1);
 	}
