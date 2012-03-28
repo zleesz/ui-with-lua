@@ -50,27 +50,26 @@ const std::string& CUIXmlParser::SetSkinPath(CComBSTR bstrPath)
 	Util::BSTRToString(bstrPath, m_strPath);
 	BOOL bValid = PreCheckSkinValid();
 	ATLASSERT(bValid);
-	if(!bValid)
+	if(bValid)
 	{
-		return FALSE;
-	}
-	CXmlParser xmlParser;
-	LPXMLDOMNode pNode = NULL;
-	bRet = xmlParser.SetXmlPath(m_package.strPackagePath, pNode);
-	if(bRet)
-	{
-		ParserSkinXml(pNode);
-		bRet = CheckSkinValid();
-		ATLASSERT(bRet && "invalid skin package!");
+		CXmlParser xmlParser;
+		LPXMLDOMNode pNode = NULL;
+		bRet = xmlParser.SetXmlPath(m_package.strPackagePath, pNode);
 		if(bRet)
 		{
-			// 解析资源xml...
-			CResXmlParser resParser;
-			bRet = resParser.SetResPath(m_package.strResPath);
+			ParserSkinXml(pNode);
+			bRet = CheckSkinValid();
+			ATLASSERT(bRet && "invalid skin package!");
 			if(bRet)
 			{
-				CCodeXmlParser codeParser;
-				bRet = codeParser.SetCodePath(m_package.strCodePath);
+				// 解析资源xml...
+				CResXmlParser resParser;
+				bRet = resParser.SetResPath(m_package.strResPath);
+				if(bRet)
+				{
+					CCodeXmlParser codeParser;
+					bRet = codeParser.SetCodePath(m_package.strCodePath);
+				}
 			}
 		}
 	}

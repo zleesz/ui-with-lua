@@ -125,9 +125,9 @@ void CUIColor::GetHSLValue(UINT* puHue, UINT* puSat, UINT* puLum)
 	{
 		s = (maxVal-minVal)/(2 - (maxVal+minVal)); //(maxVal-minVal > 0)?
 	}
-	*puHue = (h > 360) ? 360 : ((h < 0) ? 0 : h);
-	*puSat = ((s > 1) ? 1 : ((s < 0) ? 0 : s)) * 100;
-	*puLum = ((l > 1) ? 1 : ((l < 0) ? 0 : l)) * 100;
+	*puHue = (UINT)((h > 360) ? 360 : ((h < 0) ? 0 : h));
+	*puSat = (UINT)(((s > 1) ? 1 : ((s < 0) ? 0 : s)) * 100);
+	*puLum = (UINT)(((l > 1) ? 1 : ((l < 0) ? 0 : l)) * 100);
 }
 
 void CUIColor::SetRBGAValue()

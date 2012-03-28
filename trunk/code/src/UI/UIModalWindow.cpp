@@ -28,13 +28,13 @@ BOOL CUIModalWindow::Render(CDCHandle dc)
 
 DWORD CUIModalWindow::GetStyle()
 {
-	DWORD dwStyle;
+	DWORD dwStyle = 0;
 	return dwStyle;
 }
 
 DWORD CUIModalWindow::GetStyleEx()
 {
-	DWORD dwStyle;
+	DWORD dwStyle = 0;
 	return dwStyle;
 }
 

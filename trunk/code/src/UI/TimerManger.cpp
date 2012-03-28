@@ -43,7 +43,7 @@ int CUITimerManger::_SetTimer(lua_State* L)
 	pThis->m_lnTimerID++;
 	TimerData td;
 	td.lnId = pThis->m_lnTimerID;
-	td.lnElapse = lua_tointeger(L, top >= 3 ? 3 : 2);
+	td.lnElapse = (ULONG)lua_tointeger(L, top >= 3 ? 3 : 2);
 	lua_pushvalue(L, top >= 3 ? 2 : 1);
 	td.nFuncIndex = luaL_ref(L, LUA_REGISTRYINDEX);
 	pThis->SetTimer(td.lnId, td.lnElapse, NULL);
@@ -69,7 +69,7 @@ int CUITimerManger::_SetOnceTimer(lua_State* L)
 	TimerData td;
 	td.bOnce = TRUE;
 	td.lnId = pThis->m_lnTimerID;
-	td.lnElapse = lua_tointeger(L, top >= 3 ? 3 : 2);
+	td.lnElapse = (ULONG)lua_tointeger(L, top >= 3 ? 3 : 2);
 	lua_pushvalue(L, top >= 3 ? 2 : 1);
 	td.nFuncIndex = luaL_ref(L, LUA_REGISTRYINDEX);
 	pThis->SetTimer(td.lnId, td.lnElapse, NULL);
@@ -140,7 +140,7 @@ LRESULT CUITimerManger::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 		m_mapID2TimerData.erase(it);
 	}
 
-	const char* szName = GetRigisterClassName();
+	//const char* szName = GetRigisterClassName();
 	lua_State* luaState = UILuaGetLuaVM(NULL);
 	UILuaPushGlobalObj(luaState, GetRigisterClassName());
 	lua_pushinteger(luaState, lnID);

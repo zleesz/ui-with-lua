@@ -71,7 +71,7 @@ int CUIImage::SetStretch(lua_State* L)
 {
 	CUIImage* pThis = (CUIImage*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
-	pThis->m_bStretch = (bool)lua_toboolean(L, -2);
+	pThis->m_bStretch = (BOOL)lua_toboolean(L, -2);
 	return 0;
 }
 
@@ -92,8 +92,8 @@ int CUIImage::SetVisible(lua_State* L)
 {
 	CUIImage* pThis = (CUIImage*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
-	bool bVisible = (bool)lua_toboolean(L, -2);
-	pThis->SetAttr("visible", "true");
+	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
+	pThis->SetAttr("visible", bVisible ? "true" : "false");
 	return 0;
 }
 

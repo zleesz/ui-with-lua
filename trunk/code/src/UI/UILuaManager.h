@@ -29,6 +29,7 @@ public:
 	BOOL CallLuaFuncByIndex(int nIndex, int nArgs, int nRet, const char* szVMName);
 	BOOL CallLuaFunc(const std::string& strPath, const std::string& strFuncName, int nArgs, int nRet, const char* szVMName);
 	void RegisterLuaFunc(const UILuaGlobalAPI& globalAPI);
+	void RegisterLuaFuncs(const UILuaGlobalAPI* pGlobalAPI);
 public:
 	static CUILuaManager& GetInstance();
 public:

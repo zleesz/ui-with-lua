@@ -220,7 +220,7 @@ int CUIFrameWindow::SetVisible(lua_State* L)
 int CUIFrameWindow::Show(lua_State* L)
 {
 	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
-	int nCmd = lua_tointeger(L, -2);
+	int nCmd = (int)lua_tointeger(L, -2);
 	pThis->ShowWindow(nCmd);
 	return 0;
 }

@@ -89,7 +89,7 @@ void* CUIEventBase::GetBindWnd()
 void CUIEventBase::PushEventParams(UIDISPPARAMS& params)
 {
 	lua_State* L = UILuaGetLuaVM(NULL);
-	for(int i = 0; i < params.nArgs; i++)
+	for(int i = 0; i < (int)params.nArgs; i++)
 	{
 		Util::lua::PushVariantToLuaStack(L, &params.rgvarg[i]);
 	}
