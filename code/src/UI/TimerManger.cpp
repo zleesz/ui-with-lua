@@ -133,16 +133,17 @@ LRESULT CUITimerManger::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 	{
 		return 0;
 	}
-
-	const char* szName = GetRigisterClassName();
-	lua_State* luaState = UILuaGetLuaVM(NULL);
-	UILuaPushGlobalObj(luaState, GetRigisterClassName());
-	lua_pushinteger(luaState, lnID);
-	CUILuaManager::GetInstance().CallLuaFuncByIndex(it->second.nFuncIndex, 2, 0, NULL);
+	int nFuncIndex = it->second.nFuncIndex;
 	if(it->second.bOnce)
 	{
 		KillTimer(lnID);
 		m_mapID2TimerData.erase(it);
 	}
+
+	const char* szName = GetRigisterClassName();
+	lua_State* luaState = UILuaGetLuaVM(NULL);
+	UILuaPushGlobalObj(luaState, GetRigisterClassName());
+	lua_pushinteger(luaState, lnID);
+	CUILuaManager::GetInstance().CallLuaFuncByIndex(nFuncIndex, 2, 0, NULL);
 	return 0;
 }

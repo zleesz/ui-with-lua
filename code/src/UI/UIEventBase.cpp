@@ -91,6 +91,6 @@ void CUIEventBase::PushEventParams(UIDISPPARAMS& params)
 	lua_State* L = UILuaGetLuaVM(NULL);
 	for(int i = 0; i < params.nArgs; i++)
 	{
-		Util::PushVariantToLuaStack(L, &params.rgvarg[i]);
+		Util::lua::PushVariantToLuaStack(L, &params.rgvarg[i]);
 	}
 }
