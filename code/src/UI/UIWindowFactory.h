@@ -24,3 +24,5 @@ public:
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_SINGLETON_OBJECT(CUIWindowFactory, UI.WindowFactory);
 };
+
+#define UIWindowFactoryInstance CUIWindowFactory::GetInstance()

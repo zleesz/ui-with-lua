@@ -186,7 +186,7 @@ LRESULT CUIEventWindow::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPara
 
 LRESULT CUIEventWindow::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
-	LOG_AUTO();
+	//LOG_AUTO();
 	lua_State* L = UILuaGetLuaVM(NULL);
 	for(int i = 0; i < (int)m_vecFilter.size(); i++)
 	{
@@ -194,7 +194,7 @@ LRESULT CUIEventWindow::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 		lua_pushinteger(L, uMsg);
 		lua_pushinteger(L, wParam);
 		lua_pushinteger(L, lParam);
-		CUILuaManager::GetInstance().CallLuaFuncByIndex(m_vecFilter[i].nFunc, 4, 0, NULL);
+		UILuaManagerInstance.CallLuaFuncByIndex(m_vecFilter[i].nFunc, 4, 0, NULL);
 	}
 	return 0;
 }

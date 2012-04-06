@@ -35,3 +35,4 @@ public:
 public:
 	LOG_CLS_DEC();
 };
+#define UILuaManagerInstance CUILuaManager::GetInstance()

@@ -38,3 +38,5 @@ public:
 public:
 	static UILuaVMManager& GetInstance();
 };
+
+#define UILuaVMManagerInstance UILuaVMManager::GetInstance()

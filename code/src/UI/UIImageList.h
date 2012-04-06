@@ -2,32 +2,36 @@
 #include "UIResBase.h"
 #include "UIBitmap.h"
 
-class CUIImageList :
+class CUIImagelist :
 	public CUIResBase
 {
 private:
-	CUIImageList(void);
+	CUIImagelist(void) {};
 public:
-	CUIImageList(LPXMLDOMNode pNode, const char* pszPath);
-	virtual ~CUIImageList(void);
+	CUIImagelist(LPXMLDOMNode pNode, const char* pszPath);
+	virtual ~CUIImagelist(void);
+private:
+	CxImage* GetImage();
+	void CropBitmap();
+	void CropSeperatorBitmap();
+	void CropBlockBitmap();
 public:
 	virtual ResourceType GetType();
 	static int GetID(lua_State* L);
+	CxImage* GetImageByIndex(int nIndex);
 private:
 	typedef std::vector<CUIBitmap*> BitmapVec, *LPBitmapVec;
-	typedef struct tagImageListData
-	{
-		std::string strPath;	// file path
-		UINT		uBlockSize;		// bitmap block size
-		BOOL		bSeperator;	// has seperator
-		BOOL		bVertical;	// vertical(TRUE) or hirizon(FALSE)
-		LPBitmapVec vecBitmap;	// vector of all bitmap
-		tagImageListData() : uBlockSize(0), bSeperator(FALSE), bVertical(FALSE), vecBitmap(NULL) {}
-	}ImageListData, *LPImageListData;
-	ImageListData	m_ImagelistData;
+	typedef std::vector<CxImage*> ImageVec, *LPImageVec;
+	std::string m_strPath;		// file path
+	UINT		m_uBlockSize;	// bitmap block size
+	BOOL		m_bSeparator;	// has separator
+	BOOL		m_bVertical;	// vertical(TRUE) or horizon(FALSE)
+	BitmapVec	m_VecBitmap;	// vector of all bitmap
+	ImageVec	m_VecImage;	// vector of all image
+	CxImage*	m_pImage;		// raw image
 public:
-	BEGIN_LUA_CALL_MAP(CUIImageList)
+	BEGIN_LUA_CALL_MAP(CUIImagelist)
 		LUA_CALL_ENTRY(GetID)
 	END_LUA_CALL_MAP
-	LUA_CALL_REGISTER_OBJECT(CUIImageList, UI.ImageList);
+	LUA_CALL_REGISTER_OBJECT(CUIImagelist, UI.ImageList);
 };

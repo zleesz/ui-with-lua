@@ -11,7 +11,7 @@ end
 function bbbb()
 	local windowFactory = UILuaGetObject("UI.WindowFactory")
 	mainwnd = windowFactory:Create("mainwnd")
-	mainwnd:AddInputFilter(Filter)
+	--mainwnd:AddInputFilter(Filter)
 	--[[
 	local tree = mainwnd:GetTreeContainer()
 	if tree then

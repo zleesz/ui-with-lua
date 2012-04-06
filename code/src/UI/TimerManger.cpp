@@ -14,7 +14,7 @@ CUITimerManger::CUITimerManger(void) : m_lnTimerID(0)
 	};
 	for (int i = 0; UILuaUtilFunc[i].name; i++)
 	{
-		CUILuaManager::GetInstance().RegisterLuaFunc(UILuaUtilFunc[i]);
+		UILuaManagerInstance.RegisterLuaFunc(UILuaUtilFunc[i]);
 	}
 }
 
@@ -32,7 +32,7 @@ int CUITimerManger::_SetTimer(lua_State* L)
 	ATLASSERT(top >= 2);
 	if(top < 2)
 		return 0;
-	CUITimerManger* pThis = CUITimerManger::GetInstance();
+	CUITimerManger* pThis = UITimerManagerInstance;
 	if(pThis == NULL)
 		return 0;
 	if(!lua_isfunction(L, top >= 3 ? 2 : 1))
@@ -57,7 +57,7 @@ int CUITimerManger::_SetOnceTimer(lua_State* L)
 	ATLASSERT(top >= 2);
 	if(top < 2)
 		return 0;
-	CUITimerManger* pThis = CUITimerManger::GetInstance();
+	CUITimerManger* pThis = UITimerManagerInstance;
 	if(pThis == NULL)
 		return 0;
 	if(!lua_isfunction(L, top >= 3 ? 2 : 1))
@@ -83,7 +83,7 @@ int CUITimerManger::AsynCall(lua_State* L)
 	ATLASSERT(top >= 1);
 	if(top < 1)
 		return 0;
-	CUITimerManger* pThis = CUITimerManger::GetInstance();
+	CUITimerManger* pThis = UITimerManagerInstance;
 	if(pThis == NULL)
 		return 0;
 	if(!lua_isfunction(L, -1))
@@ -109,7 +109,7 @@ int CUITimerManger::_KillTimer(lua_State* L)
 	ATLASSERT(top >= 1);
 	if(top < 1)
 		return 0;
-	CUITimerManger* pThis = CUITimerManger::GetInstance();
+	CUITimerManger* pThis = UITimerManagerInstance;
 	if(pThis == NULL)
 		return 0;
 	ULONG lnID = (ULONG)lua_tointeger(L, top >= 2 ? 2 : 1);
@@ -144,6 +144,6 @@ LRESULT CUITimerManger::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 	lua_State* luaState = UILuaGetLuaVM(NULL);
 	UILuaPushGlobalObj(luaState, GetRigisterClassName());
 	lua_pushinteger(luaState, lnID);
-	CUILuaManager::GetInstance().CallLuaFuncByIndex(nFuncIndex, 2, 0, NULL);
+	UILuaManagerInstance.CallLuaFuncByIndex(nFuncIndex, 2, 0, NULL);
 	return 0;
 }

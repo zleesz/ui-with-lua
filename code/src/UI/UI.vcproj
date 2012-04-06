@@ -414,11 +414,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\UIImageList.cpp"
+				RelativePath=".\UIImagelist.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\UIImageList.h"
+				RelativePath=".\UIImagelist.h"
 				>
 			</File>
 			<File

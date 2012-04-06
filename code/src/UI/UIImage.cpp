@@ -77,14 +77,9 @@ int CUIImage::SetStretch(lua_State* L)
 
 int CUIImage::GetVisible(lua_State* L)
 {
-	CUIImage* pThis = (CUIImage*) lua_touserdata(L, -1);
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
-	CComVariant v;
-	pThis->GetAttr("visible", &v);
-	if(v.vt == VT_I2 && v.boolVal == VARIANT_FALSE)
-		lua_pushboolean(L, 0);
-	else
-		lua_pushboolean(L, 1);
+	lua_pushboolean(L, pThis->GetVisible());
 	return 1;
 }
 
@@ -97,11 +92,19 @@ int CUIImage::SetVisible(lua_State* L)
 	return 0;
 }
 
+int CUIImage::GetEnable(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	lua_pushboolean(L, pThis->GetEnable());
+	return 1;
+}
+
 int CUIImage::GetImage(lua_State* L)
 {
 	CUIImage* pThis = (CUIImage*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
-	CUIBitmap* pUIBitmap = CUIResFactory::GetInstance()->GetBitmap(pThis->m_strImageID.c_str());
+	CUIBitmap* pUIBitmap = UIResFactoryInstance->GetBitmap(pThis->m_strImageID.c_str());
 
 	UILuaPushClassObj(L, pUIBitmap);
 	return 1;
@@ -114,22 +117,13 @@ void CUIImage::SetAttr(std::string strName, std::string strValue)
 
 void CUIImage::Render(CDCHandle dc)
 {
-	CUIBitmap* pUIBitmap = CUIResFactory::GetInstance()->GetBitmap(m_strImageID.c_str());
+	CUIBitmap* pUIBitmap = UIResFactoryInstance->GetBitmap(m_strImageID.c_str());
 	if(NULL == pUIBitmap)
 	{
 		ATLASSERT(FALSE);
 		return ;
 	}
-	RECT rc = {0};
-	CComVariant vLeft, vTop, vWidth, vHeight;
-	GetAttr("left", &vLeft);
-	GetAttr("top", &vTop);
-	GetAttr("width", &vWidth);
-	GetAttr("height", &vHeight);
-	rc.left = vLeft.intVal;
-	rc.top = vTop.intVal;
-	rc.right = vLeft.intVal + vWidth.intVal;
-	rc.bottom = vTop.intVal + vHeight.intVal;
+	const RECT rc = GetObjPos();
 	pUIBitmap->Render(dc.m_hDC, rc, m_bStretch);
 }
 
@@ -147,7 +141,8 @@ void CUIImage::OnInitControl()
 
 }
 
-BOOL CUIImage::OnHitTest(int x, int y)
+void CUIImage::OnDetroy()
 {
-	return FALSE;
+
 }
+

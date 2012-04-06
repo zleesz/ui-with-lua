@@ -36,3 +36,5 @@ public:
 public:
 	LOG_CLS_DEC();
 };
+
+#define UIluaClassFactoryInstance UILuaClassFactory::GetInstance()
