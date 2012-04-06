@@ -43,7 +43,7 @@ BOOL CResXmlParser::ParserResDOM(LPXMLDOMNode pNode, const char* pszPath)
 		LPXMLVecNodes pVecNodes = it->second->pVecNode;
 		for(int i = 0; i < (int)pVecNodes->size(); i++)
 		{
-			CUIResFactory::GetInstance()->AddResElement((*pVecNodes)[i], pszPath);
+			UIResFactoryInstance->AddResElement((*pVecNodes)[i], pszPath);
 		}
 	}
 	return TRUE;

@@ -11,20 +11,57 @@ typedef enum enumBitmapType
 	BT_NINEINONE
 } BitmapType;
 
+typedef enum enumBitmapLoadType
+{
+	BLT_FILE = 1,
+	BLT_IMAGELIST,
+} BitmapLoadType;
+
+class CUIImagelist;
+class CUIBitmapLoadBase
+{
+public:
+	virtual CxImage* GetImage() = 0;
+	virtual BitmapLoadType GetType() = 0;
+};
+
+class CUIBitmapFile
+	: public CUIBitmapLoadBase
+{
+public:
+	CUIBitmapFile() : m_pImage(NULL) {}
+public:
+	std::string m_strPath;
+	CxImage* m_pImage;
+public:
+	void SetPath(const std::string& strPath) { m_strPath = strPath; }
+	virtual CxImage* GetImage();
+	virtual BitmapLoadType GetType() { return BLT_FILE; }
+};
+
+class CUIBitmapImagelist
+	: public CUIBitmapLoadBase
+{
+public:
+	CUIBitmapImagelist() : m_nIndex(0), m_pImagelist(NULL) {}
+public:
+	CUIImagelist* m_pImagelist;
+	int m_nIndex;
+public:
+	void SetImagelist(CUIImagelist* pImagelist, int nIndex);
+	virtual CxImage* GetImage();
+	virtual BitmapLoadType GetType() { return BLT_IMAGELIST; }
+};
+
 class CUIBitmapBase
 {
 public:
-	CUIBitmapBase() : m_pImage(NULL) {}
+	CUIBitmapBase() : m_pBitmapLoad(NULL) {}
 	~CUIBitmapBase();
 public:
-	CxImage* m_pImage;
-	std::string m_strPath;
+	CUIBitmapLoadBase* m_pBitmapLoad;
 	typedef std::vector<CxImage*> ImageVec, LPImageVec;
 	ImageVec m_vecImage;
-public:
-	virtual void SetPath(const std::string& strPath) { m_strPath = strPath; }
-	virtual void LoadImage();
-	virtual CxImage* GetImage();
 public:
 	virtual void CropBitmap() = 0;
 	virtual void Render(HDC dc, const RECT& rc, BOOL bStretch) = 0;
@@ -86,6 +123,7 @@ private:
 	CUIBitmap(void);
 public:
 	CUIBitmap(LPXMLDOMNode pNode, const char* pszPath);
+	CUIBitmap(LPXMLDOMNode pNode, CUIImagelist* pImagelist);
 	virtual ~CUIBitmap(void);
 private:
 	CUIBitmapBase* m_pBitmap;

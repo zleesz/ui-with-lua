@@ -38,7 +38,7 @@ BOOL CCodeXmlParser::ParserCodeDOM(const std::string& strPath, LPXMLDOMNode pNod
 	{
 		if(it->first == "hostwnd")
 		{
-			CUIWindowFactory::GetInstance()->ParserWindowDOM(strPath, it->second);
+			UIWindowFactoryInstance->ParserWindowDOM(strPath, it->second);
 		}
 	}
 	return TRUE;
@@ -95,7 +95,7 @@ BOOL CCodeXmlParser::SetCodePath(std::string strPath)
 /*
 void CCodeXmlParser::ElementStart(void *userData, const std::string& strName, XMLAttrMap& mAttr, const XMLNodeVector& vecNode)
 {
-	CUIWindowFactory::GetInstance()->ElementStart(strName, mAttr, vecNode);
+	UIWindowFactoryInstance->ElementStart(strName, mAttr, vecNode);
 }
 
 void CCodeXmlParser::ElementEnd(void *userData, const std::string& strName, const XMLNodeVector& vecNode)
@@ -108,6 +108,6 @@ void CCodeXmlParser::ElementEnd(void *userData, const std::string& strName, cons
 void CCodeXmlParser::CharacterData(void *userData, const std::string& strName, const std::string& strUData, const XMLNodeVector& vecNode)
 {
 	UNREFERENCED_PARAMETER(userData);
-	CUIWindowFactory::GetInstance()->CharacterData(strName, strUData, vecNode);
+	UIWindowFactoryInstance->CharacterData(strName, strUData, vecNode);
 }
 */

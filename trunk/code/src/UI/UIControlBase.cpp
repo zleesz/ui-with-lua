@@ -42,7 +42,8 @@ void CUIControlBase::SetAttr(std::string strName, std::string strValue)
 	if(strName == "left" ||
 		strName == "top" ||
 		strName == "width" ||
-		strName == "height")
+		strName == "height" ||
+		strName == "zorder")
 	{
 		CComVariant v(atoi(strValue.c_str()));
 		v.Detach(&m_mapAttr[strName]);
@@ -84,7 +85,79 @@ void CUIControlBase::SetID(std::string strID)
 	m_strID = strID;
 }
 
-const CUITreeContainer* CUIControlBase::GetOwnerTree()
+CUITreeContainer* CUIControlBase::GetOwnerTree()
 {
 	return m_pTree;
+}
+
+ULONG CUIControlBase::GetZorder()
+{
+	CComVariant v;
+	GetAttr("zorder", &v);
+	if(v.vt != VT_I4)
+		return 0;
+	return v.ulVal;
+}
+
+const RECT& CUIControlBase::GetObjPos()
+{
+	RECT rc = {};
+	CComVariant vLeft, vTop, vWidth, vHeight;
+	GetAttr("left", &vLeft);
+	GetAttr("top", &vTop);
+	GetAttr("width", &vWidth);
+	GetAttr("height", &vHeight);
+	if(vLeft.vt != VT_I4)
+		rc.left = 0;
+	else
+		rc.left = vLeft.intVal;
+	if(vTop.vt != VT_I4)
+		rc.top = 0;
+	else
+		rc.top = vTop.intVal;
+	if(vWidth.vt != VT_I4)
+		rc.right = 0;
+	else
+		rc.right = rc.left + vWidth.intVal;
+	if(vHeight.vt != VT_I4)
+		rc.bottom = 0;
+	else
+		rc.bottom = rc.top + vHeight.intVal;
+	return rc;
+}
+
+BOOL CUIControlBase::OnHitTest(int x, int y)
+{
+	BOOL bVisible = GetVisible();
+	if(!bVisible)
+		return FALSE;
+	const RECT rc = GetObjPos();
+	if(x > rc.left && x < rc.bottom
+		&& y > rc.top && y < rc.bottom)
+		return TRUE;
+	return FALSE;
+}
+
+BOOL CUIControlBase::GetVisible()
+{
+	BOOL bVisible = TRUE;
+	CComVariant vVisible;
+	GetAttr("visible", &vVisible);
+	if(vVisible.vt == VT_I2)
+	{
+		bVisible = vVisible.boolVal == VARIANT_TRUE ? TRUE : FALSE;
+	}
+	return bVisible;
+}
+
+BOOL CUIControlBase::GetEnable()
+{
+	BOOL bEnable = TRUE;
+	CComVariant vEnable;
+	GetAttr("enable", &vEnable);
+	if(vEnable.vt == VT_I2)
+	{
+		bEnable = vEnable.boolVal == VARIANT_TRUE ? TRUE : FALSE;
+	}
+	return bEnable;
 }

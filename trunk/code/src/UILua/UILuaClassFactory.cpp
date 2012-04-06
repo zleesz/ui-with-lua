@@ -157,7 +157,7 @@ LUA_API void UILuaRegisterClass(UILuaObject theObj, const char* szVMName)
 	assert(luaState);
 	if(luaState)
 	{
-		UILuaClassFactory::GetInstance().RegisterClass(luaState, theObj);
+		UIluaClassFactoryInstance.RegisterClass(luaState, theObj);
 	}
 }
 
@@ -167,7 +167,7 @@ LUA_API void UILuaUnRegisterClass(void* obj, const char* szVMName)
 	assert(luaState);
 	if(luaState)
 	{
-		UILuaClassFactory::GetInstance().UnRegisterClass(luaState, obj);
+		UIluaClassFactoryInstance.UnRegisterClass(luaState, obj);
 	}
 }
 
@@ -176,6 +176,6 @@ LUA_API void UILuaPushClassObj(lua_State* luaState, const void* obj)
 	assert(luaState);
 	if(luaState)
 	{
-		UILuaClassFactory::GetInstance().PushClassObj(luaState, obj);
+		UIluaClassFactoryInstance.PushClassObj(luaState, obj);
 	}
 }

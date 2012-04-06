@@ -52,7 +52,7 @@ void CUIEventBase::DispatchListener(UIDISPPARAMS& params)
 		for(VecEvent::size_type st = 0; st < pVecEvent->size(); st ++)
 		{
 			LPEventNode pEventNode = (*pVecEvent)[st];
-			CUILuaManager::GetInstance().CallLuaFunc(pEventNode->strPath, pEventNode->strFuncName, params.nArgs, params.nRet, NULL);
+			UILuaManagerInstance.CallLuaFunc(pEventNode->strPath, pEventNode->strFuncName, params.nArgs, params.nRet, NULL);
 		}
 	}
 }
@@ -73,9 +73,9 @@ BOOL CUIEventBase::OnBindEvent(const std::string& strPath)
 			char szLuaPath[MAX_PATH] = {0};
 			LPEventNode pEventNode = (*pVecEvent)[st];
 			::PathCombineA(szLuaPath, szPath, pEventNode->strPath.c_str());
-			CUILuaManager::GetInstance().DoXmlLuaFile(szLuaPath, NULL);
+			UILuaManagerInstance.DoXmlLuaFile(szLuaPath, NULL);
 			pEventNode->strPath = szLuaPath;
-			pEventNode->nFuncIndex = CUILuaManager::GetInstance().GetLuaFuncIndex(szLuaPath, pEventNode->strFuncName, NULL);
+			pEventNode->nFuncIndex = UILuaManagerInstance.GetLuaFuncIndex(szLuaPath, pEventNode->strFuncName, NULL);
 		}
 	}
 	return TRUE;

@@ -170,7 +170,7 @@ LUA_API void UILuaRegisterGlobalObj(UILuaObject theObj, const char* szVMName)
 	assert(luaState);
 	if(luaState)
 	{
-		UILuaGlobalFactory::GetInstance().RegisterGlobal(luaState, theObj);
+		UIluaGlobalFactoryInstance.RegisterGlobal(luaState, theObj);
 	}
 }
 
@@ -179,6 +179,6 @@ LUA_API void UILuaPushGlobalObj(lua_State* luaState, const char* szName)
 	assert(luaState);
 	if(luaState)
 	{
-		UILuaGlobalFactory::GetInstance().PushGlobalObj(luaState, szName);
+		UIluaGlobalFactoryInstance.PushGlobalObj(luaState, szName);
 	}
 }

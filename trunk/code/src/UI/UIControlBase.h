@@ -34,17 +34,31 @@ public:
 	virtual ControlType GetType() = 0;
 	virtual void Render(CDCHandle dc) = 0;
 	virtual void OnInitControl() = 0;
-	virtual BOOL OnHitTest(int x, int y) = 0;
-	/*virtual void OnLButtonDown(int x, int y) = 0;
+	virtual void OnDetroy() = 0;
+	virtual void OnLButtonDown(int x, int y) = 0;
 	virtual void OnLButtonUp(int x, int y) = 0;
 	virtual void OnLButtonDbClick(int x, int y) = 0;
 	virtual void OnMouseMove(int x, int y) = 0;
 	virtual void OnMouseLeave(int x, int y) = 0;
-	virtual void OnMouseWheel(int x, int y) = 0;*/
+	virtual void OnMouseWheel(int x, int y) = 0;
+public:
 	const std::string& GetID();
 	void SetAttr(std::string strName, std::string strValue);
 	void GetAttr(std::string strName, VARIANT* v);
-	const CUITreeContainer* GetOwnerTree();
-public:
-	void GetZorder(std::string strID);
+	CUITreeContainer* GetOwnerTree();
+	ULONG GetZorder();
+	BOOL OnHitTest(int x, int y);
+	BOOL GetVisible();
+	BOOL GetEnable();
+	const RECT& GetObjPos();
 };
+
+#define UICONTROL_DEFAULT_MOUSE_METHOD(method) \
+	virtual void method(int x, int y) { \
+		UNREFERENCED_PARAMETER(x); \
+		UNREFERENCED_PARAMETER(y); \
+	}
+#define UICONTROL_GETTYPE_METHOD(x) \
+	virtual ControlType GetType() {\
+		return x; \
+	}

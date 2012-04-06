@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include ".\uibitmap.h"
+#include "UIImagelist.h"
 
 CUIBitmap::CUIBitmap(void)
 {
@@ -43,7 +44,51 @@ CUIBitmap::CUIBitmap(LPXMLDOMNode pNode, const char* pszPath)
 	{
 		m_pBitmap = new CUIBitmapNineInOne;
 	}
-	m_pBitmap->SetPath(szPath);
+	else
+	{
+		m_pBitmap = new CUIBitmapDefault;
+	}
+	m_pBitmap->m_pBitmapLoad = new CUIBitmapFile;
+	CUIBitmapFile* pBitmapLoadFile = (CUIBitmapFile*)m_pBitmap->m_pBitmapLoad;
+	pBitmapLoadFile->SetPath(szPath);
+}
+
+CUIBitmap::CUIBitmap(LPXMLDOMNode pNode, CUIImagelist* pImagelist)
+	: CUIResBase(pNode), m_pBitmap(NULL)
+{
+	RegisterClass(this);
+	if(pNode == NULL)
+		return;
+	LPXMLAttrMap pMapAttr = pNode->pMapAttr;
+	if(pMapAttr == NULL)
+		return;
+	std::string strType = (*pMapAttr)["type"];
+
+	if(strType == "ThreeInOneH")
+	{
+		m_pBitmap = new CUIBitmapThreeInOneH;
+	}
+	else if(strType == "ThreeInOneV")
+	{
+		m_pBitmap = new CUIBitmapThreeInOneV;
+	}
+	else if(strType == "NineInOne")
+	{
+		m_pBitmap = new CUIBitmapNineInOne;
+	}
+	else
+	{
+		m_pBitmap = new CUIBitmapDefault;
+	}
+	std::string strIndex = (*pMapAttr)["index"];
+	int nIndex = 0;
+	if(strIndex.length() > 0)
+	{
+		nIndex = atoi(strIndex.c_str());
+	}
+	m_pBitmap->m_pBitmapLoad = new CUIBitmapImagelist;
+	CUIBitmapImagelist* pBitmapImagelist = (CUIBitmapImagelist*)m_pBitmap->m_pBitmapLoad;
+	pBitmapImagelist->SetImagelist(pImagelist, nIndex);
 }
 
 int CUIBitmap::GetID(lua_State* L)
@@ -56,10 +101,10 @@ int CUIBitmap::GetID(lua_State* L)
 
 CUIBitmapBase::~CUIBitmapBase()
 {
-	if(NULL != m_pImage)
+	if(NULL != m_pBitmapLoad)
 	{
-		delete m_pImage;
-		m_pImage = NULL;
+		delete m_pBitmapLoad;
+		m_pBitmapLoad = NULL;
 	}
 	int nSize = (int)m_vecImage.size();
 	if(nSize > 1)
@@ -73,24 +118,35 @@ CUIBitmapBase::~CUIBitmapBase()
 	m_vecImage.clear();
 }
 
-CxImage* CUIBitmapBase::GetImage()
+CxImage* CUIBitmapFile::GetImage()
 {
-	LoadImage();
+	if(m_pImage == NULL)
+	{
+		ATLASSERT(::PathFileExistsA(m_strPath.c_str()));
+		if(!::PathFileExistsA(m_strPath.c_str()))
+			return NULL;
+		CxImage* pImage = new CxImage;
+		m_pImage = pImage;
+		std::wstring wstrPath;
+		Util::StringToWideString(m_strPath.c_str(), wstrPath);
+		m_pImage->Load(wstrPath.c_str(), CXIMAGE_FORMAT_PNG);
+	}
 	return m_pImage;
 }
 
-void CUIBitmapBase::LoadImage()
+CxImage* CUIBitmapImagelist::GetImage()
 {
-	if(m_pImage != NULL)
-		return;
-	ATLASSERT(::PathFileExistsA(m_strPath.c_str()));
-	if(!::PathFileExistsA(m_strPath.c_str()))
-		return ;
-	CxImage* pImage = new CxImage;
-	m_pImage = pImage;
-	std::wstring wstrPath;
-	Util::StringToWideString(m_strPath.c_str(), wstrPath);
-	m_pImage->Load(wstrPath.c_str(), CXIMAGE_FORMAT_PNG);
+	ATLASSERT(m_pImagelist);
+	if(NULL == m_pImagelist)
+		return NULL;
+	CxImage* pImage = m_pImagelist->GetImageByIndex(m_nIndex);
+	return pImage;
+}
+
+void CUIBitmapImagelist::SetImagelist(CUIImagelist* pImagelist, int nIndex)
+{
+	 m_pImagelist = pImagelist;
+	 m_nIndex = nIndex;
 }
 
 void CUIBitmapDefault::CropBitmap()
@@ -98,7 +154,7 @@ void CUIBitmapDefault::CropBitmap()
 	if(m_vecImage.size() > 0)
 		return;
 
-	CxImage* pImage = GetImage();
+	CxImage* pImage = m_pBitmapLoad->GetImage();
 	m_vecImage.push_back(pImage);
 }
 
@@ -113,7 +169,7 @@ void CUIBitmapThreeInOneH::CropBitmap()
 	if(m_vecImage.size() > 0)
 		return;
 
-	CxImage* pImage = GetImage();
+	CxImage* pImage = m_pBitmapLoad->GetImage();
 	if(NULL == pImage)
 		return;
 	CImageTool::GetVLeftPos(pImage, m_nLeft1, m_nLeft2);
@@ -150,14 +206,14 @@ void CUIBitmapThreeInOneH::Render(HDC dc, const RECT& rc, BOOL bStretch)
 	}
 	else
 	{
-		lrc.bottom = m_pImage->GetHeight() + rc.top;
+		lrc.bottom = m_pBitmapLoad->GetImage()->GetHeight() + rc.top;
 	}
 	m_vecImage[0]->Draw(dc, lrc);
 	lrc.left = lrc.right;
-	lrc.right = rc.right - (m_pImage->GetWidth() - m_nLeft2) + 1;
+	lrc.right = rc.right - (m_pBitmapLoad->GetImage()->GetWidth() - m_nLeft2) + 1;
 	m_vecImage[1]->Draw(dc, lrc);
 	lrc.left = lrc.right;
-	lrc.right = lrc.left + (m_pImage->GetWidth() - m_nLeft2) - 1;
+	lrc.right = lrc.left + (m_pBitmapLoad->GetImage()->GetWidth() - m_nLeft2) - 1;
 	m_vecImage[2]->Draw(dc, lrc);
 }
 
@@ -178,7 +234,7 @@ void CUIBitmapNineInOne::CropBitmap()
 	if(m_vecImage.size() > 0)
 		return;
 
-	CxImage* pImage = GetImage();
+	CxImage* pImage = m_pBitmapLoad->GetImage();
 	if(NULL == pImage)
 		return;
 	CImageTool::GetVLeftPos(pImage, m_nLeft1, m_nLeft2);
@@ -255,22 +311,22 @@ void CUIBitmapNineInOne::Render(HDC dc, const RECT& rc, BOOL /*bStretch*/)
 	lrc.bottom = m_nTop1 + rc.top;
 	m_vecImage[0]->Draw(dc, lrc);
 	lrc.left = lrc.right;
-	lrc.right = rc.right - (m_pImage->GetWidth() - m_nLeft2) + 1;
+	lrc.right = rc.right - (m_pBitmapLoad->GetImage()->GetWidth() - m_nLeft2) + 1;
 	m_vecImage[1]->Draw(dc, lrc);
 	lrc.left = lrc.right;
-	lrc.right = lrc.left + (m_pImage->GetWidth() - m_nLeft2) - 1;
+	lrc.right = lrc.left + (m_pBitmapLoad->GetImage()->GetWidth() - m_nLeft2) - 1;
 	m_vecImage[2]->Draw(dc, lrc);
 
 	lrc.left = rc.left;
 	lrc.top = lrc.bottom;
 	lrc.right = m_nLeft1 + rc.left;
-	lrc.bottom = rc.bottom - (m_pImage->GetHeight() - m_nTop2) + 1;
+	lrc.bottom = rc.bottom - (m_pBitmapLoad->GetImage()->GetHeight() - m_nTop2) + 1;
 	m_vecImage[3]->Draw(dc, lrc);
 	lrc.left = lrc.right;
-	lrc.right = rc.right - (m_pImage->GetWidth() - m_nLeft2) + 1;
+	lrc.right = rc.right - (m_pBitmapLoad->GetImage()->GetWidth() - m_nLeft2) + 1;
 	m_vecImage[4]->Draw(dc, lrc);
 	lrc.left = lrc.right;
-	lrc.right = lrc.left + (m_pImage->GetWidth() - m_nLeft2) - 1;
+	lrc.right = lrc.left + (m_pBitmapLoad->GetImage()->GetWidth() - m_nLeft2) - 1;
 	m_vecImage[5]->Draw(dc, lrc);
 
 	lrc.left = rc.left;
@@ -279,10 +335,10 @@ void CUIBitmapNineInOne::Render(HDC dc, const RECT& rc, BOOL /*bStretch*/)
 	lrc.bottom = rc.bottom;
 	m_vecImage[6]->Draw(dc, lrc);
 	lrc.left = lrc.right;
-	lrc.right = rc.right - (m_pImage->GetWidth() - m_nLeft2) + 1;
+	lrc.right = rc.right - (m_pBitmapLoad->GetImage()->GetWidth() - m_nLeft2) + 1;
 	m_vecImage[7]->Draw(dc, lrc);
 	lrc.left = lrc.right;
-	lrc.right = lrc.left + (m_pImage->GetWidth() - m_nLeft2) - 1;
+	lrc.right = lrc.left + (m_pBitmapLoad->GetImage()->GetWidth() - m_nLeft2) - 1;
 	m_vecImage[8]->Draw(dc, lrc);
 }
 

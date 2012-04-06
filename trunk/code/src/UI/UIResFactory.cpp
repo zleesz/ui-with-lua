@@ -39,7 +39,7 @@ void CUIResFactory::AddResElement(LPXMLDOMNode pNode, const char* pszPath)
 	}
 	else if(pNode->strName == "imagelist")
 	{
-		pUIBase = new CUIImageList(pNode, pszPath);
+		pUIBase = new CUIImagelist(pNode, pszPath);
 	}
 	if(NULL != pUIBase)
 	{
@@ -67,6 +67,36 @@ void CUIResFactory::AddResElement(LPXMLDOMNode pNode, const char* pszPath)
 			ATLASSERT(FALSE);
 			delete pUIBase;
 			pUIBase = NULL;
+		}
+	}
+}
+
+void CUIResFactory::AddRes(CUIResBase* pRes)
+{
+	if(NULL != pRes)
+	{
+		ResourceType pt = pRes->GetType();
+		const char* pszID = pRes->GetID();
+		LOG_DEBUG("id=" << pszID << ", type=" << pt);
+		LPUIID2ResMap pUIID2ResMap = NULL;
+		PT2MapResMap::const_iterator itMap = m_mapRes.find(pt);
+		if(itMap == m_mapRes.end())
+		{
+			pUIID2ResMap = new UIID2ResMap;
+			m_mapRes.insert(PT2MapResMap::value_type(pt, pUIID2ResMap));
+		}
+		else
+		{
+			pUIID2ResMap = itMap->second;
+		}
+		UIID2ResMap::const_iterator it = pUIID2ResMap->find(pszID);
+		if(it == pUIID2ResMap->end())
+		{
+			pUIID2ResMap->insert(UIID2ResMap::value_type(pszID, pRes));
+		}
+		else
+		{
+			ATLASSERT(FALSE);
 		}
 	}
 }

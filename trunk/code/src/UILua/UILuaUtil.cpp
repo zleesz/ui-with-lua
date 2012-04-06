@@ -274,7 +274,7 @@ int UILuaUtil::UILuaGetObject(lua_State* luaState)
 		return 0;
 	}
 	const char* szObjName = lua_tostring(luaState, -1);
-	return UILuaGlobalFactory::GetInstance().GetGlobalObject(luaState, szObjName);
+	return UIluaGlobalFactoryInstance.GetGlobalObject(luaState, szObjName);
 }
 
 void UILuaUtil::InitUtilFunc(lua_State* luaState)

@@ -88,13 +88,13 @@ UILuaVMManager& UILuaVMManager::GetInstance()
 
 LUA_API lua_State* UILuaCreateLuaVM(const char* szVMName)
 {
-	return UILuaVMManager::GetInstance().CreateLuaVM(szVMName);
+	return UILuaVMManagerInstance.CreateLuaVM(szVMName);
 }
 LUA_API lua_State* UILuaGetLuaVM(const char* szVMName)
 {
-	return UILuaVMManager::GetInstance().GetLuaVM(szVMName);
+	return UILuaVMManagerInstance.GetLuaVM(szVMName);
 }
 LUA_API void UILuaDestroyLuaVM(const char* szVMName)
 {
-	UILuaVMManager::GetInstance().DestroyLuaVM(szVMName);
+	UILuaVMManagerInstance.DestroyLuaVM(szVMName);
 }

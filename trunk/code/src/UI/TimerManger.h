@@ -47,3 +47,4 @@ public:
 public:
 	LOG_CLS_DEC();
 };
+#define UITimerManagerInstance CUITimerManger::GetInstance()

@@ -18,7 +18,7 @@
 					<height>400</height>
 					<image>bitmap.mainwnd.background.png</image>
 					<stretch>false</stretch>
-					<visible>true</visible>
+					<visible>false</visible>
 				</attr>
 				<!--
 				<evenlist>
@@ -34,6 +34,7 @@
 					<height>35</height>
 					<image>bitmap.mainwnd.title.png</image>
 					<visible>true</visible>
+					<zorder>20</zorder>
 				</attr>
 				<!--
 				<evenlist>
@@ -47,6 +48,12 @@
 					<top>150</top>
 					<width>100</width>
 					<height>30</height>
+					<zorder>100</zorder>
+					<normalbkg>bitmap.mainwnd.test.btn.normal</normalbkg>
+					<hoverbkg>bitmap.mainwnd.test.btn.hover</hoverbkg>
+					<downbkg>bitmap.mainwnd.test.btn.down</downbkg>
+					<disablebkg>bitmap.mainwnd.test.btn.disable</disablebkg>
+					<!--<imagelist>imagelist.mainwnd.test.btn</imagelist>-->
 				</attr>
 				<!--
 				<evenlist>

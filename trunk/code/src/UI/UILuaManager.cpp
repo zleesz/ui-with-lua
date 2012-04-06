@@ -213,7 +213,7 @@ int CUILuaManager::DoXmlLuaFile(const char* szFilePath, const char* szVMName)
 	if(luaState)
 	{
 		lua_pushstring(luaState, szFilePath);
-		CUILuaManager::GetInstance().UIDoLuaFile(luaState);
+		UILuaManagerInstance.UIDoLuaFile(luaState);
 		return lua_toboolean(luaState, -1);
 	}
 	return 0;
