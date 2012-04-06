@@ -132,7 +132,7 @@ BOOL CUIControlBase::OnHitTest(int x, int y)
 	if(!bVisible)
 		return FALSE;
 	const RECT rc = GetObjPos();
-	if(x > rc.left && x < rc.bottom
+	if(x > rc.left && x < rc.right
 		&& y > rc.top && y < rc.bottom)
 		return TRUE;
 	return FALSE;

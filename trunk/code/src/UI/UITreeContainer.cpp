@@ -225,7 +225,7 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	if(NULL != m_pMouseControl)
 	{
 		const RECT rc = m_pMouseControl->GetObjPos();
-		BOOL bHit = m_pMouseControl->OnHitTest(xPos - rc.left, yPos - rc.top);
+		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos);
 		if(bHit)
 		{
 			m_pMouseControl->OnMouseMove(xPos - rc.left, yPos - rc.top);
