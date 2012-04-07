@@ -198,5 +198,5 @@ CxImage* CUIImagelist::GetImageByIndex(int nIndex)
 	CropBitmap();
 	if(nIndex <= 0 || (int)m_VecImage.size() < nIndex)
 		return NULL;
-	return m_VecImage[nIndex];
+	return m_VecImage[nIndex-1];
 }

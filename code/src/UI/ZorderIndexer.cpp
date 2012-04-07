@@ -30,10 +30,9 @@ CUIControlBase* CZorderIndexer::HitTest(int x, int y)
 	{
 		SortTreeObjectsByZorder();
 	}
-	ID2ControlMap::const_iterator it = m_pMapID2Control->begin();
-	for (; it != m_pMapID2Control->end(); it++)
+	for (int i = 0; i < m_vecControl.size(); i++)
 	{
-		CUIControlBase* pControl = it->second;
+		CUIControlBase* pControl = m_vecControl[i];
 		if(pControl->OnHitTest(x, y))
 		{
 			return pControl;
