@@ -8,9 +8,14 @@ function Filter(wnd, msg, wparam, lparam)
 	UILog("Filter", wnd:GetID(), msg, wparam, lparam)
 end
 
+function OnClose(self)
+	UIMessageBox(self:GetID())
+end
+
 function bbbb()
 	local windowFactory = UILuaGetObject("UI.WindowFactory")
 	mainwnd = windowFactory:Create("mainwnd")
+	mainwnd:AttachListener("OnClose", OnClose, false)
 	--mainwnd:AddInputFilter(Filter)
 	--[[
 	local tree = mainwnd:GetTreeContainer()
@@ -41,7 +46,8 @@ function OnTimer(self, id)
 		mainwnd:SetVisible(true)
 	end
 	]]
+	UIMessageBox(id)
 end
 
 --UILuaGetObject("UI.TimerManager"):SetOnceTimer(OnTimer, 1000)
---SetTimer(OnTimer, 1000)
+--SetOnceTimer(OnTimer, 1000)

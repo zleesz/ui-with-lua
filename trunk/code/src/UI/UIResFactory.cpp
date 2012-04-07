@@ -138,6 +138,11 @@ CUIIcon* CUIResFactory::GetIcon(const char* id)
 	return GetResObject<CUIIcon, RT_UIICON>(id);
 }
 
+CUIImagelist* CUIResFactory::GetImagelist(const char* id)
+{
+	return GetResObject<CUIImagelist, RT_UIIMAGELIST>(id);
+}
+
 template <class T, ResourceType pt>
 int CUIResFactory::PushResObject(lua_State* L)
 {
@@ -202,4 +207,17 @@ int CUIResFactory::GetIcon(lua_State* L)
 	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
 	ATLASSERT(pThis);
 	return pThis->PushResObject<CUIIcon, RT_UIICON>(L);
+}
+
+int CUIResFactory::GetImagelist(lua_State* L)
+{
+	int top = lua_gettop(L);
+	if(top < 2)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	return pThis->PushResObject<CUIImagelist, RT_UIIMAGELIST>(L);
 }

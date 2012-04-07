@@ -55,6 +55,8 @@ public:
 		LUA_CALL_ENTRY(Show)
 		LUA_CALL_ENTRY(GetTreeContainer)
 		LUA_CALL_ENTRY(AddInputFilter)
+		LUA_CALL_ENTRY(AttachListener)
+		LUA_CALL_ENTRY(DetachListener)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUIFrameWindow, UI.FrameWindow);
 public:

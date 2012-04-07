@@ -3,11 +3,12 @@ function OnCreate(self)
 end
 
 function OnClose(self)
+	--UIMessageBox(self:GetID())
 	UITest.LuaClass:Exit()
 end
 
 function OnShowWindow(self, visible)
-	UIMessageBox(tostring(visible))
+	--UIMessageBox(self:GetID())
 end
 
 function OnMove(self, x, y)

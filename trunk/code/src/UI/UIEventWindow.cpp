@@ -21,13 +21,7 @@ void CUIEventWindow::ParserOneEvent(LPXMLDOMNode pNode)
 	LPXMLAttrMap pAttrMap = pNode->pMapAttr;
 	if(pAttrMap == NULL)
 		return;
-	LPEventNode pEventNode = NULL;
-	AttachListener(pAttrMap, pEventNode);
-	ATLASSERT(pEventNode);
-	if(NULL != pEventNode)
-	{
-		//pEventNode->
-	}
+	AttachListener(pAttrMap);
 }
 
 BOOL CUIEventWindow::ParserEvent(LPXMLDOMNode pNode)

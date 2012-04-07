@@ -45,6 +45,8 @@ public:
 	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
 public:
 	static int AddInputFilter(lua_State* L);
+	static int AttachListener(lua_State* L);
+	static int DetachListener(lua_State* L);
 public:
 	CUITreeContainer* m_pUITreeContainer;
 	CUIEventWindow* m_pUIEventWindow;

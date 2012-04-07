@@ -71,7 +71,18 @@ void CUIButtonImagelist::Init(const LPXMLChildNodes pXMLChildNodes)
 
 void CUIButtonImagelist::Render(CDCHandle dc, const RECT& rc, ButtonState brt)
 {
-	 //UIResFactoryInstance->
+	CUIImagelist* pImagelist = UIResFactoryInstance->GetImagelist(m_strImagelist.c_str());
+	if(NULL == pImagelist)
+	{
+		ATLASSERT(FALSE);
+		return ;
+	}
+	CxImage* pImage = pImagelist->GetImageByIndex(brt);
+	if(NULL == pImage)
+	{
+		return ;
+	}
+	pImage->Draw(dc.m_hDC, rc);
 }
 
 CUIButton::CUIButton(CUITreeContainer* pTree, LPXMLDOMNode pNode)
