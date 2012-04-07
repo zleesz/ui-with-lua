@@ -175,13 +175,7 @@ void CUIButton::OnMouseMove(int x, int y)
 	if(m_state == BS_NORMAL)
 	{
 		m_state = BS_HOVER;
-		CUITreeContainer* pTree = GetOwnerTree();
-		if(NULL != pTree)
-		{
-			CUIWindowBase* pWindow = pTree->GetBindWnd();
-			const RECT rc = GetObjPos();
-			pWindow->InvalidateRect(&rc, FALSE);
-		}
+		Invalidate();
 	}
 }
 
@@ -192,13 +186,7 @@ void CUIButton::OnMouseLeave(int x, int y)
 	if(m_state == BS_HOVER)
 	{
 		m_state = BS_NORMAL;
-		CUITreeContainer* pTree = GetOwnerTree();
-		if(NULL != pTree)
-		{
-			CUIWindowBase* pWindow = pTree->GetBindWnd();
-			const RECT rc = GetObjPos();
-			pWindow->InvalidateRect(&rc, FALSE);
-		}
+		Invalidate();
 	}
 }
 
@@ -209,13 +197,7 @@ void CUIButton::OnLButtonDown(int x, int y)
 	if(m_state == BS_HOVER)
 	{
 		m_state = BS_DOWN;
-		CUITreeContainer* pTree = GetOwnerTree();
-		if(NULL != pTree)
-		{
-			CUIWindowBase* pWindow = pTree->GetBindWnd();
-			const RECT rc = GetObjPos();
-			pWindow->InvalidateRect(&rc, FALSE);
-		}
+		Invalidate();
 	}
 }
 
@@ -233,12 +215,6 @@ void CUIButton::OnLButtonUp(int x, int y)
 		{
 			m_state = BS_NORMAL;
 		}
-		CUITreeContainer* pTree = GetOwnerTree();
-		if(NULL != pTree)
-		{
-			CUIWindowBase* pWindow = pTree->GetBindWnd();
-			const RECT rc = GetObjPos();
-			pWindow->InvalidateRect(&rc, FALSE);
-		}
+		Invalidate();
 	}
 }
