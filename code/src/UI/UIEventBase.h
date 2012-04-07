@@ -32,8 +32,10 @@ public:
 	CUIEventBase(CUIWindowBase* p) : m_pBindWnd(p) {};
 	virtual ~CUIEventBase();
 public:
-	virtual void AttachListener(const LPXMLAttrMap pAttrMap, LPEventNode& pEventNode);
+	virtual void AttachListener(const LPXMLAttrMap pAttrMap);
 	virtual void DetachListener();
+	virtual int AttachListener(lua_State* L);
+	virtual int DetachListener(lua_State* L);
 	virtual void DispatchListener(UIDISPPARAMS& params);
 	virtual BOOL ParserEvent(LPXMLDOMNode pNode) = 0;
 	virtual BOOL OnBindEvent(const std::string& strPath);

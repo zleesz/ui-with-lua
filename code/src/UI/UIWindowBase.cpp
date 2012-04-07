@@ -133,3 +133,15 @@ int CUIWindowBase::AddInputFilter(lua_State* L)
 	pThis->m_pUIEventWindow->AddInputFilter(L);
 	return 0;
 }
+
+int CUIWindowBase::AttachListener(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	return pThis->m_pUIEventWindow->AttachListener(L);
+}
+
+int CUIWindowBase::DetachListener(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	return pThis->m_pUIEventWindow->DetachListener(L);
+}

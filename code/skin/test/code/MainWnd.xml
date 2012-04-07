@@ -20,11 +20,9 @@
 					<stretch>false</stretch>
 					<visible>false</visible>
 				</attr>
-				<!--
 				<evenlist>
 					<event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" />
 				</evenlist>
-				-->
 			</obj>
 			<obj id="image.title" class="UIImage">
 				<attr>

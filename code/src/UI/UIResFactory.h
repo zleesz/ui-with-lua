@@ -20,6 +20,7 @@ public:
 	CUIFont* GetFont(const char* id);
 	CUIBitmap* GetBitmap(const char* id);
 	CUIIcon* GetIcon(const char* id);
+	CUIImagelist* GetImagelist(const char* id);
 
 private:
 	typedef std::map<const std::string, CUIResBase*> UIID2ResMap, *LPUIID2ResMap;
@@ -35,12 +36,14 @@ public:
 	static int GetFont(lua_State* luaState);
 	static int GetBitmap(lua_State* luaState);
 	static int GetIcon(lua_State* luaState);
+	static int GetImagelist(lua_State* luaState);
 public:
 	BEGIN_LUA_CALL_MAP(CUIResFactory)
 		LUA_CALL_ENTRY(GetColor)
 		LUA_CALL_ENTRY(GetFont)
 		LUA_CALL_ENTRY(GetBitmap)
 		LUA_CALL_ENTRY(GetIcon)
+		LUA_CALL_ENTRY(GetImagelist)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_SINGLETON_OBJECT(CUIResFactory, UI.ResFactory);
 public:
