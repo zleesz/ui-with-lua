@@ -29,21 +29,19 @@ class CUIEventBase
 {
 public:
 	CUIEventBase();
-	CUIEventBase(CUIWindowBase* p) : m_pBindWnd(p) {};
 	virtual ~CUIEventBase();
+private:
+	void ParserOneEvent(LPXMLDOMNode pNode);
 public:
 	virtual void AttachListener(const LPXMLAttrMap pAttrMap);
 	virtual void DetachListener();
 	virtual int AttachListener(lua_State* L);
 	virtual int DetachListener(lua_State* L);
 	virtual void DispatchListener(UIDISPPARAMS& params);
-	virtual BOOL ParserEvent(LPXMLDOMNode pNode) = 0;
+	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
 	virtual BOOL OnBindEvent(const std::string& strPath);
 	virtual EventType GetType() = 0;
 	virtual void PushEventParams(UIDISPPARAMS& params);
-	void* GetBindWnd();
-public:
-	CUIWindowBase* m_pBindWnd;
 private:
 	LuaEventMap m_mapEvent;
 public:

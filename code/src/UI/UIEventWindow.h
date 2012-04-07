@@ -36,10 +36,8 @@ public:
 	END_MSG_MAP()
 private:
 	std::vector<FilterNode> m_vecFilter;
-private:
-	void ParserOneEvent(LPXMLDOMNode pNode);
+	CUIWindowBase* m_pBindWnd;
 public:
-	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
 	virtual EventType GetType() { return ET_Window; };
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnClose(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
