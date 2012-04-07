@@ -18,7 +18,7 @@
 					<height>400</height>
 					<image>bitmap.mainwnd.background.png</image>
 					<stretch>false</stretch>
-					<visible>false</visible>
+					<visible>true</visible>
 				</attr>
 				<evenlist>
 					<event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" />

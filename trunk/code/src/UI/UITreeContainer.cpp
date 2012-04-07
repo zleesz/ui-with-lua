@@ -229,6 +229,7 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 		m_pCaptrueControl->OnMouseMove(xPos - rc.left, yPos - rc.top);
 		return 0;
 	}
+	/*
 	if(NULL != m_pMouseControl)
 	{
 		const RECT rc = m_pMouseControl->GetObjPos();
@@ -243,10 +244,15 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 			m_pMouseControl->OnMouseLeave(xPos - rc.left, yPos - rc.top);
 			m_pMouseControl = NULL;
 		}
-	}
+	}*/
 	CUIControlBase* pControl = m_ZorderIndexer.HitTest(xPos, yPos);
 	if(NULL != pControl)
 	{
+		if(m_pMouseControl && m_pMouseControl != pControl)
+		{
+			const RECT rc = m_pMouseControl->GetObjPos();
+			m_pMouseControl->OnMouseLeave(xPos - rc.left, yPos - rc.top);
+		}
 		const RECT rc = pControl->GetObjPos();
 		pControl->OnMouseMove(xPos - rc.left, yPos - rc.top);
 		m_pMouseControl = pControl;
