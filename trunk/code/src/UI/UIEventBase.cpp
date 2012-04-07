@@ -3,7 +3,6 @@
 #include "UIWindowBase.h"
 
 CUIEventBase::CUIEventBase()
-	: m_pBindWnd(NULL)
 {
 	
 }
@@ -24,6 +23,36 @@ CUIEventBase::~CUIEventBase()
 		delete pVecEvent;
 	}
 	m_mapEvent.clear();
+}
+
+void CUIEventBase::ParserOneEvent(LPXMLDOMNode pNode)
+{
+	if(pNode == NULL || pNode->strName != "event")
+		return;
+	LPXMLAttrMap pAttrMap = pNode->pMapAttr;
+	if(pAttrMap == NULL)
+		return;
+	AttachListener(pAttrMap);
+}
+
+BOOL CUIEventBase::ParserEvent(LPXMLDOMNode pNode)
+{
+	if (NULL == pNode || pNode->strName != "eventlist")
+		return FALSE;
+	LPXMLChildNodes pChildNode = pNode->pMapChildNode;
+	if(pChildNode == NULL)
+		return FALSE;
+	XMLChildNodes::const_iterator it = pChildNode->find("event");
+	if(it == pChildNode->end())
+	{
+		return FALSE;
+	}
+	LPXMLVecNodes pVecNodes = it->second->pVecNode;
+	for(XMLVecNodes::size_type st = 0; st != pVecNodes->size(); st++)
+	{
+		ParserOneEvent((*pVecNodes)[st]);
+	}
+	return TRUE;
 }
 
 void CUIEventBase::AttachListener(const LPXMLAttrMap pAttrMap)
@@ -177,11 +206,6 @@ BOOL CUIEventBase::OnBindEvent(const std::string& strPath)
 		}
 	}
 	return TRUE;
-}
-
-void* CUIEventBase::GetBindWnd()
-{
-	return m_pBindWnd;
 }
 
 void CUIEventBase::PushEventParams(UIDISPPARAMS& params)

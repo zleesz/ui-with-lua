@@ -53,11 +53,9 @@
 					<disablebkg>bitmap.mainwnd.test.btn.disable</disablebkg>
 					<!--<imagelist>imagelist.mainwnd.test.btn</imagelist>-->
 				</attr>
-				<!--
-				<evenlist>
+				<eventlist>
 					<event name="OnClick" file="MainWnd.xml.lua" func="OnOpenClick" />
-				</evenlist>
-				-->
+				</eventlist>
 			</obj>
 		</uitree>
 		<eventlist>

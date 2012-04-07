@@ -2,13 +2,14 @@
 #include "UITreeContainer.h"
 #include "UIImage.h"
 #include "UIButton.h"
+#include "UIWindowBase.h"
 
 CUITreeContainer::CUITreeContainer(void)
 {
 }
 
 CUITreeContainer::CUITreeContainer(CUIWindowBase* p)
-	: m_pBindWnd(p), m_pMouseControl(NULL)
+	: m_pBindWnd(p), m_pMouseControl(NULL), m_pCaptrueControl(NULL)
 {
 	LOG_AUTO();
 	RegisterClass(this);
@@ -222,6 +223,12 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	// indexer zorder and hit test the object;
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
+	if(NULL != m_pCaptrueControl)
+	{
+		const RECT rc = m_pCaptrueControl->GetObjPos();
+		m_pCaptrueControl->OnMouseMove(xPos - rc.left, yPos - rc.top);
+		return 0;
+	}
 	if(NULL != m_pMouseControl)
 	{
 		const RECT rc = m_pMouseControl->GetObjPos();
@@ -251,6 +258,12 @@ LRESULT CUITreeContainer::OnLButtonDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
 {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
+	if(NULL != m_pCaptrueControl)
+	{
+		const RECT rc = m_pCaptrueControl->GetObjPos();
+		m_pCaptrueControl->OnLButtonDown(xPos - rc.left, yPos - rc.top);
+		return 0;
+	}
 	if(NULL != m_pMouseControl)
 	{
 		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos);
@@ -266,6 +279,12 @@ LRESULT CUITreeContainer::OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
+	if(NULL != m_pCaptrueControl)
+	{
+		const RECT rc = m_pCaptrueControl->GetObjPos();
+		m_pCaptrueControl->OnLButtonUp(xPos - rc.left, yPos - rc.top);
+		return 0;
+	}
 	if(NULL != m_pMouseControl)
 	{
 		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos);
@@ -275,4 +294,26 @@ LRESULT CUITreeContainer::OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 		}
 	}
 	return 0;
+}
+
+LRESULT CUITreeContainer::OnCaptureChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	LOG_DEBUG("lParam : " << lParam);
+	m_pCaptrueControl = NULL;
+	return 0;
+}
+
+BOOL CUITreeContainer::SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture)
+{
+	if(bCapture)
+	{
+		m_pCaptrueControl = pControl;
+		::SetCapture(m_pBindWnd->m_hWnd);
+		return TRUE;
+	}
+	else
+	{
+		m_pCaptrueControl = NULL;
+		return ::ReleaseCapture();
+	}
 }

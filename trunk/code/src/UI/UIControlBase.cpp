@@ -8,7 +8,7 @@ CUIControlBase::CUIControlBase(void)
 }
 
 CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
-	: m_pTree(pTree)
+	: m_pTree(pTree), m_pUIEventControl(NULL)
 {
 	if(pNode == NULL || pNode->pMapAttr == NULL)
 		return;
@@ -16,23 +16,33 @@ CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	if(pMapAttr == NULL)
 		return;
 	SetID((*pMapAttr)["id"]);
+	m_pUIEventControl = new CUIEventControl;
 	LPXMLChildNodes pChildNodes = pNode->pMapChildNode;
 	if(pChildNodes == NULL)
 		return;
 	XMLChildNodes::const_iterator it = pChildNodes->find("attr");
-	if(it == pChildNodes->end())
-		return;
-	LPXMLDOMNode pAttrNode = it->second;
-	if(pAttrNode == NULL)
-		return;
-	LPXMLChildNodes pAttrChildNodes = pAttrNode->pMapChildNode;
-	if(pAttrChildNodes == NULL)
-		return;
-	XMLChildNodes::const_iterator it2 = pAttrChildNodes->begin();
-	for(; it2 != pAttrChildNodes->end(); it2++)
+	if(it != pChildNodes->end())
 	{
-		SetAttr(it2->first, it2->second->strUData);
+		LPXMLDOMNode pAttrNode = it->second;
+		if(pAttrNode != NULL)
+		{
+			LPXMLChildNodes pAttrChildNodes = pAttrNode->pMapChildNode;
+			if(pAttrChildNodes != NULL)
+			{
+				XMLChildNodes::const_iterator it2 = pAttrChildNodes->begin();
+				for(; it2 != pAttrChildNodes->end(); it2++)
+				{
+					SetAttr(it2->first, it2->second->strUData);
+				}
+			}
+		}
 	}
+	LPXMLDOMNode pEventNode = (*pChildNodes)["eventlist"];
+	if(pEventNode != NULL && pEventNode->pMapChildNode != NULL)
+	{
+		m_pUIEventControl->ParserEvent(pEventNode);
+	}
+	m_pUIEventControl->OnBindEvent(m_pTree->GetBindWnd()->GetXMLPath());
 }
 
 CUIControlBase::~CUIControlBase(void)
@@ -173,4 +183,11 @@ void CUIControlBase::Invalidate()
 		return;
 	const RECT rc = GetObjPos();
 	pWindow->InvalidateRect(&rc, FALSE);
+}
+
+void CUIControlBase::SetCaptureMouse(BOOL bCapture)
+{
+	if(NULL == m_pTree)
+		return;
+	m_pTree->SetCaptureMouse(this, bCapture);
 }

@@ -52,6 +52,7 @@ public:
 	BOOL GetEnable();
 	const RECT& GetObjPos();
 	void Invalidate();
+	void SetCaptureMouse(BOOL bCapture);
 };
 
 #define UICONTROL_DEFAULT_MOUSE_METHOD(method) \

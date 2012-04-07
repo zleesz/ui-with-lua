@@ -21,17 +21,20 @@ private:
 	CUIWindowBase* m_pBindWnd;
 	CZorderIndexer m_ZorderIndexer;
 	CUIControlBase* m_pMouseControl;
+	CUIControlBase* m_pCaptrueControl;
 public:
 	BEGIN_MSG_MAP(CUITreeContainer)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
 		MESSAGE_HANDLER(WM_LBUTTONDOWN, OnLButtonDown)
 		MESSAGE_HANDLER(WM_LBUTTONUP, OnLButtonUp)
+		MESSAGE_HANDLER(WM_CAPTURECHANGED, OnCaptureChanged)
 	END_MSG_MAP()
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnMouseMove(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnLButtonUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnCaptureChanged(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	BOOL ParserUITree(LPXMLDOMNode pNode);
 	BOOL OnPreCreate();
@@ -39,6 +42,7 @@ public:
 	void OnTreeModify(const LPTreeModifyData ptmt);
 	void Render(CDCHandle dc);
 	CUIWindowBase* GetBindWnd(void);
+	BOOL SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture);
 public:
 	static int GetUIObject(lua_State* L);
 	static int GetOwnerWnd(lua_State* L);

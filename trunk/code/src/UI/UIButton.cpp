@@ -209,7 +209,21 @@ void CUIButton::OnLButtonDown(int x, int y)
 	{
 		m_state = BS_DOWN;
 		Invalidate();
+		SetCaptureMouse(TRUE);
 	}
+}
+
+void CUIButton::FireOnClick(int x, int y)
+{
+	LOG_AUTO();
+	CComVariant avarParams[3];
+	avarParams[0].vt = VT_BYREF | VT_I4;
+	avarParams[0].lVal = (LONG)(LONG_PTR)this;
+	avarParams[1] = x;
+	avarParams[2] = y;
+
+	UIDISPPARAMS params = { avarParams, "OnClick", 3, 0 };
+	m_pUIEventControl->DispatchListener(params);
 }
 
 void CUIButton::OnLButtonUp(int x, int y)
@@ -218,7 +232,8 @@ void CUIButton::OnLButtonUp(int x, int y)
 	BOOL bEnable = CUIControlBase::GetEnable();
 	if(m_state == BS_DOWN)
 	{
-		if(OnHitTest(x, y))
+		const RECT rc = GetObjPos();
+		if(OnHitTest(x + rc.left, y + rc.top))
 		{
 			m_state = BS_HOVER;
 		}
@@ -227,5 +242,10 @@ void CUIButton::OnLButtonUp(int x, int y)
 			m_state = BS_NORMAL;
 		}
 		Invalidate();
+		SetCaptureMouse(FALSE);
+		if(m_state == BS_HOVER)
+		{
+			FireOnClick(x, y);
+		}
 	}
 }

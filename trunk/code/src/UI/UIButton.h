@@ -76,6 +76,7 @@ public:
 	virtual void OnLButtonUp(int x, int y);
 private:
 	void SetAttr(std::string strName, std::string strValue);
+	void FireOnClick(int x, int y);
 	ButtonState m_state;
 	CUIButtonBase* m_pButton;
 public:
