@@ -51,6 +51,7 @@ public:
 	BOOL GetVisible();
 	BOOL GetEnable();
 	const RECT& GetObjPos();
+	void Invalidate();
 };
 
 #define UICONTROL_DEFAULT_MOUSE_METHOD(method) \

@@ -454,6 +454,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UICheckBox.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UICheckBox.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIComboBox.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIComboBox.h"
+				>
+			</File>
+			<File
 				RelativePath=".\UIControlBase.cpp"
 				>
 			</File>

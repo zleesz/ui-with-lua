@@ -1,5 +1,7 @@
 #include "StdAfx.h"
 #include "UIControlBase.h"
+#include "UITreeContainer.h"
+#include "UIWindowBase.h"
 
 CUIControlBase::CUIControlBase(void)
 {
@@ -160,4 +162,15 @@ BOOL CUIControlBase::GetEnable()
 		bEnable = vEnable.boolVal == VARIANT_TRUE ? TRUE : FALSE;
 	}
 	return bEnable;
+}
+
+void CUIControlBase::Invalidate()
+{
+	if(NULL == m_pTree)
+		return;
+	CUIWindowBase* pWindow = m_pTree->GetBindWnd();
+	if(NULL == pWindow)
+		return;
+	const RECT rc = GetObjPos();
+	pWindow->InvalidateRect(&rc, FALSE);
 }
