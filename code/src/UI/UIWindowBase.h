@@ -10,7 +10,7 @@
 
 #include <Util.h>
 #include "UITreeContainer.h"
-#include "UIEventWindow.h"
+#include "UIEventWndContainer.h"
 
 typedef enum enumWindowType {
 	WT_FrameHostWnd = 1,
@@ -49,7 +49,7 @@ public:
 	static int DetachListener(lua_State* L);
 public:
 	CUITreeContainer* m_pUITreeContainer;
-	CUIEventWindow* m_pUIEventWindow;
+	CUIEventWndContainer* m_pUIEventWindow;
 private:
 	virtual DWORD GetStyle() = 0;
 	virtual DWORD GetStyleEx() = 0;

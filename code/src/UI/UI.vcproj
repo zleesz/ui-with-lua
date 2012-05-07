@@ -558,27 +558,27 @@
 			Name="Event"
 			>
 			<File
-				RelativePath=".\UIEventBase.cpp"
+				RelativePath=".\UIEventContainerBase.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\UIEventBase.h"
+				RelativePath=".\UIEventContainerBase.h"
 				>
 			</File>
 			<File
-				RelativePath=".\UIEventControl.cpp"
+				RelativePath=".\UIEventCtrlContainer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\UIEventControl.h"
+				RelativePath=".\UIEventCtrlContainer.h"
 				>
 			</File>
 			<File
-				RelativePath=".\UIEventWindow.cpp"
+				RelativePath=".\UIEventWndContainer.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\UIEventWindow.h"
+				RelativePath=".\UIEventWndContainer.h"
 				>
 			</File>
 		</Filter>

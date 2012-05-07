@@ -1,13 +1,13 @@
 #include "stdafx.h"
-#include "UIEventBase.h"
+#include "UIEventContainerBase.h"
 #include "UIWindowBase.h"
 
-CUIEventBase::CUIEventBase()
+CUIEventContainerBase::CUIEventContainerBase()
 {
 	
 }
 
-CUIEventBase::~CUIEventBase()
+CUIEventContainerBase::~CUIEventContainerBase()
 {
 	// delete m_mapEvent
 	LuaEventMap::iterator it = m_mapEvent.begin();
@@ -25,7 +25,7 @@ CUIEventBase::~CUIEventBase()
 	m_mapEvent.clear();
 }
 
-void CUIEventBase::ParserOneEvent(LPXMLDOMNode pNode)
+void CUIEventContainerBase::ParserOneEvent(LPXMLDOMNode pNode)
 {
 	if(pNode == NULL || pNode->strName != "event")
 		return;
@@ -35,7 +35,7 @@ void CUIEventBase::ParserOneEvent(LPXMLDOMNode pNode)
 	AttachListener(pAttrMap);
 }
 
-BOOL CUIEventBase::ParserEvent(LPXMLDOMNode pNode)
+BOOL CUIEventContainerBase::ParserEvent(LPXMLDOMNode pNode)
 {
 	if (NULL == pNode || pNode->strName != "eventlist")
 		return FALSE;
@@ -55,7 +55,7 @@ BOOL CUIEventBase::ParserEvent(LPXMLDOMNode pNode)
 	return TRUE;
 }
 
-void CUIEventBase::AttachListener(const LPXMLAttrMap pAttrMap)
+void CUIEventContainerBase::AttachListener(const LPXMLAttrMap pAttrMap)
 {
 	ATLASSERT(pAttrMap);
 	if(pAttrMap == NULL)
@@ -78,12 +78,12 @@ void CUIEventBase::AttachListener(const LPXMLAttrMap pAttrMap)
 	pVecEvent->push_back(pEventNode);
 }
 
-void CUIEventBase::DetachListener()
+void CUIEventContainerBase::DetachListener()
 {
 	
 }
 
-int CUIEventBase::AttachListener(lua_State* L)
+int CUIEventContainerBase::AttachListener(lua_State* L)
 {
 	const char* pszName = lua_tostring(L, 2);
 	if(NULL == pszName || strlen(pszName) <= 0)
@@ -117,8 +117,8 @@ int CUIEventBase::AttachListener(lua_State* L)
 	{
 		if(lua_isboolean(L, 4))
 		{
-			bool bPush = (bool)lua_toboolean(L, 4);
-			if(bPush)
+			int bPush = lua_toboolean(L, 4);
+			if(1 == bPush)
 			{
 				pVecEvent->push_back(pEventNode);
 			}
@@ -129,8 +129,8 @@ int CUIEventBase::AttachListener(lua_State* L)
 		}
 		else if(lua_isnumber(L, 4))
 		{
-			int nIndex = lua_tonumber(L, 4);
-			if(nIndex >= pVecEvent->size())
+			int nIndex = (int)lua_tonumber(L, 4);
+			if(nIndex >= (int)pVecEvent->size())
 			{
 				pVecEvent->push_back(pEventNode);
 			}
@@ -154,12 +154,12 @@ int CUIEventBase::AttachListener(lua_State* L)
 	return 1;
 }
 
-int CUIEventBase::DetachListener(lua_State* L)
+int CUIEventContainerBase::DetachListener(lua_State* L)
 {
 	return 0;
 }
 
-void CUIEventBase::DispatchListener(UIDISPPARAMS& params)
+void CUIEventContainerBase::DispatchListener(UIDISPPARAMS& params)
 {
 	LOG_AUTO();
 	lua_State* L = UILuaGetLuaVM(NULL);
@@ -179,17 +179,17 @@ void CUIEventBase::DispatchListener(UIDISPPARAMS& params)
 			{
 				UILuaManagerInstance.CallLuaFuncByIndex(pEventNode->nFuncIndex, params.nArgs, params.nRet, NULL);
 			}
-			lua_pop(L, params.nRet);
+			lua_pop(L, (int)params.nRet);
 		}
 	}
 }
 
-BOOL CUIEventBase::OnBindEvent(const std::string& strPath)
+BOOL CUIEventContainerBase::OnBindEvent(const std::string& strPath)
 {
 	char szPath[MAX_PATH] = {0};
 	strcpy_s(szPath, MAX_PATH, strPath.c_str());
 	::PathAppendA(szPath, "..");
-	lua_State* L = UILuaGetLuaVM(NULL);
+	// lua_State* L = UILuaGetLuaVM(NULL);
 	LuaEventMap::const_iterator it = m_mapEvent.begin();
 	for (; it != m_mapEvent.end(); it++)
 	{
@@ -208,7 +208,7 @@ BOOL CUIEventBase::OnBindEvent(const std::string& strPath)
 	return TRUE;
 }
 
-void CUIEventBase::PushEventParams(UIDISPPARAMS& params)
+void CUIEventContainerBase::PushEventParams(UIDISPPARAMS& params)
 {
 	lua_State* L = UILuaGetLuaVM(NULL);
 	for(int i = 0; i < (int)params.nArgs; i++)

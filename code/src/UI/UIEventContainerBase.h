@@ -25,11 +25,11 @@ typedef struct tagEventNode
 typedef std::vector<LPEventNode> VecEvent, *LPVecEvent; // event veclist
 typedef std::map<std::string, LPVecEvent> LuaEventMap; // event name 2 veclist 
 
-class CUIEventBase
+class CUIEventContainerBase
 {
 public:
-	CUIEventBase();
-	virtual ~CUIEventBase();
+	CUIEventContainerBase();
+	virtual ~CUIEventContainerBase();
 private:
 	void ParserOneEvent(LPXMLDOMNode pNode);
 public:

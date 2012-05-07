@@ -19,7 +19,7 @@ CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
 	{
 		return;
 	}
-	m_pUIEventWindow = new CUIEventWindow(this);
+	m_pUIEventWindow = new CUIEventWndContainer(this);
 	m_pUITreeContainer = new CUITreeContainer(this);
 	SetID((*pMapAttr)["id"]);
 	m_strXMLPath = strPath;
