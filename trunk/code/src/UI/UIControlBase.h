@@ -7,7 +7,7 @@
 #include <atlwin.h>
 #include <winuser.h>
 #include <atltypes.h>
-#include "UIEventControl.h"
+#include "UIEventCtrlContainer.h"
 
 class CUITreeContainer;
 typedef enum enumControlType {
@@ -27,7 +27,7 @@ private:
 public:
 	typedef std::map<std::string, CComVariant> ID2AttrMap;
 	ID2AttrMap m_mapAttr;
-	CUIEventControl* m_pUIEventControl;
+	CUIEventCtrlContainer* m_pUIEventControl;
 private:
 	void SetID(std::string strID);
 public:

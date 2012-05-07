@@ -16,7 +16,7 @@ CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	if(pMapAttr == NULL)
 		return;
 	SetID((*pMapAttr)["id"]);
-	m_pUIEventControl = new CUIEventControl;
+	m_pUIEventControl = new CUIEventCtrlContainer;
 	LPXMLChildNodes pChildNodes = pNode->pMapChildNode;
 	if(pChildNodes == NULL)
 		return;

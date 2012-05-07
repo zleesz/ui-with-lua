@@ -1,21 +1,21 @@
 #include "StdAfx.h"
-#include "UIEventWindow.h"
+#include "UIEventWndContainer.h"
 #include "UIWindowBase.h"
 
-CUIEventWindow::CUIEventWindow(void)
+CUIEventWndContainer::CUIEventWndContainer(void)
 {
 }
 
-CUIEventWindow::CUIEventWindow(CUIWindowBase* p) : m_pBindWnd(p)
+CUIEventWndContainer::CUIEventWndContainer(CUIWindowBase* p) : m_pBindWnd(p)
 {
 }
 
-CUIEventWindow::~CUIEventWindow(void)
+CUIEventWndContainer::~CUIEventWndContainer(void)
 {
 }
 
 
-LRESULT CUIEventWindow::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[1];
@@ -27,7 +27,7 @@ LRESULT CUIEventWindow::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPar
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[1];
@@ -39,7 +39,7 @@ LRESULT CUIEventWindow::OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lPara
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[2];
@@ -53,7 +53,7 @@ LRESULT CUIEventWindow::OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[3];
@@ -67,7 +67,7 @@ LRESULT CUIEventWindow::OnMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, 
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[5];
@@ -84,7 +84,7 @@ LRESULT CUIEventWindow::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[4];
@@ -99,7 +99,7 @@ LRESULT CUIEventWindow::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnEnableChange(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnEnableChange(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[2];
@@ -113,7 +113,7 @@ LRESULT CUIEventWindow::OnEnableChange(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lP
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[3];
@@ -131,7 +131,7 @@ LRESULT CUIEventWindow::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
 	CComVariant avarParams[3];
@@ -149,7 +149,7 @@ LRESULT CUIEventWindow::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPara
 	return 0;
 }
 
-LRESULT CUIEventWindow::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
 	//LOG_AUTO();
 	lua_State* L = UILuaGetLuaVM(NULL);
@@ -164,7 +164,7 @@ LRESULT CUIEventWindow::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, 
 	return 0;
 }
 
-void CUIEventWindow::AddInputFilter(lua_State* L)
+void CUIEventWndContainer::AddInputFilter(lua_State* L)
 {
 	LOG_AUTO();
 	bool b = lua_isfunction(L, 2);

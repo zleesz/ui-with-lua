@@ -1,5 +1,5 @@
 #pragma once
-#include "UIEventBase.h"
+#include "UIEventContainerBase.h"
 #include <atlapp.h>
 #include <atlapp.h>
 #include <atlwin.h>
@@ -12,16 +12,16 @@ typedef struct tagFilterNode
 	tagFilterNode(int n) : nFunc(n){}
 }FilterNode, *LPFilterNode;
 
-class CUIEventWindow :
-	public CUIEventBase
+class CUIEventWndContainer :
+	public CUIEventContainerBase
 {
 private:
-	CUIEventWindow(void);
+	CUIEventWndContainer(void);
 public:
-	CUIEventWindow(CUIWindowBase* p);
-	virtual ~CUIEventWindow(void);
+	CUIEventWndContainer(CUIWindowBase* p);
+	virtual ~CUIEventWndContainer(void);
 public:
-	BEGIN_MSG_MAP(CUIEventWindow)
+	BEGIN_MSG_MAP(CUIEventWndContainer)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_CLOSE, OnClose)
 		MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
