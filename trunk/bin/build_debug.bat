@@ -10,3 +10,5 @@ if %ERRORLEVEL% NEQ 0 (
 	pause & exit
 )
 del ui.log
+
+exit
