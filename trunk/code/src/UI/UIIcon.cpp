@@ -1,5 +1,6 @@
 #include "StdAfx.h"
 #include ".\uiicon.h"
+#include <UIParser.h>
 
 CUIIcon::CUIIcon(void)
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include <stdio.h>
 #include <Util.h>
+#include <UIParser.h>
 
 typedef struct _tagPackage
 {

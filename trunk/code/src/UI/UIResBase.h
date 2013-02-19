@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <Util.h>
+#include <UIParser.h>
+
 typedef enum enumResourceType {
 	RT_UICOLOR = 1,
 	RT_UIFONT,

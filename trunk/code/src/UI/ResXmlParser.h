@@ -1,6 +1,7 @@
 #pragma once
 #include <Util.h>
 #include "UIResFactory.h"
+#include <UIParser.h>
 
 class CResXmlParser
 {
