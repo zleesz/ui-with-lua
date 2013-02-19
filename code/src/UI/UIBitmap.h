@@ -2,6 +2,7 @@
 #include "UIResBase.h"
 #include "ImageTool.h"
 #include <uiluax.h>
+#include <UIParser.h>
 
 typedef enum enumBitmapType
 {

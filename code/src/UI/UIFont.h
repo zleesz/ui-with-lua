@@ -1,6 +1,7 @@
 #pragma once
 #include "UIResBase.h"
 #include <uiluax.h>
+#include <UIParser.h>
 
 class CUIFont : public CUIResBase
 {

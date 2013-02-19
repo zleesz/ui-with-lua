@@ -3,6 +3,7 @@
 #include <uiluax.h>
 #include <Util.h>
 #include "UITreeContainer.h"
+#include <UIParser.h>
 
 class CUIModalWindow :
 	public CUIWindowBase

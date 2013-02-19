@@ -1,6 +1,7 @@
 #pragma once
 #include <Util.h>
 #include <string>
+#include <UIParser.h>
 
 class CCodeXmlParser
 {

@@ -370,11 +370,19 @@
 			Name="Common"
 			>
 			<File
-				RelativePath="..\common\inc\uilog4cplus.h"
+				RelativePath="..\..\common\inc\expat.h"
 				>
 			</File>
 			<File
-				RelativePath="..\common\inc\Util.h"
+				RelativePath="..\..\common\inc\uilog4cplus.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\inc\UIParser.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\common\inc\Util.h"
 				>
 			</File>
 		</Filter>

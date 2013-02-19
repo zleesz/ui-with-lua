@@ -1,6 +1,7 @@
 #pragma once
 #include "UILuaManager.h"
 #include <Util.h>
+#include <UIParser.h>
 
 class CUIWindowBase;
 typedef struct tagUIDISPPARAMS

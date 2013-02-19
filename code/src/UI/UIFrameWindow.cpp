@@ -143,7 +143,7 @@ LRESULT CUIFrameWindow::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 	else
 	{
 		CPaintDC dc(m_hWnd);
-		CMemoryDC dcMem(dc.m_hDC, dc.m_ps.rcPaint);        
+		CMemoryDC dcMem(dc.m_hDC, dc.m_ps.rcPaint);
 		DoPaint(dcMem.m_hDC);
 	}
 

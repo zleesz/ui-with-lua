@@ -3,6 +3,8 @@
 #include "UITreeContainer.h"
 #include "UILuaManager.h"
 #include <Util.h>
+#include <UIParser.h>
+
 #define ADD_MSG_MAP_MEMBER(theChainClass) \
 	{ \
 		theChainClass.ProcessWindowMessage(hWnd, uMsg, wParam, lParam, lResult); \
@@ -20,10 +22,12 @@ public:
 	BEGIN_MSG_MAP(CUIFrameWindow)
 		MESSAGE_HANDLER(WM_PAINT, OnPaint)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
+		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
 		ADD_MSG_MAP_MEMBER((*m_pUIEventWindow))
 		CHAIN_MSG_MAP_MEMBER((*m_pUITreeContainer))
 	END_MSG_MAP()
 public:
+	LRESULT OnEraseBackground(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/) { return 1;}    // no background painting needed
 	LRESULT OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:

@@ -191,3 +191,56 @@ void CUIControlBase::SetCaptureMouse(BOOL bCapture)
 		return;
 	m_pTree->SetCaptureMouse(this, bCapture);
 }
+
+void CUIControlBase::OnInitControl()
+{
+	
+}
+
+void CUIControlBase::OnDetroy()
+{
+	
+}
+
+void CUIControlBase::OnLButtonDown(int x, int y)
+{
+	
+}
+
+void CUIControlBase::OnLButtonUp(int x, int y)
+{
+	
+}
+
+void CUIControlBase::OnLButtonDbClick(int x, int y)
+{
+	
+}
+
+void CUIControlBase::OnMouseMove(int x, int y)
+{
+	
+}
+
+void CUIControlBase::OnMouseLeave(int x, int y)
+{
+	
+}
+
+void CUIControlBase::OnMouseWheel(int x, int y)
+{
+	
+}
+
+void CUIControlBase::FireUIEvent(std::string strName, int x, int y)
+{
+	LOG_AUTO();
+	CComVariant avarParams[3];
+	avarParams[0].vt = VT_BYREF | VT_I4;
+	avarParams[0].lVal = (LONG)(LONG_PTR)this;
+	avarParams[1] = x;
+	avarParams[2] = y;
+
+	UIDISPPARAMS params = { avarParams, strName.c_str(), 3, 0 };
+	m_pUIEventControl->DispatchListener(params);
+}

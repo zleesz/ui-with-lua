@@ -16,12 +16,13 @@ public:
 	void Render(CDCHandle dc);
 	virtual void OnInitControl();
 	virtual void OnDetroy();
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonDown);
 	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonUp);
 	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonDbClick);
 	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseMove);
 	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseLeave);
 	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseWheel);
+	virtual void OnRButtonUp(int x, int y);
+	virtual void OnLButtonDown(int x, int y);
 public:
 	static int GetID(lua_State* L);
 	static int GetStretch(lua_State* L);
@@ -48,4 +49,6 @@ public:
 		LUA_CALL_ENTRY(GetOwnerTree)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUIImage, UI.Image);
+public:
+	LOG_CLS_DEC();
 };

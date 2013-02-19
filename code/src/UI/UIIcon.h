@@ -2,6 +2,7 @@
 #include "UIResBase.h"
 #include <Util.h>
 #include <uiluax.h>
+#include <UIParser.h>
 
 class CUIIcon : public CUIResBase
 {

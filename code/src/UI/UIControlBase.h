@@ -30,17 +30,19 @@ public:
 	CUIEventCtrlContainer* m_pUIEventControl;
 private:
 	void SetID(std::string strID);
+protected:
+	void FireUIEvent(std::string strName, int x, int y);
 public:
 	virtual ControlType GetType() = 0;
 	virtual void Render(CDCHandle dc) = 0;
-	virtual void OnInitControl() = 0;
-	virtual void OnDetroy() = 0;
-	virtual void OnLButtonDown(int x, int y) = 0;
-	virtual void OnLButtonUp(int x, int y) = 0;
-	virtual void OnLButtonDbClick(int x, int y) = 0;
-	virtual void OnMouseMove(int x, int y) = 0;
-	virtual void OnMouseLeave(int x, int y) = 0;
-	virtual void OnMouseWheel(int x, int y) = 0;
+	virtual void OnInitControl();
+	virtual void OnDetroy();
+	virtual void OnLButtonDown(int x, int y);
+	virtual void OnLButtonUp(int x, int y);
+	virtual void OnLButtonDbClick(int x, int y);
+	virtual void OnMouseMove(int x, int y);
+	virtual void OnMouseLeave(int x, int y);
+	virtual void OnMouseWheel(int x, int y);
 public:
 	const std::string& GetID();
 	void SetAttr(std::string strName, std::string strValue);
@@ -53,6 +55,8 @@ public:
 	const RECT& GetObjPos();
 	void Invalidate();
 	void SetCaptureMouse(BOOL bCapture);
+public:
+	LOG_CLS_DEC();
 };
 
 #define UICONTROL_DEFAULT_MOUSE_METHOD(method) \
