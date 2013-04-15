@@ -58,6 +58,8 @@ const std::string& UILuaVMManager::GetLuaVMName(lua_State* L)
 		if(it->second == L)
 			return it->first;
 	}
+	static std::string nullString;
+	return nullString;
 }
 
 void UILuaVMManager::DestroyLuaVM(const char* szVMName)

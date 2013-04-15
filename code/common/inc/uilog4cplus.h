@@ -26,7 +26,7 @@
 #define LOG_CLS_DEC_EX(loggername) \
 	static inline HINSTANCE GetCurrentModuleHandle(void) \
 	{ \
-	static HINSTANCE hCurrentModule = 0; \
+	static HINSTANCE hCurrentModule = NULL; \
 	if(NULL == hCurrentModule) \
 		{ \
 		MEMORY_BASIC_INFORMATION m = { 0 }; \
@@ -44,7 +44,7 @@
 	static TCHAR* getModuleName() \
 	{ \
 	static TCHAR s_szModuleFileName[MAX_PATH] = {0}; \
-	if(s_szModuleFileName[0] == _T('\0')) \
+	if(_T('\0') == s_szModuleFileName[0]) \
 		{ \
 		HINSTANCE hInst = GetCurrentModuleHandle(); \
 		::GetModuleFileName(hInst, s_szModuleFileName, MAX_PATH); \
@@ -79,21 +79,30 @@
 	__if_exists(this) { LOGGER_FATAL(getLogger(), msg); } \
 	__if_not_exists(this) { LOGGER_FATAL(LOGGER_DEFAULT(), msg); }
 
+#define LOG_AUTO_REAL(file, line) \
+	CLogAuto logAuto( LOG4CPLUS_C_STR_TO_TSTRING(file), line, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__) );
 #define LOG_AUTO() \
-	CLogAuto logAuto( LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__) );
+	LOG_AUTO_REAL(__FILE__, __LINE__)
 #define LOG_CLS_AUTO_DEC() \
 class CLogAuto \
 { \
 public: \
-	CLogAuto(log4cplus::tstring tszFuncSig) : m_pszFuncSig(tszFuncSig) \
+	CLogAuto(log4cplus::tstring file, LONG line, log4cplus::tstring tszFuncSig) : \
+		m_pszFuncSig(tszFuncSig), \
+		m_pszFile(file) \
 	{ \
-	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "->" << m_pszFuncSig << ']' ); \
+	char szLine[20] = {0}; \
+	sprintf_s(szLine, "%d", line); \
+	m_pszLine = LOG4CPLUS_C_STR_TO_TSTRING(szLine); \
+	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "->" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_pszLine << "]"); \
 	} \
 	~CLogAuto() \
 	{ \
-	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "<-" << m_pszFuncSig << ']' ); \
+	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "<-" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_pszLine << "]"); \
 	} \
 private: \
 	log4cplus::tstring m_pszFuncSig; \
+	log4cplus::tstring m_pszFile; \
+	log4cplus::tstring m_pszLine; \
 }
 //////////////////////////////////////////////////////////////////////////
