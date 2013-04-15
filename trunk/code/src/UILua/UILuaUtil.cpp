@@ -74,7 +74,7 @@ int UILuaUtil::on_error(lua_State *L)
 	return 0;	
 }
 
-void UILuaUtil::UISetEnviroment(lua_State* luaState)
+void UILuaUtil::UISetEnviroment(lua_State* /*luaState*/)
 {
 	/*lua_pushstring(L, "__index");
 	lua_pushvalue(L, -2);
@@ -201,6 +201,7 @@ int UILuaUtil::UILuaCall(lua_State* luaState, int args, int results)
 
 int UILuaUtil::UILuaLog(lua_State* luaState)
 {
+	LOG_METHOD();
 	int top = lua_gettop(luaState);
 	std::string strInfo("<UILOG> ");
 	for(int i = 1; i <= top; i++)
@@ -210,7 +211,7 @@ int UILuaUtil::UILuaLog(lua_State* luaState)
 		{
 			int n = (int)lua_tointeger(luaState, i);
 			char szN[30] = {0};
-			itoa(n, szN, 10);
+			_itoa(n, szN, 10);
 			strInfo += szN;
 		}
 		else if(lua_isstring(luaState, i))

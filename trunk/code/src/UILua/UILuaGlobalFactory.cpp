@@ -49,6 +49,7 @@ void UILuaGlobalFactory::RegisterGlobal(lua_State* L, UILuaObject theObj)
 
 	int top = lua_gettop(L);
 	int n = luaL_newmetatable(L, pTheObj->ObjName);
+	LOG_TRACE("n : " << n);
 	lua_pushstring(L, "__gc");
 	lua_pushcfunction(L, &UILuaGlobalFactory::gc_obj);
 	lua_settable(L, -3);

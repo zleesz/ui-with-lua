@@ -74,7 +74,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="UILua.lib"
+				AdditionalDependencies="log4cplusud.lib UILua.lib"
 				OutputFile="$(OutDir)/$(ProjectName).exe"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../common/lib/$(ConfigurationName);../../../bin/$(ConfigurationName);"

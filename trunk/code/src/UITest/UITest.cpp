@@ -42,6 +42,7 @@ void InitUIModule()
 	ATLASSERT(spManager);
 	// initial instance
 	CUILuaClass* pUILuaClass = CUILuaClass::GetInstance();
+	pUILuaClass;
 #ifdef _DEBUG
 	::PathAppend(tszSkinPath, _T("..\\..\\code\\skin\\test"));
 #else

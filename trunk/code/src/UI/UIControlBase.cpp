@@ -113,7 +113,7 @@ ULONG CUIControlBase::GetZorder()
 
 const RECT& CUIControlBase::GetObjPos()
 {
-	RECT rc = {};
+	static RECT rc = {};
 	CComVariant vLeft, vTop, vWidth, vHeight;
 	GetAttr("left", &vLeft);
 	GetAttr("top", &vTop);

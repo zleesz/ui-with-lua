@@ -151,7 +151,7 @@ void CUIImagelist::CropBlockBitmap()
 	if(!m_bVertical)
 	{
 		uint32_t uWidth = pImage->GetWidth();
-		int nBlock = uWidth / m_uBlockSize + 0.5;
+		int nBlock = (int)(uWidth / m_uBlockSize + 0.5);
 		RECT lrc = {0};
 		lrc.left = 0;
 		lrc.top = 0;
