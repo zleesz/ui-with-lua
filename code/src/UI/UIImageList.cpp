@@ -5,22 +5,15 @@
 CUIImagelist::~CUIImagelist(void)
 {
 	UnRegisterClass(this);
-	if(m_pImage)
+	if (m_pBitmapList)
 	{
-		delete m_pImage;
-		m_pImage = NULL;
+		delete m_pBitmapList;
+		m_pBitmapList = NULL;
 	}
-	for(int i = 0; i < (int)m_VecImage.size(); i++)
-	{
-		delete m_VecImage[i];
-		m_VecImage[i] = NULL;
-	}
-	m_VecImage.clear();
-	m_VecBitmap.clear();
 }
 
 CUIImagelist::CUIImagelist(LPXMLDOMNode pNode, const char* pszPath)
-	: CUIResBase(pNode), m_uBlockSize(0), m_bSeparator(FALSE), m_bVertical(FALSE), m_VecBitmap(NULL), m_VecImage(NULL), m_pImage(NULL)
+	: CUIResBase(pNode), m_pBitmapList(NULL)
 {
 	RegisterClass(this);
 	if(pNode == NULL)
@@ -35,44 +28,8 @@ CUIImagelist::CUIImagelist(LPXMLDOMNode pNode, const char* pszPath)
 	PathCombineA(szPath, szPath, strPath.c_str());
 	m_strPath = szPath;
 
-	std::string strSeperator = (*pMapAttr)["seperator"];
-	std::string strBlockSize = (*pMapAttr)["blocksize"];
-	std::string strVertical = (*pMapAttr)["vertical"];
-	if(strSeperator == "1" || strSeperator == "true")
-	{
-		m_bSeparator = TRUE;
-	}
-	else if(strBlockSize.length() > 0)
-	{
-		m_uBlockSize = atoi(strBlockSize.c_str());
-	}
-	else
-	{
-		ATLASSERT(FALSE);
-	}
-	if(strVertical == "1" || strVertical == "true")
-	{
-		m_bVertical = TRUE;
-	}
-	LPXMLChildNodes pChildNodes = pNode->pMapChildNode;
-	if(NULL == pChildNodes)
-	{
-		return;
-	}
-	XMLChildNodes::const_iterator it = pChildNodes->find("bitmap");
-	LPXMLVecNodes pVecNodes = it->second->pVecNode;
-	if(NULL == pVecNodes)
-	{
-		return;
-	}
-	XMLVecNodes::const_iterator it2 = pVecNodes->begin();
-	for(; it2 != pVecNodes->end(); it2++)
-	{
-		LPXMLDOMNode pChildNode = *it2;
-		CUIBitmap* pBitmap = new CUIBitmap(pChildNode, this);
-		m_VecBitmap.push_back(pBitmap);
-		UIResFactoryInstance->AddRes(pBitmap);
-	}
+	Bitmap* pBitmap = ImageLoaderFactory::Instance()->LoadImageFromFile(m_strPath.c_str(), 0);
+	m_pBitmapList = new BitmapList(pBitmap);
 }
 
 ResourceType CUIImagelist::GetType()
@@ -89,17 +46,16 @@ int CUIImagelist::GetID(lua_State* L)
 	return 1;
 }
 
-CxImage* CUIImagelist::GetImage()
+BitmapList* CUIImagelist::GetImageList()
 {
-	if(m_pImage == NULL)
+	if(m_pBitmapList == NULL)
 	{
 		ATLASSERT(::PathFileExistsA(m_strPath.c_str()));
 		if(!::PathFileExistsA(m_strPath.c_str()))
 			return NULL;
-		m_pImage = new CxImage;
+		m_pBitmapList = new BitmapList;
 		std::wstring wstrPath;
 		Util::StringToWideString(m_strPath.c_str(), wstrPath);
-		m_pImage->Load(wstrPath.c_str(), CXIMAGE_FORMAT_PNG);
 	}
 	return m_pImage;
 }

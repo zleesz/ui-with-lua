@@ -201,7 +201,7 @@ int UILuaUtil::UILuaCall(lua_State* luaState, int args, int results)
 
 int UILuaUtil::UILuaLog(lua_State* luaState)
 {
-	LOG_METHOD();
+	// LOG_METHOD();
 	int top = lua_gettop(luaState);
 	std::string strInfo("<UILOG> ");
 	for(int i = 1; i <= top; i++)
