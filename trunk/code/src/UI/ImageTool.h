@@ -1,5 +1,4 @@
 #pragma once
-#include "ximage.h"
 #define WIDTHBYTES(bits) ((DWORD)(((bits)+31) & (~31)) / 8)
 
 typedef std::vector<int> VecLinePos;

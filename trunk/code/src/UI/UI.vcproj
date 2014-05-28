@@ -19,7 +19,7 @@
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="..\..\..\bin\$(ConfigurationName)"
-			IntermediateDirectory="Debug"
+			IntermediateDirectory="..\..\..\tmp\$(ConfigurationName)\$(ProjectName)"
 			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfATL="1"
@@ -78,7 +78,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="log4cplusud.lib libexpat.lib UILua.lib UI_CxImage.lib"
+				AdditionalDependencies="log4cplusud.lib libexpat.lib UILua.lib UIGraphic.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../common/lib;../../common/lib/$(ConfigurationName);../../../bin/$(ConfigurationName);"
@@ -304,14 +304,6 @@
 				RelativePath=".\UI.rc"
 				>
 			</File>
-			<File
-				RelativePath=".\UI.rgs"
-				>
-			</File>
-			<File
-				RelativePath=".\UIManager.rgs"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="Generated Files"
@@ -422,11 +414,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\UIImagelist.cpp"
+				RelativePath=".\UIImageList.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\UIImagelist.h"
+				RelativePath=".\UIImageList.h"
 				>
 			</File>
 			<File
