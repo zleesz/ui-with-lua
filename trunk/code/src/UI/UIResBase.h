@@ -9,6 +9,7 @@ typedef enum enumResourceType {
 	RT_UIBITMAP,
 	RT_UIIMAGELIST,
 	RT_UIICON,
+	RT_TEXTURE
 } ResourceType;
 
 class CUIResBase
