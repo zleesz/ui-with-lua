@@ -433,6 +433,14 @@
 				RelativePath=".\UIResFactory.h"
 				>
 			</File>
+			<File
+				RelativePath=".\UITexture.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UITexture.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="UIControl"
