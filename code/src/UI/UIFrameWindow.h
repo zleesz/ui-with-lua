@@ -61,6 +61,9 @@ public:
 		LUA_CALL_ENTRY(AddInputFilter)
 		LUA_CALL_ENTRY(AttachListener)
 		LUA_CALL_ENTRY(DetachListener)
+		LUA_CALL_ENTRY(Min)
+		LUA_CALL_ENTRY(Max)
+		LUA_CALL_ENTRY(Restore)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUIFrameWindow, UI.FrameWindow);
 public:

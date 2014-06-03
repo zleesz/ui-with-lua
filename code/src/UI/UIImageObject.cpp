@@ -123,6 +123,10 @@ void CUIImageObject::SetAttr(std::string strName, std::string strValue)
 
 void CUIImageObject::Render(CDCHandle dc)
 {
+	if (!CUIControlBase::GetVisible())
+	{
+		return;
+	}
 	CUIBitmap* pUIBitmap = UIResFactoryInstance->GetBitmap(m_strImageID.c_str());
 	if(NULL == pUIBitmap)
 	{

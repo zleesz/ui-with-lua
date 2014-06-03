@@ -23,8 +23,27 @@ function OnFocusChange(self, focus, lastwnd)
 	UILog("OnFocusChange", focus, lastwnd)
 end
 
+function OnSize(self, _type, width, height)
+	
+end
+
 function OnBkgLButtonDown(self)
 	UIMessageBox("OnBkgLButtonDown")
+end
+
+function OnMinClick(self)
+	local hostwnd = self:GetOwnerTree():GetOwnerWnd()
+	hostwnd:Min()
+end
+
+function OnMaxClick(self)
+	local hostwnd = self:GetOwnerTree():GetOwnerWnd()
+	hostwnd:Max()
+end
+
+function OnRestoreClick(self)
+	local hostwnd = self:GetOwnerTree():GetOwnerWnd()
+	hostwnd:Restore()
 end
 
 function OnCloseClick(self)

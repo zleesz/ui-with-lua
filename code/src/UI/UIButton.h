@@ -64,6 +64,7 @@ public:
 	static int GetID(lua_State* L);
 	static int GetVisible(lua_State* L);
 	static int GetEnable(lua_State* L);
+	static int GetOwnerTree(lua_State* L);
 public:
 	UICONTROL_GETTYPE_METHOD(CT_UIButton)
 	virtual void Render(CDCHandle dc);
@@ -85,6 +86,7 @@ public:
 		LUA_CALL_ENTRY(GetID)
 		LUA_CALL_ENTRY(GetVisible)
 		LUA_CALL_ENTRY(GetEnable)
+		LUA_CALL_ENTRY(GetOwnerTree)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUIButton, UI.Button);
 public:
