@@ -10,6 +10,7 @@ extern "C"
 
 #include <string>
 #include <map>
+#include "uilog4cplus.h"
 
 
 class UILuaVMManager
@@ -37,6 +38,8 @@ public:
 	void DestroyLuaVM(const char* szVMName);
 public:
 	static UILuaVMManager& GetInstance();
+public:
+	LOG_CLS_DEC();
 };
 
 #define UILuaVMManagerInstance UILuaVMManager::GetInstance()

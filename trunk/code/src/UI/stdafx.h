@@ -42,4 +42,3 @@
 using namespace ATL;
 
 #include <uilog4cplus.h>
-#include "../../UIGraphic/Graphic.h"

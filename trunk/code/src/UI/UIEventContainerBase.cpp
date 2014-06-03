@@ -210,6 +210,7 @@ BOOL CUIEventContainerBase::OnBindEvent(const std::string& strPath)
 
 void CUIEventContainerBase::PushEventParams(UIDISPPARAMS& params)
 {
+	LOG_AUTO();
 	lua_State* L = UILuaGetLuaVM(NULL);
 	for(int i = 0; i < (int)params.nArgs; i++)
 	{

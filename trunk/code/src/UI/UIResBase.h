@@ -2,6 +2,7 @@
 #include <string>
 #include <Util.h>
 #include <UIParser.h>
+#include "UIGraphic.h"
 
 typedef enum enumResourceType {
 	RT_UICOLOR = 1,
@@ -9,7 +10,7 @@ typedef enum enumResourceType {
 	RT_UIBITMAP,
 	RT_UIIMAGELIST,
 	RT_UIICON,
-	RT_TEXTURE
+	RT_UITEXTURE
 } ResourceType;
 
 class CUIResBase
@@ -29,7 +30,7 @@ private:
 	std::string m_strID;
 public:
 	virtual ResourceType GetType() = 0;	// return parser type
-	const char* GetID()
+	virtual const char* GetPrivateID()
 	{
 		return m_strID.c_str();
 	};

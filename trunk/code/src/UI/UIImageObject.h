@@ -4,13 +4,13 @@
 #include <Util.h>
 #include "UITreeContainer.h"
 
-class CUIImage :
+class CUIImageObject :
 	public CUIControlBase
 {
 public:
-	CUIImage(void);
-	CUIImage(CUITreeContainer* pTree, LPXMLDOMNode pNode);
-	virtual ~CUIImage(void);
+	CUIImageObject(void);
+	CUIImageObject(CUITreeContainer* pTree, LPXMLDOMNode pNode);
+	virtual ~CUIImageObject(void);
 public:
 	UICONTROL_GETTYPE_METHOD(CT_UIImage)
 	void Render(CDCHandle dc);
@@ -38,7 +38,7 @@ private:
 	std::string m_strImageID;
 	BOOL m_bStretch;
 public:
-	BEGIN_LUA_CALL_MAP(CUIImage)
+	BEGIN_LUA_CALL_MAP(CUIImageObject)
 		LUA_CALL_ENTRY(GetID)
 		LUA_CALL_ENTRY(SetStretch)
 		LUA_CALL_ENTRY(GetStretch)
@@ -48,7 +48,7 @@ public:
 		LUA_CALL_ENTRY(GetEnable)
 		LUA_CALL_ENTRY(GetOwnerTree)
 	END_LUA_CALL_MAP
-	LUA_CALL_REGISTER_OBJECT(CUIImage, UI.Image);
+	LUA_CALL_REGISTER_OBJECT(CUIImageObject, UI.Image);
 public:
 	LOG_CLS_DEC();
 };

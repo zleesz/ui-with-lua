@@ -13,7 +13,7 @@
 // for log in global
 #define LOGGER_DEC(logger)                      extern log4cplus::Logger logger
 #define LOGGER_IMP_EX(logger, loggername)       log4cplus::Logger logger = log4cplus::Logger::getInstance( loggername )
-#define LOGGER_DEFAULT()						log4cplus::Logger::getInstance( _T("global") )
+#define LOGGER_DEFAULT()						log4cplus::Logger::getInstance( _T("-") )
 #define LOGGER_METHOD(logger)                   LOG4CPLUS_TRACE_METHOD(logger, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__))
 #define LOGGER_TRACE(logger,msg)                LOG4CPLUS_TRACE(logger, '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << LOG4CPLUS_C_STR_TO_TSTRING(__FUNCTION__) << "] " << msg )
 #define LOGGER_DEBUG(logger,msg)                LOG4CPLUS_DEBUG(logger, '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << LOG4CPLUS_C_STR_TO_TSTRING(__FUNCTION__) << "] " << msg )
@@ -94,11 +94,11 @@ public: \
 	char szLine[20] = {0}; \
 	sprintf_s(szLine, "%d", line); \
 	m_pszLine = LOG4CPLUS_C_STR_TO_TSTRING(szLine); \
-	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "->" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_pszLine << "]"); \
+	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "¡ú" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_pszLine << "]"); \
 	} \
 	~CLogAuto() \
 	{ \
-	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "<-" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_pszLine << "]"); \
+	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "¡û" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_pszLine << "]"); \
 	} \
 private: \
 	log4cplus::tstring m_pszFuncSig; \

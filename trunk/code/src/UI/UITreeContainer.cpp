@@ -1,6 +1,6 @@
 #include "StdAfx.h"
 #include "UITreeContainer.h"
-#include "UIImage.h"
+#include "UIImageObject.h"
 #include "UIButton.h"
 #include "UIWindowBase.h"
 
@@ -45,7 +45,7 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 				CUIControlBase* pUICtrl = NULL;
 				if((*pAttrObj)["class"] == "UIImage")
 				{
-					pUICtrl = new CUIImage(this, pObjNode2);
+					pUICtrl = new CUIImageObject(this, pObjNode2);
 				}
 				else if((*pAttrObj)["class"] == "UIButton")
 				{
@@ -186,7 +186,7 @@ int CUITreeContainer::AddUIObject(lua_State* L)
 	int nIndex = 0;
 	if(lua_gettop(L) >= 3)
 	{
-		nIndex = lua_tointeger(L, -3);
+		nIndex = (int)lua_tointeger(L, -3);
 	}
 	pThis->m_mapCtrl.insert(ID2ControlMap::value_type(pControl->GetID(), pControl));
 	TreeModifyData tmd;
@@ -304,7 +304,7 @@ LRESULT CUITreeContainer::OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 
 LRESULT CUITreeContainer::OnCaptureChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
 {
-	LOG_DEBUG("lParam : " << lParam);
+	LOG_DEBUG("lParam : " << (LONG)lParam);
 	m_pCaptrueControl = NULL;
 	return 0;
 }

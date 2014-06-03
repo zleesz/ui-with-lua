@@ -13,11 +13,11 @@ public:
 	CUIBitmap(LPXMLDOMNode pNode, CUIImagelist* pImagelist);
 	virtual ~CUIBitmap(void);
 private:
-	BITMAP_HANDLE* m_pBitmap;
+	BITMAP_HANDLE m_hBitmap;
 public:
 	virtual ResourceType GetType() { return RT_UIBITMAP; };
 	static int GetID(lua_State* L);
-	void Render(HDC dc, const RECT& rc, BOOL bStretch);
+	BITMAP_HANDLE GetBitmap();
 public:
 	BEGIN_LUA_CALL_MAP(CUIBitmap)
 		LUA_CALL_ENTRY(GetID)

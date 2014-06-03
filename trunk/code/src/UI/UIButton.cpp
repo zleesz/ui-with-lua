@@ -56,7 +56,8 @@ void CUIButtonBitmap::Render(CDCHandle dc, const RECT& rc, ButtonState brt)
 	{
 		return ;
 	}
-	pUIBitmap->Render(dc, rc, TRUE);
+	BITMAP_HANDLE hBitmap = pUIBitmap->GetBitmap();
+	UIGraphicInstance->AlphaPaintBitmap(dc.m_hDC, hBitmap, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 }
 
 void CUIButtonImagelist::Init(const LPXMLChildNodes pXMLChildNodes)
@@ -77,12 +78,12 @@ void CUIButtonImagelist::Render(CDCHandle dc, const RECT& rc, ButtonState brt)
 		ATLASSERT(FALSE);
 		return ;
 	}
-	CxImage* pImage = pImagelist->GetImageByIndex(brt);
-	if(NULL == pImage)
+	BITMAP_HANDLE hBitmap = pImagelist->GetBitmapByIndex(brt);
+	if(NULL == hBitmap)
 	{
 		return ;
 	}
-	pImage->Draw(dc.m_hDC, rc);
+	UIGraphicInstance->AlphaPaintBitmap(dc.m_hDC, hBitmap, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 }
 
 CUIButton::CUIButton(CUITreeContainer* pTree, LPXMLDOMNode pNode)

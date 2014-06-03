@@ -10,42 +10,48 @@ extern "C"
 };
 
 #include "TimerManger.h"
+#include "UIGraphic.h"
+#include "UIWindowFactory.h"
 
 // CUIManager
 void CUIManager::InitLog4CPlus()
 {
+	LOG_AUTO();
 	TCHAR szCfgName[MAX_PATH] = {0};
 	::GetModuleFileName(_AtlBaseModule.m_hInst, szCfgName, MAX_PATH);
 	::PathRemoveFileSpec(szCfgName);
 	::PathAppend(szCfgName, _T("log4cplus.cfg"));
 
-	::OutputDebugString( szCfgName );
+	::OutputDebugString(szCfgName);
 
-	if( ::PathFileExists(szCfgName) )
+	if (::PathFileExists(szCfgName))
 	{
-		::OutputDebugString( szCfgName );
+		::OutputDebugString(szCfgName);
 		LOG_INIT_EX((LPCTSTR)szCfgName);
 	}
 	else
 	{
-		OutputDebugString( _T("log4cplus.cfg") );
+		OutputDebugString(_T("log4cplus.cfg"));
 		LOG_INIT();
 	}
 }
 
-#include "UIWindowFactory.h"
-void CUIManager::CreateDefaultLuaVM()
-{
-	UILuaCreateLuaVM(NULL);
-}
-
 HRESULT CUIManager::FinalConstruct()
 {
+	LOG_AUTO();
 	InitLog4CPlus();
-	CreateDefaultLuaVM();
+	UILuaCreateLuaVM(NULL);
 	// init timermanager
 	CUITimerManger::GetInstance();
+	UIGraphicInstance->InitGraphic();
 	return S_OK;
+}
+
+void CUIManager::FinalRelease()
+{
+	LOG_AUTO();
+	UILuaDestroyLuaVM(NULL);
+	UIGraphicInstance->UnInitGraphic();
 }
 
 STDMETHODIMP CUIManager::LoadSkin(BSTR bstrPath)

@@ -46,7 +46,7 @@ void CUIResFactory::AddResElement(LPXMLDOMNode pNode, const char* pszPath)
 		return;
 	}
 	ResourceType pt = pUIBase->GetType();
-	const char* pszID = pUIBase->GetID();
+	const char* pszID = pUIBase->GetPrivateID();
 	LOG_DEBUG("id=" << pszID << ", type=" << pt);
 	LPUIID2ResMap pUIID2ResMap = NULL;
 	PT2MapResMap::const_iterator itMap = m_mapRes.find(pt);
@@ -79,7 +79,7 @@ void CUIResFactory::AddRes(CUIResBase* pRes)
 		return;
 	}
 	ResourceType pt = pRes->GetType();
-	const char* pszID = pRes->GetID();
+	const char* pszID = pRes->GetPrivateID();
 	LOG_DEBUG("id=" << pszID << ", type=" << pt);
 	LPUIID2ResMap pUIID2ResMap = NULL;
 	PT2MapResMap::const_iterator itMap = m_mapRes.find(pt);
@@ -143,6 +143,11 @@ CUIIcon* CUIResFactory::GetIcon(const char* id)
 CUIImagelist* CUIResFactory::GetImagelist(const char* id)
 {
 	return GetResObject<CUIImagelist, RT_UIIMAGELIST>(id);
+}
+
+CUITexture* CUIResFactory::GetTexture(const char* id)
+{
+	return GetResObject<CUITexture, RT_UITEXTURE>(id);
 }
 
 template <class T, ResourceType pt>
@@ -222,4 +227,17 @@ int CUIResFactory::GetImagelist(lua_State* L)
 	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
 	ATLASSERT(pThis);
 	return pThis->PushResObject<CUIImagelist, RT_UIIMAGELIST>(L);
+}
+
+int CUIResFactory::GetTexture(lua_State* L)
+{
+	int top = lua_gettop(L);
+	if(top < 2)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	return pThis->PushResObject<CUITexture, RT_UITEXTURE>(L);
 }

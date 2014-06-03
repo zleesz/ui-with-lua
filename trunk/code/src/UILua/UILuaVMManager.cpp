@@ -4,6 +4,7 @@
 
 lua_State* UILuaVMManager::CreateLuaVM(const char* szVMName)
 {
+	LOG_AUTO();
 	std::string strVMName;
 	if(szVMName == NULL) // default vm
 	{
@@ -64,6 +65,7 @@ const std::string& UILuaVMManager::GetLuaVMName(lua_State* L)
 
 void UILuaVMManager::DestroyLuaVM(const char* szVMName)
 {
+	LOG_AUTO();
 	std::string strVMName;
 	if(szVMName == NULL) // default vm
 	{

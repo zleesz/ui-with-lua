@@ -1,5 +1,7 @@
 #pragma once
 #include "UIResBase.h"
+#include <uiluax.h>
+#include <UIParser.h>
 
 class CUIImagelist :
 	public CUIResBase
@@ -10,14 +12,15 @@ public:
 	CUIImagelist(LPXMLDOMNode pNode, const char* pszPath);
 	virtual ~CUIImagelist(void);
 private:
-	BITMAPLIST_HANDLE* GetImageList();
+	BITMAPLIST_HANDLE GetImageList();
 public:
-	virtual ResourceType GetType();
+	virtual ResourceType GetType() { return RT_UIIMAGELIST; }
 	static int GetID(lua_State* L);
-	BITMAP_HANDLE* GetBitmapByIndex(int nIndex);
+	BITMAP_HANDLE GetBitmapByIndex(int nIndex);
 private:
-	std::string m_strPath;		// file path
-	BITMAPLIST_HANDLE* m_pBitmapList;
+	std::wstring m_strPath;		// file path
+	BITMAPLIST_HANDLE m_hBitmapList;
+	BITMAP_HANDLE m_hBitmap;
 public:
 	BEGIN_LUA_CALL_MAP(CUIImagelist)
 		LUA_CALL_ENTRY(GetID)
