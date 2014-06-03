@@ -81,7 +81,7 @@ TEXTURE_HANDLE CUITexture::CreateTextureFromBitmap(LPXMLAttrMap pMapAttr)
 	}
 	else
 	{
-		m_hTexture = UIGraphicInstance->CreateTileTexture(hBitmap);
+		m_hTexture = UIGraphicInstance->CreateFillTexture(hBitmap);
 	}
 	assert(m_hTexture);
 	return m_hTexture;

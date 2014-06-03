@@ -63,6 +63,7 @@ public:
 public:
 	static int GetID(lua_State* L);
 	static int GetVisible(lua_State* L);
+	static int SetVisible(lua_State* L);
 	static int GetEnable(lua_State* L);
 	static int GetOwnerTree(lua_State* L);
 public:
@@ -85,6 +86,7 @@ public:
 	BEGIN_LUA_CALL_MAP(CUIButton)
 		LUA_CALL_ENTRY(GetID)
 		LUA_CALL_ENTRY(GetVisible)
+		LUA_CALL_ENTRY(SetVisible)
 		LUA_CALL_ENTRY(GetEnable)
 		LUA_CALL_ENTRY(GetOwnerTree)
 	END_LUA_CALL_MAP

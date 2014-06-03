@@ -6,6 +6,7 @@
 #include <winuser.h>
 #include <atltypes.h>
 #include <uilog4cplus.h>
+
 typedef struct tagFilterNode
 {
 	int nFunc;

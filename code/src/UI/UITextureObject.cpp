@@ -161,10 +161,10 @@ void CUITextureObject::OnDetroy()
 
 void CUITextureObject::OnRButtonUp(int x, int y)
 {
-	FireUIEvent("OnRButtonUp", x, y);
+	FireMouseEvent("OnRButtonUp", x, y);
 }
 
 void CUITextureObject::OnLButtonDown(int x, int y)
 {
-	FireUIEvent("OnLButtonDown", x, y);
+	FireMouseEvent("OnLButtonDown", x, y);
 }

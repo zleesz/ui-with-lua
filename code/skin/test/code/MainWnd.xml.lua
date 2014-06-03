@@ -24,7 +24,16 @@ function OnFocusChange(self, focus, lastwnd)
 end
 
 function OnSize(self, _type, width, height)
-	
+	if _type == 2 then -- max
+		local tree = self:GetTreeContainer()
+		tree:GetUIObject("button.max"):SetVisible(false)
+		tree:GetUIObject("button.restore"):SetVisible(true)
+	elseif _type == 0 then -- restore
+		local tree = self:GetTreeContainer()
+		local btnMax = tree:GetUIObject("button.max")
+		btnMax:SetVisible(true)
+		tree:GetUIObject("button.restore"):SetVisible(false)
+	end
 end
 
 function OnBkgLButtonDown(self)

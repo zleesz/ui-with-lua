@@ -170,6 +170,12 @@ BOOL CUIControlBase::GetVisible()
 	return bVisible;
 }
 
+void CUIControlBase::SetVisible(BOOL bVisible)
+{
+	SetAttr("visible", bVisible ? "true" : "false");
+	Invalidate();
+}
+
 BOOL CUIControlBase::GetEnable()
 {
 	BOOL bEnable = TRUE;
@@ -240,7 +246,7 @@ void CUIControlBase::OnMouseWheel(int x, int y)
 	
 }
 
-void CUIControlBase::FireUIEvent(std::string strName, int x, int y)
+void CUIControlBase::FireMouseEvent(std::string strName, int x, int y)
 {
 	LOG_AUTO();
 	CComVariant avarParams[3];

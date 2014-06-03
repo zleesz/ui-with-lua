@@ -24,6 +24,7 @@ private:
 	typedef std::map<std::string, UILuaObject*> ID2LuaObjectMap;
 	typedef std::map<lua_State*, ID2LuaObjectMap*> LuaVM2MapLuaObjectMap;
 	LuaVM2MapLuaObjectMap m_mapGlobalObject;
+	typedef struct { void *p; } userdataType;
 public:
 	bool IsGlobalRegistered(lua_State* L, const char* szName);
 	void UnRegisterGlobal(const char* /*szName*/);

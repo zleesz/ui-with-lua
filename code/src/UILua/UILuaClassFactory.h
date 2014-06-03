@@ -24,8 +24,10 @@ private:
 	typedef std::map<const void*, UILuaObject*> Obj2LuaObjectMap;
 	typedef std::map<lua_State*, Obj2LuaObjectMap*> LuaVM2MapLuaObjectMap;
 	LuaVM2MapLuaObjectMap m_mapClassObject;
+	typedef struct { void *p; } userdataType;
 public:
-	bool IsClassRegistered(lua_State* L, void* obj);
+	bool IsClassObjectRegistered(lua_State* L, void* obj);
+	bool IsClassRegistered(lua_State* L, const char* pszName);
 	void UnRegisterClass(lua_State* L, void* obj);
 	void RegisterClass(lua_State* L, UILuaObject theObj);
 	void PushClassObj(lua_State* luaState, const void* obj);

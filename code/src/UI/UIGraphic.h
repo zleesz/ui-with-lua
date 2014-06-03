@@ -25,6 +25,7 @@ public:
 	typedef BITMAP_HANDLE (__stdcall *UIGraphic_GetBitmapFromList_Func)(BITMAPLIST_HANDLE, unsigned long);
 	typedef BYTE* (__stdcall *UIGraphic_GetBitmapBuffer_Func)(BITMAP_HANDLE,unsigned long,unsigned long);
 	typedef HBITMAP (__stdcall *UIGraphic_CreateHBitmapFromHandle_Func)(BITMAP_HANDLE bitmapSrc);
+	typedef TEXTURE_HANDLE (__stdcall *UIGraphic_CreateFillTexture_Func)(BITMAP_HANDLE hBitmap);
 	typedef TEXTURE_HANDLE (__stdcall *UIGraphic_CreateTileTexture_Func)(BITMAP_HANDLE hBitmap);
 	typedef TEXTURE_HANDLE(__stdcall *UIGraphic_CreateThreeInOneHTexture_Func)(BITMAP_HANDLE, bool);
 	typedef TEXTURE_HANDLE(__stdcall *UIGraphic_CreateThreeInOneVTexture_Func)(BITMAP_HANDLE, bool);
@@ -36,7 +37,8 @@ public:
 	typedef unsigned long(__stdcall *UIGraphic_AddRefTexture_Func)(TEXTURE_HANDLE);
 	typedef unsigned long(__stdcall *UIGraphic_ReleaseRefTexture_Func)(TEXTURE_HANDLE);
 
-	typedef BOOL (WINAPI *UIGraphic_lpfnLayWindowAttribute) (HWND hWnd, COLORREF cr, BYTE bAlpha, DWORD dwFlags);
+	typedef BOOL (WINAPI *UIGraphic_lpfnSetLayeredWindowAttribute)(HWND hWnd, COLORREF cr, BYTE bAlpha, DWORD dwFlags);
+	typedef BOOL (WINAPI *UIGraphic_lpfnUpdateLayeredWindow)(HWND hWnd, HDC hdcDst, POINT *pptDst, SIZE *psize, HDC hdcSrc, POINT *pptSrc, COLORREF crKey, BLENDFUNCTION *pblend, DWORD dwFlags);
 protected:
 	UIGraphic_InitGraphic_Func               m_fnInitGraphicLib;
 	UIGraphic_UnInitGraphic_Func             m_fnUnInitGraphicLib;
@@ -55,6 +57,7 @@ protected:
 	UIGraphic_GetBitmapFromList_Func         m_fnGetBitmapFromList;
 	UIGraphic_GetBitmapBuffer_Func           m_fnGetBitmapBuffer;
 	UIGraphic_CreateHBitmapFromHandle_Func   m_fnCreateHBitmapFromHandle;
+	UIGraphic_CreateFillTexture_Func		 m_fnCreateFillTexture;
 	UIGraphic_CreateTileTexture_Func		 m_fnCreateTileTexture;
 	UIGraphic_CreateThreeInOneHTexture_Func	 m_fnCreateThreeInOneHTexture;
 	UIGraphic_CreateThreeInOneVTexture_Func  m_fnCreateThreeInOneVTexture;
@@ -66,7 +69,8 @@ protected:
 	UIGraphic_AddRefTexture_Func             m_fnAddRefTexture;
 	UIGraphic_ReleaseRefTexture_Func         m_fnReleaseRefTexture;
 	//USER32.DLLµÄAPI
-	UIGraphic_lpfnLayWindowAttribute         m_fnLayWindowAttribute;
+	UIGraphic_lpfnSetLayeredWindowAttribute  m_fnSetLayeredWindowAttribute;
+	UIGraphic_lpfnUpdateLayeredWindow		 m_fnUpdateLayeredWindow;
 public:
 	BOOL InitGraphic();
 	void UnInitGraphic();
@@ -90,7 +94,8 @@ public:
 	BYTE* GetBitmapBuffer(BITMAP_HANDLE hBitmap,unsigned long x,unsigned long y);
 	BITMAP_HANDLE GetBitmapFromList(BITMAPLIST_HANDLE xlBitmapList, unsigned long index);
 	HBITMAP CreateHBitmapFromHandle(BITMAP_HANDLE bitmapSrc);
-	TEXTURE_HANDLE CreateTileTexture(BITMAP_HANDLE xlhbmpSrc);
+	TEXTURE_HANDLE CreateFillTexture(BITMAP_HANDLE hBitmap);
+	TEXTURE_HANDLE CreateTileTexture(BITMAP_HANDLE hBitmap);
 	TEXTURE_HANDLE CreateThreeInOneHTexture(BITMAP_HANDLE xlhbmpSrc, bool bStretchCenter = true);
 	TEXTURE_HANDLE CreateThreeInOneVTexture(BITMAP_HANDLE xlhbmpSrc, bool bStretchCenter = true);
 	TEXTURE_HANDLE CreateFiveInOneHTexture(BITMAP_HANDLE xlhbmpSrc);
@@ -100,7 +105,8 @@ public:
 	BITMAP_HANDLE UpdateTexture(TEXTURE_HANDLE xlTexture, SIZE newSize);
 	unsigned long AddRefTexture(TEXTURE_HANDLE xlTexture);
 	unsigned long ReleaseTexture(TEXTURE_HANDLE xlTexture);
-	BOOL XBSetLayeredWindowAttributes(HWND hWnd, COLORREF cr, BYTE bAlpha, DWORD dwFlags);
+	BOOL SetLayeredWindowAttributes(HWND hWnd, COLORREF cr, BYTE bAlpha, DWORD dwFlags);
+	BOOL UpdateLayeredWindow(HWND hWnd, HDC hdcDst, POINT *pptDst, SIZE *psize, HDC hdcSrc, POINT *pptSrc, COLORREF crKey, BLENDFUNCTION *pblend, DWORD dwFlags);
 	HRGN GetRgnFromXLBitmap(BITMAP_HANDLE xlBmp,DWORD dwColor);
 private:
 	HMODULE m_hGraphicDll;

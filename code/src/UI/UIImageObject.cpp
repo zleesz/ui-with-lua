@@ -159,10 +159,10 @@ void CUIImageObject::OnDetroy()
 
 void CUIImageObject::OnRButtonUp(int x, int y)
 {
-	FireUIEvent("OnRButtonUp", x, y);
+	FireMouseEvent("OnRButtonUp", x, y);
 }
 
 void CUIImageObject::OnLButtonDown(int x, int y)
 {
-	FireUIEvent("OnLButtonDown", x, y);
+	FireMouseEvent("OnLButtonDown", x, y);
 }

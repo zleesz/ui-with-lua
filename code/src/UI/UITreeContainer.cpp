@@ -10,7 +10,7 @@ CUITreeContainer::CUITreeContainer(void)
 }
 
 CUITreeContainer::CUITreeContainer(CUIWindowBase* p)
-	: m_pBindWnd(p), m_pMouseControl(NULL), m_pCaptrueControl(NULL)
+	: m_pBindWnd(p), m_pMouseControl(NULL), m_pCaptrueControl(NULL), m_bTrackLeave(FALSE)
 {
 	LOG_AUTO();
 	RegisterClass(this);
@@ -18,6 +18,7 @@ CUITreeContainer::CUITreeContainer(CUIWindowBase* p)
 
 CUITreeContainer::~CUITreeContainer(void)
 {
+	UnRegisterClass(this);
 }
 
 BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
@@ -280,6 +281,16 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	// indexer zorder and hit test the object;
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
+	if (!m_bTrackLeave)  
+	{  
+		// 鼠标移入窗时，请求 WM_MOUSELEAVE 消息  
+		TRACKMOUSEEVENT tme;  
+		tme.cbSize = sizeof(tme);  
+		tme.hwndTrack = m_pBindWnd->m_hWnd;  
+		tme.dwFlags = TME_LEAVE;  
+		tme.dwHoverTime = HOVER_DEFAULT;  
+		m_bTrackLeave = TrackMouseEvent(&tme);  
+	}
 	if(NULL != m_pCaptrueControl)
 	{
 		const RECT rc = m_pCaptrueControl->GetObjPos();
@@ -310,9 +321,9 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 			const RECT rc = m_pMouseControl->GetObjPos();
 			m_pMouseControl->OnMouseLeave(xPos - rc.left, yPos - rc.top);
 		}
+		m_pMouseControl = pControl;
 		const RECT rc = pControl->GetObjPos();
 		pControl->OnMouseMove(xPos - rc.left, yPos - rc.top);
-		m_pMouseControl = pControl;
 	}
 	else
 	{
@@ -320,8 +331,24 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 		{
 			const RECT rc = m_pMouseControl->GetObjPos();
 			m_pMouseControl->OnMouseLeave(xPos - rc.left, yPos - rc.top);
+			m_pMouseControl = NULL;
 		}
 	}
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnMouseLeave(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	// indexer zorder and hit test the object;
+	int xPos = GET_X_LPARAM(lParam);
+	int yPos = GET_Y_LPARAM(lParam);
+	if (m_pMouseControl)
+	{
+		const RECT rc = m_pMouseControl->GetObjPos();
+		m_pMouseControl->OnMouseLeave(xPos - rc.left, yPos - rc.top);
+		m_pMouseControl = NULL;
+	}
+	m_bTrackLeave = FALSE;
 	return 0;
 }
 

@@ -21,6 +21,7 @@ CUIGraphic::CUIGraphic(void)
 	m_fnGetBitmapListCount = NULL;
 	m_fnGetBitmapFromList = NULL;
 	m_fnCreateHBitmapFromHandle = NULL;
+	m_fnCreateFillTexture = NULL;
 	m_fnCreateTileTexture = NULL;
 	m_fnCreateThreeInOneHTexture = NULL;
 	m_fnCreateThreeInOneVTexture = NULL;
@@ -30,7 +31,8 @@ CUIGraphic::CUIGraphic(void)
 	m_fnGetCellBitmapFromTexture = NULL;
 	m_fnAddRefTexture = NULL;
 	m_fnReleaseRefTexture = NULL;
-	m_fnLayWindowAttribute = NULL;
+	m_fnSetLayeredWindowAttribute = NULL;
+	m_fnUpdateLayeredWindow = NULL;
 }
 
 CUIGraphic::~CUIGraphic(void)
@@ -70,6 +72,7 @@ BOOL CUIGraphic::InitGraphic()
 	m_fnGetBitmapBuffer  = (UIGraphic_GetBitmapBuffer_Func)::GetProcAddress(m_hGraphicDll, "_GetBitmapBuffer@12");
 	m_fnGetBitmapFromList = (UIGraphic_GetBitmapFromList_Func)::GetProcAddress(m_hGraphicDll, "_GetBitmapFromList@8");
 	m_fnCreateHBitmapFromHandle = (UIGraphic_CreateHBitmapFromHandle_Func)::GetProcAddress(m_hGraphicDll, "_CreateHBitmapFromHandle@4");
+	m_fnCreateFillTexture = (UIGraphic_CreateFillTexture_Func)GetProcAddress(m_hGraphicDll,"_CreateFillTexture@4");
 	m_fnCreateTileTexture = (UIGraphic_CreateTileTexture_Func)GetProcAddress(m_hGraphicDll,"_CreateTileTexture@4");
 	m_fnCreateThreeInOneHTexture = (UIGraphic_CreateThreeInOneHTexture_Func)::GetProcAddress(m_hGraphicDll, "_CreateThreeInOneHTexture@8");
 	m_fnCreateThreeInOneVTexture = (UIGraphic_CreateThreeInOneVTexture_Func)::GetProcAddress(m_hGraphicDll, "_CreateThreeInOneVTexture@8");
@@ -85,7 +88,8 @@ BOOL CUIGraphic::InitGraphic()
 	HMODULE hUser32 = GetModuleHandle(_T("USER32.DLL"));
 	if(hUser32)
 	{
-		m_fnLayWindowAttribute = (UIGraphic_lpfnLayWindowAttribute)::GetProcAddress(hUser32, "SetLayeredWindowAttributes");
+		m_fnSetLayeredWindowAttribute = (UIGraphic_lpfnSetLayeredWindowAttribute)::GetProcAddress(hUser32, "SetLayeredWindowAttributes");
+		m_fnUpdateLayeredWindow = (UIGraphic_lpfnUpdateLayeredWindow)GetProcAddress(hUser32, "UpdateLayeredWindow");
 	}
 
 	if (m_fnInitGraphicLib == NULL || m_fnUnInitGraphicLib == NULL 
@@ -94,12 +98,13 @@ BOOL CUIGraphic::InitGraphic()
 		|| m_fnBitmapAlphaBlend == NULL || m_fnPaintBitmap == NULL || m_fnAlphaPaintBitmap == NULL
 		|| m_fnCreateBitmapList == NULL || m_fnAddRefBitmapList == NULL || m_fnReleaseBitmapList == NULL 
 		|| m_fnGetBitmapListCount == NULL || m_fnGetBitmapFromList == NULL || m_fnGetBitmapBuffer == NULL|| m_fnCreateHBitmapFromHandle == NULL
-		|| m_fnCreateTileTexture == NULL || m_fnCreateThreeInOneHTexture == NULL || m_fnCreateThreeInOneVTexture == NULL
+		|| m_fnCreateTileTexture == NULL || m_fnCreateFillTexture == NULL
+		|| m_fnCreateThreeInOneHTexture == NULL || m_fnCreateThreeInOneVTexture == NULL
 		|| m_fnCreateFiveOneHTexture == NULL || m_fnCreateFiveOneVTexture == NULL
 		|| m_fnCreateNineOneTexture == NULL
 		|| m_fnUpdateTexture == NULL || m_fnGetCellBitmapFromTexture == NULL 
 		|| m_fnAddRefTexture == NULL ||m_fnReleaseRefTexture == NULL
-		|| m_fnLayWindowAttribute == NULL)
+		|| m_fnSetLayeredWindowAttribute == NULL)
 	{
 		return FALSE;
 	}
@@ -294,9 +299,14 @@ HBITMAP CUIGraphic::CreateHBitmapFromHandle(BITMAP_HANDLE bitmapSrc)
 	return m_fnCreateHBitmapFromHandle(bitmapSrc);
 }
 
-TEXTURE_HANDLE CUIGraphic::CreateTileTexture(BITMAP_HANDLE xlhbmpSrc)
+TEXTURE_HANDLE CUIGraphic::CreateFillTexture(BITMAP_HANDLE hBitmap)
 {
-	return m_fnCreateTileTexture(xlhbmpSrc);
+	return m_fnCreateFillTexture(hBitmap);
+}
+
+TEXTURE_HANDLE CUIGraphic::CreateTileTexture(BITMAP_HANDLE hBitmap)
+{
+	return m_fnCreateTileTexture(hBitmap);
 }
 
 TEXTURE_HANDLE CUIGraphic::CreateThreeInOneHTexture(BITMAP_HANDLE xlhbmpSrc, bool bStretchCenter /*= true*/)
@@ -344,9 +354,14 @@ unsigned long CUIGraphic::ReleaseTexture(TEXTURE_HANDLE xlTexture)
 	return m_fnReleaseRefTexture(xlTexture);
 }
 
-BOOL CUIGraphic::XBSetLayeredWindowAttributes(HWND hWnd, COLORREF cr, BYTE bAlpha, DWORD dwFlags)
+BOOL CUIGraphic::SetLayeredWindowAttributes(HWND hWnd, COLORREF cr, BYTE bAlpha, DWORD dwFlags)
 {
-	return m_fnLayWindowAttribute(hWnd,cr,bAlpha,dwFlags);
+	return m_fnSetLayeredWindowAttribute(hWnd, cr, bAlpha, dwFlags);
+}
+
+BOOL CUIGraphic::UpdateLayeredWindow(HWND hWnd, HDC hdcDst, POINT *pptDst, SIZE *psize, HDC hdcSrc, POINT *pptSrc, COLORREF crKey, BLENDFUNCTION *pblend, DWORD dwFlags)
+{
+	return m_fnUpdateLayeredWindow(hWnd, hdcDst, pptDst, psize, hdcSrc, pptSrc, crKey, pblend, dwFlags);
 }
 
 #define ALLOC_UNIT 100
