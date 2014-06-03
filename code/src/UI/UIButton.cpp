@@ -34,30 +34,31 @@ void CUIButtonBitmap::Init(const LPXMLChildNodes pXMLChildNodes)
 
 void CUIButtonBitmap::Render(CDCHandle dc, const RECT& rc, ButtonState brt)
 {
-	CUIBitmap* pUIBitmap = NULL;
+	CUITexture* pUITexture = NULL;
 	switch(brt)
 	{
 	case BS_NORMAL:
-		pUIBitmap = UIResFactoryInstance->GetBitmap(m_strNormalBkg.c_str());
+		pUITexture = UIResFactoryInstance->GetTexture(m_strNormalBkg.c_str());
 		break;
 	case BS_HOVER:
-		pUIBitmap = UIResFactoryInstance->GetBitmap(m_strHoverBkg.c_str());
+		pUITexture = UIResFactoryInstance->GetTexture(m_strHoverBkg.c_str());
 		break;
 	case BS_DOWN:
-		pUIBitmap = UIResFactoryInstance->GetBitmap(m_strDownBkg.c_str());
+		pUITexture = UIResFactoryInstance->GetTexture(m_strDownBkg.c_str());
 		break;
 	case BS_DISABLE:
-		pUIBitmap = UIResFactoryInstance->GetBitmap(m_strDisableBkg.c_str());
+		pUITexture = UIResFactoryInstance->GetTexture(m_strDisableBkg.c_str());
 		break;
 	default:
 		break;
 	}
-	if(NULL == pUIBitmap)
+	if(NULL == pUITexture)
 	{
 		return ;
 	}
-	BITMAP_HANDLE hBitmap = pUIBitmap->GetBitmap();
-	UIGraphicInstance->AlphaPaintBitmap(dc.m_hDC, hBitmap, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
+	SIZE sz = {rc.right - rc.left, rc.bottom - rc.top};
+	BITMAP_HANDLE hBitmap = pUITexture->GetTextureBitmap(sz);
+	UIGraphicInstance->AlphaPaintBitmap(dc.m_hDC, hBitmap, rc.left, rc.top, sz.cx, sz.cy);
 }
 
 void CUIButtonImagelist::Init(const LPXMLChildNodes pXMLChildNodes)

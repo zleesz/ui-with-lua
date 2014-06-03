@@ -16,7 +16,7 @@ private:
 	virtual ~CUIResFactory(void);
 public:
 	void AddResElement(LPXMLDOMNode pNode, const char* pszPath);
-	void AddRes(CUIResBase* pRes);
+	BOOL AddRes(CUIResBase* pRes);
 	CUIColor* GetColor(const char* id);
 	CUIFont* GetFont(const char* id);
 	CUIBitmap* GetBitmap(const char* id);

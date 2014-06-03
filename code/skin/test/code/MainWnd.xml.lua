@@ -27,8 +27,8 @@ function OnBkgLButtonDown(self)
 	UIMessageBox("OnBkgLButtonDown")
 end
 
-function OnOpenClick(self)
-	UIMessageBox("OnOpenClick")
+function OnCloseClick(self)
+	UITest.LuaClass:Exit()
 end
 
 AsynCall(function()
