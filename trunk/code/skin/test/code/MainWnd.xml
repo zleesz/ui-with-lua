@@ -35,6 +35,58 @@
 					<zorder>20</zorder>
 				</attr>
 			</obj>
+			<obj id="button.min" class="UIButton">
+				<attr>
+					<left>297</left>
+					<top>0</top>
+					<width>29</width>
+					<height>24</height>
+					<zorder>100</zorder>
+					<normalbkg>texture.mainframe.system.min.btn.normal</normalbkg>
+					<hoverbkg>texture.mainframe.system.min.btn.hover</hoverbkg>
+					<downbkg>texture.mainframe.system.min.btn.down</downbkg>
+					<disablebkg>texture.mainframe.system.min.btn.disable</disablebkg>
+					<!--<imagelist>imagelist.mainwnd.test.btn</imagelist>-->
+				</attr>
+				<eventlist>
+					<event name="OnClick" file="MainWnd.xml.lua" func="OnMinClick" />
+				</eventlist>
+			</obj>
+			<obj id="button.max" class="UIButton">
+				<attr>
+					<left>326</left>
+					<top>0</top>
+					<width>29</width>
+					<height>24</height>
+					<zorder>100</zorder>
+					<normalbkg>texture.mainframe.system.max.btn.normal</normalbkg>
+					<hoverbkg>texture.mainframe.system.max.btn.hover</hoverbkg>
+					<downbkg>texture.mainframe.system.max.btn.down</downbkg>
+					<disablebkg>texture.mainframe.system.max.btn.disable</disablebkg>
+					<!--<imagelist>imagelist.mainwnd.test.btn</imagelist>-->
+				</attr>
+				<eventlist>
+					<event name="OnClick" file="MainWnd.xml.lua" func="OnMaxClick" />
+				</eventlist>
+			</obj>
+			<obj id="button.restore" class="UIButton">
+				<attr>
+					<left>326</left>
+					<top>0</top>
+					<width>29</width>
+					<height>24</height>
+					<zorder>100</zorder>
+					<normalbkg>texture.mainframe.system.restore.btn.normal</normalbkg>
+					<hoverbkg>texture.mainframe.system.restore.btn.hover</hoverbkg>
+					<downbkg>texture.mainframe.system.restore.btn.down</downbkg>
+					<disablebkg>texture.mainframe.system.restore.btn.disable</disablebkg>
+					<visible>false</visible>
+					<!--<imagelist>imagelist.mainwnd.test.btn</imagelist>-->
+				</attr>
+				<eventlist>
+					<event name="OnClick" file="MainWnd.xml.lua" func="OnRestoreClick" />
+				</eventlist>
+			</obj>
 			<obj id="button.close" class="UIButton">
 				<attr>
 					<left>355</left>
@@ -60,6 +112,7 @@
 			<event name="OnMove" file="MainWnd.xml.lua" func="OnMove" />
 			<event name="OnMoving" file="MainWnd.xml.lua" func="OnMoving" />
 			<event name="OnFocusChange" file="MainWnd.xml.lua" func="OnFocusChange" />
+			<event name="OnSize" file="MainWnd.xml.lua" func="OnSize" />
 		</eventlist>
 	</hostwnd>
 </ui>

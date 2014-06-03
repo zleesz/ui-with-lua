@@ -9,7 +9,7 @@ function Filter(wnd, msg, wparam, lparam)
 end
 
 function OnClose(self)
-	UIMessageBox(self:GetID())
+	--UIMessageBox(self:GetID())
 end
 
 function bbbb()

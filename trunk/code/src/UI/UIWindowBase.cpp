@@ -145,3 +145,36 @@ int CUIWindowBase::DetachListener(lua_State* L)
 	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
 	return pThis->m_pUIEventWindow->DetachListener(L);
 }
+
+int CUIWindowBase::Min(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	if (!pThis->m_hWnd)
+	{
+		return 0;
+	}
+	::SendMessage(pThis->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+	return 0;
+}
+
+int CUIWindowBase::Max(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	if (!pThis->m_hWnd)
+	{
+		return 0;
+	}
+	::SendMessage(pThis->m_hWnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+	return 0;
+}
+
+int CUIWindowBase::Restore(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	if (!pThis->m_hWnd)
+	{
+		return 0;
+	}
+	::SendMessage(pThis->m_hWnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+	return 0;
+}

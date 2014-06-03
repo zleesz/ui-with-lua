@@ -161,6 +161,14 @@ int CUIButton::GetEnable(lua_State* L)
 	return 1;
 }
 
+int CUIButton::GetOwnerTree(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	UILuaPushClassObj(L, pThis->GetOwnerTree());
+	return 1;
+}
+
 void CUIButton::SetAttr(std::string strName, std::string strValue)
 {
 	__super::SetAttr(strName, strValue);
@@ -172,6 +180,10 @@ void CUIButton::Render(CDCHandle dc)
 	{
 		ATLASSERT(FALSE);
 		return ;
+	}
+	if (!CUIControlBase::GetVisible())
+	{
+		return;
 	}
 	const RECT rc = GetObjPos();
 	m_pButton->Render(dc, rc, m_state);
@@ -238,22 +250,23 @@ void CUIButton::OnLButtonUp(int x, int y)
 {
 	LOG_AUTO();
 	BOOL bEnable = CUIControlBase::GetEnable();
-	if(m_state == BS_DOWN)
+	if (m_state != BS_DOWN)
 	{
-		const RECT rc = GetObjPos();
-		if(OnHitTest(x + rc.left, y + rc.top))
-		{
-			m_state = BS_HOVER;
-		}
-		else
-		{
-			m_state = BS_NORMAL;
-		}
-		Invalidate();
-		SetCaptureMouse(FALSE);
-		if(m_state == BS_HOVER)
-		{
-			FireOnClick(x, y);
-		}
+		return;
+	}
+	const RECT rc = GetObjPos();
+	if(OnHitTest(x + rc.left, y + rc.top))
+	{
+		m_state = BS_HOVER;
+	}
+	else
+	{
+		m_state = BS_NORMAL;
+	}
+	Invalidate();
+	SetCaptureMouse(FALSE);
+	if(m_state == BS_HOVER)
+	{
+		FireOnClick(x, y);
 	}
 }
