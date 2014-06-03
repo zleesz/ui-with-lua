@@ -35,6 +35,42 @@ CUIImagelist::CUIImagelist(LPXMLDOMNode pNode, const char* pszPath)
 	Util::StringToWideString(szPath, m_strPath);
 	
 	m_hBitmap = UIGraphicInstance->LoadBitmapFromFile(m_strPath.c_str());
+	if (m_hBitmap == NULL)
+	{
+		assert(false);
+		return;
+	}
+	LPXMLChildNodes pChildNode = pNode->pMapChildNode;
+	if (pChildNode == NULL)
+	{
+		return;
+	}
+	XMLChildNodes::iterator it = pChildNode->begin();
+	for (; it != pChildNode->end(); it++)
+	{
+		LPXMLVecNodes pVecNodes = it->second->pVecNode;
+		for(int i = 0; i < (int)pVecNodes->size(); i++)
+		{
+			CUIResBase* pUIBase = NULL;
+			if((*pVecNodes)[i]->strName == "bitmap")
+			{
+				pUIBase = new CUIBitmap((*pVecNodes)[i], this);
+			}
+			else if((*pVecNodes)[i]->strName == "texture")
+			{
+				pUIBase = new CUITexture((*pVecNodes)[i], this);
+			}
+			if(NULL == pUIBase)
+			{
+				continue;
+			}
+			if (!UIResFactoryInstance->AddRes(pUIBase))
+			{
+				delete pUIBase;
+				pUIBase = NULL;
+			}
+		}
+	}
 }
 
 int CUIImagelist::GetID(lua_State* L)

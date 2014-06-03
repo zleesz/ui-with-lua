@@ -314,6 +314,14 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 		pControl->OnMouseMove(xPos - rc.left, yPos - rc.top);
 		m_pMouseControl = pControl;
 	}
+	else
+	{
+		if(m_pMouseControl)
+		{
+			const RECT rc = m_pMouseControl->GetObjPos();
+			m_pMouseControl->OnMouseLeave(xPos - rc.left, yPos - rc.top);
+		}
+	}
 	return 0;
 }
 

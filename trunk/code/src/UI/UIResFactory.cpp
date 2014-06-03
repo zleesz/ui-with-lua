@@ -76,11 +76,11 @@ void CUIResFactory::AddResElement(LPXMLDOMNode pNode, const char* pszPath)
 	}
 }
 
-void CUIResFactory::AddRes(CUIResBase* pRes)
+BOOL CUIResFactory::AddRes(CUIResBase* pRes)
 {
 	if(NULL == pRes)
 	{
-		return;
+		return FALSE;
 	}
 	ResourceType pt = pRes->GetType();
 	const char* pszID = pRes->GetPrivateID();
@@ -100,11 +100,10 @@ void CUIResFactory::AddRes(CUIResBase* pRes)
 	if(it == pUIID2ResMap->end())
 	{
 		pUIID2ResMap->insert(UIID2ResMap::value_type(pszID, pRes));
+		return TRUE;
 	}
-	else
-	{
-		ATLASSERT(FALSE);
-	}
+	ATLASSERT(FALSE);
+	return FALSE;
 }
 
 template <class T, ResourceType pt>

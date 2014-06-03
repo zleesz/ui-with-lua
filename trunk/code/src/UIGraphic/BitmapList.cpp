@@ -52,13 +52,13 @@ unsigned long BitmapList::GetBitmapCount()
 Bitmap* BitmapList::GetBitmapByIndex(unsigned long index)
 {
 	//加个保护，NULL指针访问崩溃比越界容易解...
-	if (index >= m_allSubBitmaps.size())
+	if (index > m_allSubBitmaps.size())
 	{
 		assert(false);
 		return NULL;
 	}
-    m_allSubBitmaps[index]->AddRef();
-    return m_allSubBitmaps[index];
+    m_allSubBitmaps[index-1]->AddRef();
+    return m_allSubBitmaps[index-1];
 }
 
 bool BitmapList::IsSplitPoint(long colorType,BYTE* pNowRead)

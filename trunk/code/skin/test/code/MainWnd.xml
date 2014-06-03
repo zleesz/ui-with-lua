@@ -20,9 +20,9 @@
 					<stretch>false</stretch>
 					<visible>true</visible>
 				</attr>
-				<evenlist>
+				<eventlist>
 					<event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" />
-				</evenlist>
+				</eventlist>
 			</obj>
 			<obj id="image.title" class="UIImageObject">
 				<attr>
@@ -34,27 +34,22 @@
 					<visible>true</visible>
 					<zorder>20</zorder>
 				</attr>
-				<!--
-				<evenlist>
-					<event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" />
-				</evenlist>
-				-->
 			</obj>
-			<obj id="button.open" class="UIButton">
+			<obj id="button.close" class="UIButton">
 				<attr>
-					<left>120</left>
-					<top>150</top>
-					<width>100</width>
-					<height>30</height>
+					<left>355</left>
+					<top>0</top>
+					<width>45</width>
+					<height>24</height>
 					<zorder>100</zorder>
-					<normalbkg>bitmap.mainwnd.test.btn.normal</normalbkg>
-					<hoverbkg>bitmap.mainwnd.test.btn.hover</hoverbkg>
-					<downbkg>bitmap.mainwnd.test.btn.down</downbkg>
-					<disablebkg>bitmap.mainwnd.test.btn.disable</disablebkg>
+					<normalbkg>texture.mainframe.system.close.btn.normal</normalbkg>
+					<hoverbkg>texture.mainframe.system.close.btn.hover</hoverbkg>
+					<downbkg>texture.mainframe.system.close.btn.down</downbkg>
+					<disablebkg>texture.mainframe.system.close.btn.disable</disablebkg>
 					<!--<imagelist>imagelist.mainwnd.test.btn</imagelist>-->
 				</attr>
 				<eventlist>
-					<event name="OnClick" file="MainWnd.xml.lua" func="OnOpenClick" />
+					<event name="OnClick" file="MainWnd.xml.lua" func="OnCloseClick" />
 				</eventlist>
 			</obj>
 		</uitree>
