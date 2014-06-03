@@ -45,6 +45,12 @@ CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	m_pUIEventControl->OnBindEvent(m_pTree->GetBindWnd()->GetXMLPath());
 }
 
+CUIControlBase::CUIControlBase(CUITreeContainer* pTree)
+: m_pTree(pTree), m_pUIEventControl(NULL)
+{
+	m_pUIEventControl = new CUIEventCtrlContainer;
+}
+
 CUIControlBase::~CUIControlBase(void)
 {
 }
@@ -92,9 +98,11 @@ const std::string& CUIControlBase::GetID()
 	return m_strID;
 }
 
-void CUIControlBase::SetID(std::string strID)
+std::string CUIControlBase::SetID(const std::string& strID)
 {
+	std::string strOldID = m_strID;
 	m_strID = strID;
+	return strOldID;
 }
 
 CUITreeContainer* CUIControlBase::GetOwnerTree()

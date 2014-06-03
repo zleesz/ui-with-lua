@@ -45,6 +45,12 @@ CUIImageObject::CUIImageObject(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	}
 }
 
+CUIImageObject::CUIImageObject(CUITreeContainer* pTree)
+: CUIControlBase(pTree), m_bStretch(FALSE)
+{
+	RegisterClass(this);
+}
+
 CUIImageObject::~CUIImageObject(void)
 {
 	UnRegisterClass(this);

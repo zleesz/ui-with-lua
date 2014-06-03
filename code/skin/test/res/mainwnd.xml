@@ -1,5 +1,5 @@
 <ui>
-	<bitmap id="bitmap.mainwnd.background.png" type="NineInOne" path="bitmap\mainwnd\bitmap.background.png" />
+	<texture id="texture.mainwnd.background.png" type="NineInOne" path="bitmap\mainwnd\bitmap.background.png" />
 	<bitmap id="bitmap.mainwnd.title.png" type="NineInOne" path="bitmap\mainwnd\bitmap.title.png" />
 	<!--bitmap id="bitmap.background_.png" type="ThreeInOneH" path="bitmap\mainwnd\bitmap.background_.png" /-->
 	

@@ -1,6 +1,7 @@
 #include "StdAfx.h"
 #include "UITreeContainer.h"
 #include "UIImageObject.h"
+#include "UITextureObject.h"
 #include "UIButton.h"
 #include "UIWindowBase.h"
 
@@ -43,13 +44,21 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 				if(pAttrObj == NULL)
 					continue;
 				CUIControlBase* pUICtrl = NULL;
-				if((*pAttrObj)["class"] == "UIImage")
+				if((*pAttrObj)["class"] == "UIImageObject")
 				{
 					pUICtrl = new CUIImageObject(this, pObjNode2);
+				}
+				else if((*pAttrObj)["class"] == "UITextureObject")
+				{
+					pUICtrl = new CUITextureObject(this, pObjNode2);
 				}
 				else if((*pAttrObj)["class"] == "UIButton")
 				{
 					pUICtrl = new CUIButton(this, pObjNode2);
+				}
+				else
+				{
+					assert(false && "unknown control class.");
 				}
 				if(pUICtrl == NULL)
 					continue;
@@ -199,6 +208,52 @@ int CUITreeContainer::AddUIObject(lua_State* L)
 
 int CUITreeContainer::CreateUIObject(lua_State* L)
 {
+	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
+	if(NULL == pThis)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	if(lua_gettop(L) < 3)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	const char* pszID = lua_tostring(L, -2);
+	const char* pszClass = lua_tostring(L, -3);
+	if(NULL == pszID || pszClass)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	ID2ControlMap::const_iterator it = pThis->m_mapCtrl.find(pszID);
+	if (it != pThis->m_mapCtrl.end())
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	CUIControlBase* pUICtrl = NULL;
+	if(strcmp(pszClass, "UIImageObject") == 0)
+	{
+		pUICtrl = new CUIImageObject(pThis);
+	}
+	else if(strcmp(pszClass, "UITextureObject") == 0)
+	{
+		pUICtrl = new CUITextureObject(pThis);
+	}
+	else if(strcmp(pszClass, "UIButton") == 0)
+	{
+		pUICtrl = new CUIButton(pThis);
+	}
+	else
+	{
+		assert(false && "unknown control class.");
+	}
+	if(pUICtrl == NULL)
+		return 0;
+	pUICtrl->SetID(pszID);
+	pThis->m_mapCtrl[pszID] = pUICtrl;
+	UILuaPushClassObj(L, pUICtrl);
 	return 1;
 }
 
@@ -210,11 +265,13 @@ void CUITreeContainer::OnTreeModify(const LPTreeModifyData ptmt)
 
 LRESULT CUITreeContainer::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+	/*
 	ID2ControlMap::const_iterator it = m_mapCtrl.begin();
 	for(; it != m_mapCtrl.end(); it++)
 	{
 		CUIControlBase* pUICtrl = it->second;
 	}
+	*/
 	return 0;
 }
 
