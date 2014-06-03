@@ -124,6 +124,12 @@ CUIButton::CUIButton(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	m_pButton->Init(pAttrChildNodes);
 }
 
+CUIButton::CUIButton(CUITreeContainer* pTree)
+: CUIControlBase(pTree), m_state(BS_NORMAL), m_pButton(NULL)
+{
+	RegisterClass(this);
+}
+
 CUIButton::~CUIButton(void)
 {
 	UnRegisterClass(this);

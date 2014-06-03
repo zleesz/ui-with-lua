@@ -10,6 +10,7 @@ class CUIImageObject :
 public:
 	CUIImageObject(void);
 	CUIImageObject(CUITreeContainer* pTree, LPXMLDOMNode pNode);
+	CUIImageObject(CUITreeContainer* pTree);
 	virtual ~CUIImageObject(void);
 public:
 	UICONTROL_GETTYPE_METHOD(CT_UIImage)
@@ -48,7 +49,7 @@ public:
 		LUA_CALL_ENTRY(GetEnable)
 		LUA_CALL_ENTRY(GetOwnerTree)
 	END_LUA_CALL_MAP
-	LUA_CALL_REGISTER_OBJECT(CUIImageObject, UI.Image);
+	LUA_CALL_REGISTER_OBJECT(CUIImageObject, UI.ImageObject);
 public:
 	LOG_CLS_DEC();
 };

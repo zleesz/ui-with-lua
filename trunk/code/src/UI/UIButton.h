@@ -58,6 +58,7 @@ public:
 	CUIButton(void) {};
 public:
 	CUIButton(CUITreeContainer* pTree, LPXMLDOMNode pNode);
+	CUIButton(CUITreeContainer* pTree);
 	virtual ~CUIButton(void);
 public:
 	static int GetID(lua_State* L);

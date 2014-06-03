@@ -41,6 +41,10 @@ void CUIResFactory::AddResElement(LPXMLDOMNode pNode, const char* pszPath)
 	{
 		pUIBase = new CUIImagelist(pNode, pszPath);
 	}
+	else if(pNode->strName == "texture")
+	{
+		pUIBase = new CUITexture(pNode, pszPath);
+	}
 	if(NULL == pUIBase)
 	{
 		return;

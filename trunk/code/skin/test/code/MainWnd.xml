@@ -10,13 +10,13 @@
 			<title>测试窗口</title>
 		</attr>
 		<uitree>
-			<obj id="image.bkg" class="UIImage">
+			<obj id="image.bkg" class="UITextureObject">
 				<attr>
 					<left>0</left>
 					<top>0</top>
 					<width>400</width>
 					<height>400</height>
-					<image>bitmap.mainwnd.background.png</image>
+					<texture>texture.mainwnd.background.png</texture>
 					<stretch>false</stretch>
 					<visible>true</visible>
 				</attr>
@@ -24,7 +24,7 @@
 					<event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" />
 				</evenlist>
 			</obj>
-			<obj id="image.title" class="UIImage">
+			<obj id="image.title" class="UIImageObject">
 				<attr>
 					<left>0</left>
 					<top>0</top>

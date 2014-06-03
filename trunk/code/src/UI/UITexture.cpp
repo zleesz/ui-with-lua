@@ -102,7 +102,16 @@ int CUITexture::GetBitmap(lua_State* L)
 	return 1;
 }
 
-BITMAP_HANDLE CUITexture::GetTexture()
+TEXTURE_HANDLE CUITexture::GetTexture()
 {
 	return m_hTexture;
+}
+
+BITMAP_HANDLE CUITexture::GetTextureBitmap(SIZE& sz)
+{
+	if (!m_hTexture)
+	{
+		return NULL;
+	}
+	return UIGraphicInstance->UpdateTexture(m_hTexture, sz);
 }

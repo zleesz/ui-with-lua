@@ -16,10 +16,12 @@ private:
 	TEXTURE_HANDLE m_hTexture;
 	CUIBitmap* m_pBitmap;
 public:
-	virtual ResourceType GetType() { return RT_UITEXTURE; };
 	static int GetID(lua_State* L);
 	static int GetBitmap(lua_State* L);
+public:
+	virtual ResourceType GetType() { return RT_UITEXTURE; };
 	TEXTURE_HANDLE GetTexture();
+	BITMAP_HANDLE GetTextureBitmap(SIZE& sz);
 private:
 	TEXTURE_HANDLE CreateTextureFromBitmap(LPXMLAttrMap pMapAttr);
 public:

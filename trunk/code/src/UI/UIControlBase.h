@@ -13,6 +13,7 @@
 class CUITreeContainer;
 typedef enum enumControlType {
 	CT_UIImage = 1,
+	CT_UITexture,
 	CT_UIButton,
 } ControlType;
 
@@ -21,6 +22,7 @@ class CUIControlBase
 public:
 	CUIControlBase(void);
 	CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode);
+	CUIControlBase(CUITreeContainer* pTree);
 	virtual ~CUIControlBase(void);
 private:
 	std::string m_strID;
@@ -29,8 +31,6 @@ public:
 	typedef std::map<std::string, CComVariant> ID2AttrMap;
 	ID2AttrMap m_mapAttr;
 	CUIEventCtrlContainer* m_pUIEventControl;
-private:
-	void SetID(std::string strID);
 protected:
 	void FireUIEvent(std::string strName, int x, int y);
 public:
@@ -46,6 +46,7 @@ public:
 	virtual void OnMouseWheel(int x, int y);
 public:
 	const std::string& GetID();
+	std::string SetID(const std::string& strID);
 	void SetAttr(std::string strName, std::string strValue);
 	void GetAttr(std::string strName, VARIANT* v);
 	CUITreeContainer* GetOwnerTree();
