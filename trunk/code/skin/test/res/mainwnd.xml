@@ -1,9 +1,9 @@
 <ui>
 	<texture id="texture.mainwnd.background.png" type="NineInOne" path="bitmap\mainwnd\bitmap.background.png" />
-	<bitmap id="bitmap.mainwnd.title.png" type="NineInOne" path="bitmap\mainwnd\bitmap.title.png" />
+	<texture id="texture.mainwnd.title.png" type="NineInOne" path="bitmap\mainwnd\bitmap.title.png" />
 	<!--bitmap id="bitmap.background_.png" type="ThreeInOneH" path="bitmap\mainwnd\bitmap.background_.png" /-->
 	
-	<imagelist id="imagelist.mainframe.system.button" seperator="0" blocksize="9" path="bitmap\mainwnd\imagelist.mainframe.system.button.png">
+	<imagelist id="imagelist.mainframe.system.button" path="bitmap\mainwnd\imagelist.mainframe.system.button.png">
 		<texture id="texture.mainframe.system.min.btn.normal" index="1" />
 		<texture id="texture.mainframe.system.min.btn.hover" index="2" />
 		<texture id="texture.mainframe.system.min.btn.down" index="3" />
@@ -21,4 +21,5 @@
 		<texture id="texture.mainframe.system.close.btn.down" index="15" />
 		<texture id="texture.mainframe.system.close.btn.disable" index="16" />
 	</imagelist>
+	
 </ui>

@@ -7,10 +7,11 @@
 			<height>400</height>
 			<visible>1</visible>
 			<appwindow>1</appwindow>
+			<layered>0</layered>
 			<title>测试窗口</title>
 		</attr>
 		<uitree>
-			<obj id="image.bkg" class="UITextureObject">
+			<obj id="texture.bkg" class="UITextureObject">
 				<attr>
 					<left>0</left>
 					<top>0</top>
@@ -23,17 +24,6 @@
 				<eventlist>
 					<event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" />
 				</eventlist>
-			</obj>
-			<obj id="image.title" class="UIImageObject">
-				<attr>
-					<left>0</left>
-					<top>0</top>
-					<width>400</width>
-					<height>35</height>
-					<image>bitmap.mainwnd.title.png</image>
-					<visible>true</visible>
-					<zorder>20</zorder>
-				</attr>
 			</obj>
 			<obj id="button.min" class="UIButton">
 				<attr>

@@ -23,6 +23,7 @@ public:
 		MESSAGE_HANDLER(WM_PAINT, OnPaint)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
+		MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
 		ADD_MSG_MAP_MEMBER((*m_pUIEventWindow))
 		CHAIN_MSG_MAP_MEMBER((*m_pUITreeContainer))
 	END_MSG_MAP()
@@ -37,6 +38,7 @@ public:
 	void SetAttr(std::string strName, std::string strValue);
 	void GetAttr(std::string strName, VARIANT* v);
 	virtual BOOL ParserAttr(LPXMLDOMNode pAttrNode);
+	void TryUpdateLayeredWindow();	
 private:
 	virtual DWORD GetStyle();
 	virtual DWORD GetStyleEx();
@@ -64,6 +66,9 @@ public:
 		LUA_CALL_ENTRY(Min)
 		LUA_CALL_ENTRY(Max)
 		LUA_CALL_ENTRY(Restore)
+		LUA_CALL_ENTRY(GetLayered)
+		LUA_CALL_ENTRY(SetMaxTrackSize)
+		LUA_CALL_ENTRY(SetMinTrackSize)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUIFrameWindow, UI.FrameWindow);
 public:

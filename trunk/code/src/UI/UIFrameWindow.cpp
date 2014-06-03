@@ -102,6 +102,8 @@ BOOL CUIFrameWindow::CreateWnd(HWND hParent)
 		if (m_mapAttr["layered"].vt == VT_I2 && m_mapAttr["layered"].boolVal == VARIANT_TRUE)
 		{
 			// TryInvalidateRgn(NULL);
+			// ::UpdateLayeredWindow(m_hWnd, );
+			TryUpdateLayeredWindow();
 		}
 		UpdateWindow();
 	}
@@ -233,11 +235,55 @@ int CUIFrameWindow::GetTreeContainer(lua_State* L)
 	return 1;
 }
 
+void CUIFrameWindow::TryUpdateLayeredWindow()
+{
+	CPaintDC dc(m_hWnd);
+	CMemoryDC dcMem(dc.m_hDC, dc.m_ps.rcPaint);
+	DoPaint(dcMem.m_hDC);
+}
+
 void CUIFrameWindow::DoPaint(CDCHandle dc)
 {
 	assert(m_pUITreeContainer);
 	if(NULL != m_pUITreeContainer)
 	{
-		m_pUITreeContainer->Render(dc);
+		if (GetLayered())
+		{
+			BLENDFUNCTION bfunc;
+			bfunc.AlphaFormat = AC_SRC_ALPHA;
+			bfunc.BlendFlags = 0;
+			bfunc.BlendOp = AC_SRC_OVER;
+			bfunc.SourceConstantAlpha = 255;
+			if (m_mapAttr["alpha"].vt == VT_I4 && m_mapAttr["alpha"].intVal >= 0)
+			{
+				bfunc.SourceConstantAlpha = (BYTE)m_mapAttr["alpha"].intVal;
+			}
+			RECT rc = {0};
+			GetWindowRect(&rc);
+			POINT pt = {rc.left, rc.top};
+			SIZE sz = {rc.right - rc.left, rc.bottom - rc.top};
+			HDC hMemDc = ::CreateCompatibleDC(dc.m_hDC);
+			BITMAPINFO bmpinfo;
+			bmpinfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+			bmpinfo.bmiHeader.biWidth = sz.cx;
+			bmpinfo.bmiHeader.biHeight = sz.cy;
+			bmpinfo.bmiHeader.biPlanes = 1;
+			bmpinfo.bmiHeader.biBitCount = 32;//32bpp
+			bmpinfo.bmiHeader.biCompression = BI_RGB;
+			void* pBits = NULL;
+			HBITMAP hBitmap = CreateDIBSection(dc.m_hDC, &bmpinfo, DIB_RGB_COLORS, &pBits, NULL, 0);
+			HBITMAP hOldBitmap = (HBITMAP)::SelectObject(hMemDc,hBitmap);
+			m_pUITreeContainer->Render(hMemDc);
+
+			POINT ptSrc = {0, 0};
+			UIGraphicInstance->UpdateLayeredWindow(m_hWnd, dc.m_hDC, &pt, &sz, hMemDc, &ptSrc, 0, &bfunc, ULW_ALPHA);
+			::SelectObject(hMemDc, hOldBitmap);
+			::DeleteObject(hBitmap);
+			::DeleteDC(hMemDc);
+		}
+		else
+		{
+			m_pUITreeContainer->Render(dc);
+		}
 	}
 }

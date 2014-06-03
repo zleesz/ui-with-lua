@@ -32,7 +32,7 @@ public:
 	ID2AttrMap m_mapAttr;
 	CUIEventCtrlContainer* m_pUIEventControl;
 protected:
-	void FireUIEvent(std::string strName, int x, int y);
+	void FireMouseEvent(std::string strName, int x, int y);
 public:
 	virtual ControlType GetType() = 0;
 	virtual void Render(CDCHandle dc) = 0;
@@ -53,6 +53,7 @@ public:
 	ULONG GetZorder();
 	BOOL OnHitTest(int x, int y);
 	BOOL GetVisible();
+	void SetVisible(BOOL bVisible);
 	BOOL GetEnable();
 	const RECT& GetObjPos();
 	void Invalidate();

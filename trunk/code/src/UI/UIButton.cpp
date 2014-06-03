@@ -153,6 +153,15 @@ int CUIButton::GetVisible(lua_State* L)
 	return 1;
 }
 
+int CUIButton::SetVisible(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
+	pThis->SetVisible(bVisible);
+	return 0;
+}
+
 int CUIButton::GetEnable(lua_State* L)
 {
 	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);

@@ -29,6 +29,10 @@ public:
 private:
 	std::string m_strID;
 	std::string m_strXMLPath;
+private:
+	virtual BOOL ParserAttr(LPXMLDOMNode pAttrNode);
+	virtual BOOL ParserUITree(LPXMLDOMNode pNode);
+	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
 public:
 	typedef std::map<std::string, CComVariant> ID2AttrMap;
 	ID2AttrMap m_mapAttr;
@@ -40,9 +44,10 @@ public:
 	const std::string& GetID() { return m_strID; };
 	void SetID(std::string strID) { m_strID = strID; };
 	const std::string& GetXMLPath() { return m_strXMLPath; };
-	virtual BOOL ParserAttr(LPXMLDOMNode pAttrNode);
-	virtual BOOL ParserUITree(LPXMLDOMNode pNode);
-	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
+
+	BOOL GetLayered();
+public:
+	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	static int AddInputFilter(lua_State* L);
 	static int AttachListener(lua_State* L);
@@ -50,6 +55,9 @@ public:
 	static int Min(lua_State* luaState);
 	static int Max(lua_State* luaState);
 	static int Restore(lua_State* luaState);
+	static int GetLayered(lua_State* luaState);
+	static int SetMaxTrackSize(lua_State* luaState);
+	static int SetMinTrackSize(lua_State* luaState);
 public:
 	CUITreeContainer* m_pUITreeContainer;
 	CUIEventWndContainer* m_pUIEventWindow;

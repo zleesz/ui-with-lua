@@ -2,16 +2,38 @@
 #include "UILuaClassFactory.h"
 #include <assert.h>
 
-bool UILuaClassFactory::IsClassRegistered(lua_State* L, void* obj)
+bool UILuaClassFactory::IsClassObjectRegistered(lua_State* L, void* obj)
 {
 	assert(obj);
 	if(NULL == obj)
 		return false;
 	LuaVM2MapLuaObjectMap::const_iterator it = m_mapClassObject.find(L);
-	if(it != m_mapClassObject.end())
+	if (it == m_mapClassObject.end())
 	{
-		Obj2LuaObjectMap::const_iterator it2 = it->second->find(obj);
-		if(it2 != it->second->end())
+		return false;
+	}
+	Obj2LuaObjectMap::const_iterator it2 = it->second->find(obj);
+	if (it2 != it->second->end())
+	{
+		return true;
+	}
+	return false;
+}
+
+bool UILuaClassFactory::IsClassRegistered(lua_State* L, const char* pszName)
+{
+	assert(pszName);
+	if(NULL == pszName)
+		return false;
+	LuaVM2MapLuaObjectMap::const_iterator it = m_mapClassObject.find(L);
+	if (it == m_mapClassObject.end())
+	{
+		return false;
+	}
+	Obj2LuaObjectMap::const_iterator it2 = it->second->begin();
+	for (; it2 != it->second->end(); it2++)
+	{
+		if (strcmp(it2->second->ObjName, pszName) == 0)
 		{
 			return true;
 		}
@@ -52,10 +74,9 @@ void UILuaClassFactory::RegisterClass(lua_State* L, UILuaObject theObj)
 		NULL == theObj.MemberFunctions)
 		return;
 	void* obj = theObj.pfnGetObject(theObj.userData);
-	bool bRigister = IsClassRegistered(L, obj);
-	if(bRigister)
+	bool bRigister = IsClassObjectRegistered(L, obj);
+	if (bRigister)
 	{
-		assert(false);
 		return;
 	}
 	Obj2LuaObjectMap* pmapObj2LuaObject = NULL;
@@ -69,12 +90,17 @@ void UILuaClassFactory::RegisterClass(lua_State* L, UILuaObject theObj)
 	{
 		pmapObj2LuaObject = it->second;
 	}
+	bRigister = IsClassRegistered(L, theObj.ObjName);
 	UILuaObject* pTheObj = new UILuaObject;
 	memcpy((void*)pTheObj, (const void*)&theObj, sizeof(UILuaObject));
 	(*pmapObj2LuaObject)[obj] = pTheObj;
 
+	if (bRigister)
+	{
+		return;
+	}
+
 	int top = lua_gettop(L);
-	//lua_newtable(L);
 	luaL_newmetatable(L, pTheObj->ObjName);
 
 	// 把方法也注册进userdata的元表里
@@ -97,6 +123,13 @@ int UILuaClassFactory::proxy(lua_State* L)
 {
 	// 取出要调用的函数编号
 	UILuaObject* pTheObj = (UILuaObject*)lua_touserdata(L, lua_upvalueindex(1));
+	userdataType *ud = static_cast<userdataType*>(luaL_checkudata(L, 1, pTheObj->ObjName));
+	if (!ud)
+	{
+		luaL_typerror(L, 1, pTheObj->ObjName);
+		assert(false);
+		return 0;
+	}
 	int i = (int)lua_tonumber(L, lua_upvalueindex(2));
 
 	assert(NULL != pTheObj);
@@ -109,7 +142,7 @@ int UILuaClassFactory::proxy(lua_State* L)
 		return 0;
 	}
 	// 实际的调用函数
-	lua_pushlightuserdata(L, pTheObj->pfnGetObject(pTheObj->userData));
+	lua_pushlightuserdata(L, ud->p);
 	return pTheObj->MemberFunctions[i].func(L);
 }
 
@@ -133,8 +166,8 @@ void UILuaClassFactory::PushClassObj(lua_State* L, const void* obj)
 					lua_pushnil(L);
 					return;
 				}
-				void* p = lua_newuserdata(L, sizeof(void*));
-				p = (void*)obj;
+				userdataType *ud = static_cast<userdataType*>(lua_newuserdata(L, sizeof(userdataType)));
+				ud->p = (void*)obj;
 				luaL_getmetatable(L, pTheObj->ObjName);
 				lua_setmetatable(L, -2);
 				return;

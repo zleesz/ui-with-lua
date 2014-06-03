@@ -89,8 +89,8 @@ int UILuaGlobalFactory::GetGlobalObject(lua_State* L, const char* szObjName)
 	UILuaObject* pTheObj = it2->second;
 	void* obj = pTheObj->pfnGetObject(pTheObj->userData);
 
-	void* p = lua_newuserdata(L, sizeof(void*));
-	p = obj;
+	userdataType *ud = static_cast<userdataType*>(lua_newuserdata(L, sizeof(userdataType)));
+	ud->p = (void*)obj;
 	luaL_getmetatable(L, pTheObj->ObjName);
 	lua_setmetatable(L, -2);
 	return 1;
@@ -109,6 +109,13 @@ int UILuaGlobalFactory::proxy(lua_State* L)
 {
 	// 取出要调用的函数编号
 	UILuaObject* pTheObj = (UILuaObject*)lua_touserdata(L, lua_upvalueindex(1));
+	userdataType *ud = static_cast<userdataType*>(luaL_checkudata(L, 1, pTheObj->ObjName));
+	if (!ud)
+	{
+		luaL_typerror(L, 1, pTheObj->ObjName);
+		assert(false);
+		return 0;
+	}
 	int i = (int)lua_tonumber(L, lua_upvalueindex(2));
 
 	assert(NULL != pTheObj);
@@ -120,10 +127,8 @@ int UILuaGlobalFactory::proxy(lua_State* L)
 	{
 		return 0;
 	}
-	// int n = lua_gettop(L);
-	// lua_pop(L, 1);
 	// 实际的调用函数
-	lua_pushlightuserdata(L, pTheObj->pfnGetObject(pTheObj->userData));
+	lua_pushlightuserdata(L, ud->p);
 	return pTheObj->MemberFunctions[i].func(L);
 }
 

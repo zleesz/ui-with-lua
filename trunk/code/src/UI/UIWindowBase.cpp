@@ -59,12 +59,17 @@ void CUIWindowBase::SetAttr(std::string strName, std::string strValue)
 	if(strName == "left" ||
 		strName == "top" ||
 		strName == "width" ||
-		strName == "height")
+		strName == "height" ||
+		strName == "alpha" ||
+		strName == "minwidth" ||
+		strName == "minheight" ||
+		strName == "maxwidth" ||
+		strName == "maxheight")
 	{
 		CComVariant v(atoi(strValue.c_str()));
 		v.Detach(&m_mapAttr[strName]);
 	}
-	else if(strName == "visible")
+	else if(strName == "visible" || strName == "layered" || strName == "appwindow")
 	{
 		CComVariant v;
 		if(strValue == "true" || strValue == "1")
@@ -127,6 +132,45 @@ BOOL CUIWindowBase::ParserEvent(LPXMLDOMNode pNode)
 	return m_pUIEventWindow->ParserEvent(pNode);
 }
 
+BOOL CUIWindowBase::GetLayered()
+{
+	if (m_mapAttr["layered"].vt == VT_I2 && m_mapAttr["layered"].boolVal == VARIANT_TRUE)
+	{
+		return TRUE;
+	}
+	return FALSE;
+}
+
+LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	MINMAXINFO *mminfo = (PMINMAXINFO)lParam;
+	CComVariant vMaxWidth, vMaxHeight, vMinWidth, vMinHeight;
+	GetAttr("maxwidth", &vMaxWidth);
+	GetAttr("maxheight", &vMaxHeight);
+	GetAttr("minwidth", &vMinWidth);
+	GetAttr("minheight", &vMinHeight);
+
+	if (vMaxWidth.vt == VT_I4 && vMaxWidth.intVal > 0)
+	{
+		mminfo->ptMaxSize.x = vMaxWidth.intVal;
+		mminfo->ptMaxTrackSize.x = vMaxWidth.intVal;
+	}
+	if (vMaxHeight.vt == VT_I4 && vMaxHeight.intVal > 0)
+	{
+		mminfo->ptMaxSize.y = vMaxHeight.intVal;
+		mminfo->ptMaxTrackSize.y = vMaxHeight.intVal;
+	}
+	if (vMinWidth.vt == VT_I4 && vMinWidth.intVal > 0)
+	{
+		mminfo->ptMinTrackSize.x = vMinWidth.intVal;
+	}
+	if (vMinHeight.vt == VT_I4 && vMinHeight.intVal > 0)
+	{
+		mminfo->ptMinTrackSize.x = vMinHeight.intVal;
+	}
+	return 0;
+}
+
 int CUIWindowBase::AddInputFilter(lua_State* L)
 {
 	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
@@ -176,5 +220,38 @@ int CUIWindowBase::Restore(lua_State* L)
 		return 0;
 	}
 	::SendMessage(pThis->m_hWnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+	return 0;
+}
+
+int CUIWindowBase::GetLayered(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	lua_pushboolean(L, pThis->GetLayered());
+	return 1;
+}
+
+int CUIWindowBase::SetMaxTrackSize(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	LONG lnWidth = (LONG)lua_tointeger(L, -2);
+	LONG lnHeight = (LONG)lua_tointeger(L, -3);
+	char szWidth[10] = {0}, szHeight[10] = {0};
+	_itoa(lnWidth, szWidth, 10);
+	_itoa(lnHeight, szHeight, 10);
+	pThis->SetAttr("maxwidth", szWidth);
+	pThis->SetAttr("maxheight", szHeight);
+	return 0;
+}
+
+int CUIWindowBase::SetMinTrackSize(lua_State* L)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);
+	LONG lnWidth = (LONG)lua_tointeger(L, -2);
+	LONG lnHeight = (LONG)lua_tointeger(L, -3);
+	char szWidth[10] = {0}, szHeight[10] = {0};
+	_itoa(lnWidth, szWidth, 10);
+	_itoa(lnHeight, szHeight, 10);
+	pThis->SetAttr("minwidth", szWidth);
+	pThis->SetAttr("minheight", szHeight);
 	return 0;
 }
