@@ -8,6 +8,7 @@
 #include <winuser.h>
 #include <atltypes.h>
 #include "UIEventCtrlContainer.h"
+#include "UIGraphic.h"
 
 class CUITreeContainer;
 typedef enum enumControlType {

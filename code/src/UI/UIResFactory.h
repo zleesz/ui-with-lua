@@ -7,6 +7,7 @@
 #include "UIBitmap.h"
 #include "UIIcon.h"
 #include "UIImageList.h"
+#include "UITexture.h"
 
 class CUIResFactory
 {
@@ -21,6 +22,7 @@ public:
 	CUIBitmap* GetBitmap(const char* id);
 	CUIIcon* GetIcon(const char* id);
 	CUIImagelist* GetImagelist(const char* id);
+	CUITexture* GetTexture(const char* id);
 
 private:
 	typedef std::map<const std::string, CUIResBase*> UIID2ResMap, *LPUIID2ResMap;
@@ -37,6 +39,7 @@ public:
 	static int GetBitmap(lua_State* luaState);
 	static int GetIcon(lua_State* luaState);
 	static int GetImagelist(lua_State* luaState);
+	static int GetTexture(lua_State* luaState);
 public:
 	BEGIN_LUA_CALL_MAP(CUIResFactory)
 		LUA_CALL_ENTRY(GetColor)
@@ -44,6 +47,7 @@ public:
 		LUA_CALL_ENTRY(GetBitmap)
 		LUA_CALL_ENTRY(GetIcon)
 		LUA_CALL_ENTRY(GetImagelist)
+		LUA_CALL_ENTRY(GetTexture)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_SINGLETON_OBJECT(CUIResFactory, UI.ResFactory);
 public:

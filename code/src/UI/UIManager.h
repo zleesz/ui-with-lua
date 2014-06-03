@@ -32,10 +32,7 @@ END_COM_MAP()
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
 
 	HRESULT FinalConstruct();
-	
-	void FinalRelease() 
-	{
-	}
+	void FinalRelease();
 
 public:
 	STDMETHOD(LoadSkin)(BSTR bstrPath);
@@ -46,7 +43,6 @@ private:
 
 private:
 	void InitLog4CPlus();
-	void CreateDefaultLuaVM();
 public:
 	LOG_CLS_DEC();
 };

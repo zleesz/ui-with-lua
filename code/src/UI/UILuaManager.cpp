@@ -15,7 +15,7 @@ int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 	int bret = 0;
 	char szPath[MAX_PATH] = {0};
 	strcpy_s(szPath, MAX_PATH, filename);
-	strlwr(szPath);
+	_strlwr(szPath);
 	if(::PathFileExistsA(szPath))
 	{
 		lua_pushlightuserdata(luaState, (void*)this);

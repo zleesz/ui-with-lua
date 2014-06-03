@@ -27,7 +27,7 @@ int Run(LPTSTR /*lpstrCmdLine*/, int /*nCmdShow*/)
 	return nRet;
 }
 
-void InitUIModule()
+void InitUIModule(IUIManager** ppUIManager)
 {
 	TCHAR tszPath[MAX_PATH] = {0};
 	::GetModuleFileName(NULL, tszPath, MAX_PATH);
@@ -37,9 +37,8 @@ void InitUIModule()
 	::PathAppend(tszPath, _T("UI.dll"));
 	HMODULE hModele = ::LoadLibrary(tszPath);
 	ATLASSERT(hModele);
-	CComPtr<IUIManager> spManager;
-	Util::CreateInstanceFromHandle(hModele, CLSID_UIManager, IID_IUIManager, (void**)&spManager);
-	ATLASSERT(spManager);
+	Util::CreateInstanceFromHandle(hModele, CLSID_UIManager, IID_IUIManager, (void**)ppUIManager);
+	ATLASSERT(*ppUIManager);
 	// initial instance
 	CUILuaClass* pUILuaClass = CUILuaClass::GetInstance();
 	pUILuaClass;
@@ -50,7 +49,7 @@ void InitUIModule()
 #endif
 	ATLASSERT(::PathFileExists(tszSkinPath));
 	CComBSTR bstrPath(tszSkinPath);
-	spManager->LoadSkin(bstrPath);
+	(*ppUIManager)->LoadSkin(bstrPath);
 }
 
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int nCmdShow)
@@ -69,7 +68,8 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	hRes = _Module.Init(NULL, hInstance);
 	ATLASSERT(SUCCEEDED(hRes));
 
-	InitUIModule();
+	CComPtr<IUIManager> spManager;
+	InitUIModule(&spManager);
 
 	int nRet = Run(lpstrCmdLine, nCmdShow);
 

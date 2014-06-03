@@ -1,13 +1,13 @@
 #include "StdAfx.h"
-#include "UIImage.h"
+#include "UIImageObject.h"
 #include "UIBitmap.h"
 #include "UIResFactory.h"
 
-CUIImage::CUIImage(void)
+CUIImageObject::CUIImageObject(void)
 {
 }
 
-CUIImage::CUIImage(CUITreeContainer* pTree, LPXMLDOMNode pNode)
+CUIImageObject::CUIImageObject(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	: CUIControlBase(pTree, pNode), m_bStretch(FALSE)
 {
 	RegisterClass(this);
@@ -45,12 +45,12 @@ CUIImage::CUIImage(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	}
 }
 
-CUIImage::~CUIImage(void)
+CUIImageObject::~CUIImageObject(void)
 {
 	UnRegisterClass(this);
 }
 
-int CUIImage::GetID(lua_State* L)
+int CUIImageObject::GetID(lua_State* L)
 {
 	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
@@ -59,23 +59,23 @@ int CUIImage::GetID(lua_State* L)
 	return 1;
 }
 
-int CUIImage::GetStretch(lua_State* L)
+int CUIImageObject::GetStretch(lua_State* L)
 {
-	CUIImage* pThis = (CUIImage*) lua_touserdata(L, -1);
+	CUIImageObject* pThis = (CUIImageObject*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
 	lua_pushboolean(L, pThis->m_bStretch);
 	return 1;
 }
 
-int CUIImage::SetStretch(lua_State* L)
+int CUIImageObject::SetStretch(lua_State* L)
 {
-	CUIImage* pThis = (CUIImage*) lua_touserdata(L, -1);
+	CUIImageObject* pThis = (CUIImageObject*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
 	pThis->m_bStretch = (BOOL)lua_toboolean(L, -2);
 	return 0;
 }
 
-int CUIImage::GetVisible(lua_State* L)
+int CUIImageObject::GetVisible(lua_State* L)
 {
 	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
@@ -83,16 +83,16 @@ int CUIImage::GetVisible(lua_State* L)
 	return 1;
 }
 
-int CUIImage::SetVisible(lua_State* L)
+int CUIImageObject::SetVisible(lua_State* L)
 {
-	CUIImage* pThis = (CUIImage*) lua_touserdata(L, -1);
+	CUIImageObject* pThis = (CUIImageObject*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
 	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
 	pThis->SetAttr("visible", bVisible ? "true" : "false");
 	return 0;
 }
 
-int CUIImage::GetEnable(lua_State* L)
+int CUIImageObject::GetEnable(lua_State* L)
 {
 	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
@@ -100,9 +100,9 @@ int CUIImage::GetEnable(lua_State* L)
 	return 1;
 }
 
-int CUIImage::GetImage(lua_State* L)
+int CUIImageObject::GetImage(lua_State* L)
 {
-	CUIImage* pThis = (CUIImage*) lua_touserdata(L, -1);
+	CUIImageObject* pThis = (CUIImageObject*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
 	CUIBitmap* pUIBitmap = UIResFactoryInstance->GetBitmap(pThis->m_strImageID.c_str());
 
@@ -110,12 +110,12 @@ int CUIImage::GetImage(lua_State* L)
 	return 1;
 }
 
-void CUIImage::SetAttr(std::string strName, std::string strValue)
+void CUIImageObject::SetAttr(std::string strName, std::string strValue)
 {
 	__super::SetAttr(strName, strValue);
 }
 
-void CUIImage::Render(CDCHandle dc)
+void CUIImageObject::Render(CDCHandle dc)
 {
 	CUIBitmap* pUIBitmap = UIResFactoryInstance->GetBitmap(m_strImageID.c_str());
 	if(NULL == pUIBitmap)
@@ -124,10 +124,11 @@ void CUIImage::Render(CDCHandle dc)
 		return ;
 	}
 	const RECT rc = GetObjPos();
-	pUIBitmap->Render(dc.m_hDC, rc, m_bStretch);
+	BITMAP_HANDLE hBitmap = pUIBitmap->GetBitmap();
+	UIGraphicInstance->AlphaPaintBitmap(dc.m_hDC, hBitmap, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 }
 
-int CUIImage::GetOwnerTree(lua_State* L)
+int CUIImageObject::GetOwnerTree(lua_State* L)
 {
 	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
 	ATLASSERT(pThis);
@@ -136,22 +137,22 @@ int CUIImage::GetOwnerTree(lua_State* L)
 	return 1;
 }
 
-void CUIImage::OnInitControl()
+void CUIImageObject::OnInitControl()
 {
 
 }
 
-void CUIImage::OnDetroy()
+void CUIImageObject::OnDetroy()
 {
 
 }
 
-void CUIImage::OnRButtonUp(int x, int y)
+void CUIImageObject::OnRButtonUp(int x, int y)
 {
 	FireUIEvent("OnRButtonUp", x, y);
 }
 
-void CUIImage::OnLButtonDown(int x, int y)
+void CUIImageObject::OnLButtonDown(int x, int y)
 {
 	FireUIEvent("OnLButtonDown", x, y);
 }

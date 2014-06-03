@@ -16,7 +16,7 @@ void CZorderIndexer::Init(const LPID2ControlMap pMapControl)
 	m_pMapID2Control = pMapControl;
 }
 
-void CZorderIndexer::OnTreeModify(const LPTreeModifyData ptmt)
+void CZorderIndexer::OnTreeModify(const LPTreeModifyData /*ptmt*/)
 {
 	// resort uiobjects;
 	bDirty = TRUE;
@@ -30,7 +30,7 @@ CUIControlBase* CZorderIndexer::HitTest(int x, int y)
 	{
 		SortTreeObjectsByZorder();
 	}
-	for (int i = 0; i < m_vecControl.size(); i++)
+	for (int i = 0; i < (int)m_vecControl.size(); i++)
 	{
 		CUIControlBase* pControl = m_vecControl[i];
 		if(pControl->OnHitTest(x, y))
@@ -49,7 +49,7 @@ void CZorderIndexer::Render(CDCHandle dc)
 	{
 		SortTreeObjectsByZorder();
 	}
-	for (int i = m_vecControl.size() - 1; i >= 0; i--)
+	for (int i = (int)m_vecControl.size() - 1; i >= 0; i--)
 	{
 		CUIControlBase* pControl = m_vecControl[i];
 		if(pControl->GetVisible())

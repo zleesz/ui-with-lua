@@ -1,7 +1,7 @@
 <ui>
 	<bitmap id="bitmap.mainwnd.background.png" type="NineInOne" path="bitmap\mainwnd\bitmap.background.png" />
 	<bitmap id="bitmap.mainwnd.title.png" type="NineInOne" path="bitmap\mainwnd\bitmap.title.png" />
-	<bitmap id="bitmap.background_.png" type="ThreeInOneH" path="bitmap\mainwnd\bitmap.background_.png" />
+	<!--bitmap id="bitmap.background_.png" type="ThreeInOneH" path="bitmap\mainwnd\bitmap.background_.png" /-->
 	
 	<imagelist id="imagelist.mainwnd.test.btn" seperator="0" blocksize="9" path="bitmap\mainwnd\imagelist.general.dlg.btnconfirm.png">
 		<bitmap id="bitmap.mainwnd.test.btn.normal" type="ThreeInOneH" index="1" />

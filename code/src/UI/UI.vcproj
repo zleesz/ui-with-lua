@@ -78,7 +78,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="log4cplusud.lib libexpat.lib UILua.lib UIGraphic.lib"
+				AdditionalDependencies="log4cplusud.lib libexpat.lib UILua.lib"
 				OutputFile="$(OutDir)/$(ProjectName).dll"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="../../common/lib;../../common/lib/$(ConfigurationName);../../../bin/$(ConfigurationName);"
@@ -272,6 +272,10 @@
 				RelativePath=".\UIManager.cpp"
 				>
 			</File>
+			<File
+				RelativePath=".\UITextureObject.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -292,6 +296,10 @@
 			</File>
 			<File
 				RelativePath=".\UIManager.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UITextureObject.h"
 				>
 			</File>
 		</Filter>
@@ -494,11 +502,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\UIImage.cpp"
+				RelativePath=".\UIImageObject.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\UIImage.h"
+				RelativePath=".\UIImageObject.h"
 				>
 			</File>
 			<File
@@ -621,14 +629,6 @@
 		<Filter
 			Name="Tool"
 			>
-			<File
-				RelativePath=".\ImageTool.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\ImageTool.h"
-				>
-			</File>
 		</Filter>
 		<Filter
 			Name="TreeContainer"
@@ -647,6 +647,18 @@
 			</File>
 			<File
 				RelativePath=".\ZorderIndexer.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="UIGraphic"
+			>
+			<File
+				RelativePath=".\UIGraphic.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIGraphic.h"
 				>
 			</File>
 		</Filter>

@@ -9,7 +9,7 @@ CUILuaClass::~CUILuaClass(void)
 {
 }
 
-int CUILuaClass::Exit(lua_State* L)
+int CUILuaClass::Exit(lua_State* /*L*/)
 {
 	PostQuitMessage(0);
 	return 0;
