@@ -59,6 +59,11 @@ void CZorderIndexer::Render(CDCHandle dc)
 	}
 }
 
+bool CZorderIndexer::CompareZorder(CUIControlBase* pCtrlA, CUIControlBase* pCtrlB)
+{
+	return pCtrlA->GetZorder() > pCtrlB->GetZorder();
+}
+
 // quick sort
 void CZorderIndexer::SortTreeObjectsByZorder()
 {
@@ -66,23 +71,13 @@ void CZorderIndexer::SortTreeObjectsByZorder()
 	if(NULL == m_pMapID2Control)
 		return;
 	PrintTreeObject();
-	ULONG ulMax = 0;
+	m_vecControl.clear();
 	ID2ControlMap::const_iterator it = m_pMapID2Control->begin();
 	for(; it != m_pMapID2Control->end(); it++)
 	{
-		CUIControlBase* pControl = it->second;
-		ULONG ulZorder = pControl->GetZorder();
-		// move max zorder object to top;
-		if(ulZorder > ulMax)
-		{
-			ulMax = ulZorder;
-			m_vecControl.insert(m_vecControl.begin(), pControl);
-		}
-		else
-		{
-			m_vecControl.push_back(pControl);
-		}
+		m_vecControl.push_back(it->second);
 	}
+	std::sort(m_vecControl.begin(), m_vecControl.end(), CZorderIndexer::CompareZorder);
 	bDirty = FALSE;
 	PrintTreeObject();
 }

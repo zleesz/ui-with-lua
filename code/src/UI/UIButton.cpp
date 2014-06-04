@@ -210,7 +210,6 @@ void CUIButton::OnDetroy()
 
 void CUIButton::OnMouseMove(int x, int y)
 {
-	LOG_AUTO();
 	BOOL bEnable = CUIControlBase::GetEnable();
 	if(m_state == BS_NORMAL)
 	{
