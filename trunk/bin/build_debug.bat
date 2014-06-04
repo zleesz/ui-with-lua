@@ -1,16 +1,4 @@
 
-del ui.log 2> nul
-echo  ±‡“Î ui_cximage.sln
-call "%VS90COMNTOOLS%..\IDE\devenv.exe" "%~0\..\..\code\src\ui_cximage.sln" /build debug  /out "%~0\..\ui_cximage.log"
-type %~0\..\ui_cximage.log
-echo off
-set LOGFILE=%~0\..\ui_cximage.log
-findstr /C:" ß∞‹ 0 ∏ˆ" "%LOGFILE%"
-if %ERRORLEVEL% NEQ 0 (
-	pause & exit
-)
-del %~0\..\ui_cximage.log
-
 echo  ±‡“Î UI.sln
 call "%VS90COMNTOOLS%..\IDE\devenv.exe" "%~0\..\..\code\src\UI.sln" /build debug  /out "%~0\..\ui.log"
 type %~0\..\ui.log
