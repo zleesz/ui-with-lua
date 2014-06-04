@@ -123,10 +123,6 @@ void CUITextureObject::SetAttr(std::string strName, std::string strValue)
 
 void CUITextureObject::Render(CDCHandle dc)
 {
-	if (!CUIControlBase::GetVisible())
-	{
-		return;
-	}
 	CUITexture* pUITexture = UIResFactoryInstance->GetTexture(m_strTextureID.c_str());
 	if(NULL == pUITexture)
 	{

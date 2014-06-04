@@ -136,48 +136,6 @@ CUIButton::~CUIButton(void)
 	UnRegisterClass(this);
 }
 
-int CUIButton::GetID(lua_State* L)
-{
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	std::string strID = pThis->GetID();
-	lua_pushstring(L, strID.c_str());
-	return 1;
-}
-
-int CUIButton::GetVisible(lua_State* L)
-{
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	lua_pushboolean(L, pThis->GetVisible());
-	return 1;
-}
-
-int CUIButton::SetVisible(lua_State* L)
-{
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
-	pThis->SetVisible(bVisible);
-	return 0;
-}
-
-int CUIButton::GetEnable(lua_State* L)
-{
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	lua_pushboolean(L, pThis->GetEnable());
-	return 1;
-}
-
-int CUIButton::GetOwnerTree(lua_State* L)
-{
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	UILuaPushClassObj(L, pThis->GetOwnerTree());
-	return 1;
-}
-
 void CUIButton::SetAttr(std::string strName, std::string strValue)
 {
 	__super::SetAttr(strName, strValue);
@@ -189,10 +147,6 @@ void CUIButton::Render(CDCHandle dc)
 	{
 		ATLASSERT(FALSE);
 		return ;
-	}
-	if (!CUIControlBase::GetVisible())
-	{
-		return;
 	}
 	const RECT rc = GetObjPos();
 	m_pButton->Render(dc, rc, m_state);

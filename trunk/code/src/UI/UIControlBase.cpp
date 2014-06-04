@@ -258,3 +258,45 @@ void CUIControlBase::FireMouseEvent(std::string strName, int x, int y)
 	UIDISPPARAMS params = { avarParams, strName.c_str(), 3, 0 };
 	m_pUIEventControl->DispatchListener(params);
 }
+
+int CUIControlBase::GetID(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	std::string strID = pThis->GetID();
+	lua_pushstring(L, strID.c_str());
+	return 1;
+}
+
+int CUIControlBase::GetVisible(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	lua_pushboolean(L, pThis->GetVisible());
+	return 1;
+}
+
+int CUIControlBase::SetVisible(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
+	pThis->SetVisible(bVisible);
+	return 0;
+}
+
+int CUIControlBase::GetEnable(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	lua_pushboolean(L, pThis->GetEnable());
+	return 1;
+}
+
+int CUIControlBase::GetOwnerTree(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	ATLASSERT(pThis);
+	UILuaPushClassObj(L, pThis->GetOwnerTree());
+	return 1;
+}

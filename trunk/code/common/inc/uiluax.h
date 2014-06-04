@@ -38,7 +38,7 @@ public: \
 	static void UnRegisterClass(void* p) { \
 		UILuaUnRegisterClass(p, NULL); \
 	}; \
-	const char* GetRigisterClassName() { \
+	static const char* GetRigisterClassName() { \
 		return #classname; \
 	};
 

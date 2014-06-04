@@ -15,6 +15,7 @@ typedef enum enumControlType {
 	CT_UIImage = 1,
 	CT_UITexture,
 	CT_UIButton,
+	CT_UIText,
 } ControlType;
 
 class CUIControlBase
@@ -58,6 +59,13 @@ public:
 	const RECT& GetObjPos();
 	void Invalidate();
 	void SetCaptureMouse(BOOL bCapture);
+public:
+	static int GetID(lua_State* L);
+	static int GetVisible(lua_State* L);
+	static int SetVisible(lua_State* L);
+	static int GetEnable(lua_State* L);
+	static int GetOwnerTree(lua_State* L);
+
 public:
 	LOG_CLS_DEC();
 };

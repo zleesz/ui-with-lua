@@ -61,12 +61,6 @@ public:
 	CUIButton(CUITreeContainer* pTree);
 	virtual ~CUIButton(void);
 public:
-	static int GetID(lua_State* L);
-	static int GetVisible(lua_State* L);
-	static int SetVisible(lua_State* L);
-	static int GetEnable(lua_State* L);
-	static int GetOwnerTree(lua_State* L);
-public:
 	UICONTROL_GETTYPE_METHOD(CT_UIButton)
 	virtual void Render(CDCHandle dc);
 	virtual void OnInitControl();

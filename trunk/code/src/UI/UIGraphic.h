@@ -1,6 +1,9 @@
 #pragma once
 #include "../../UIGraphic/Graphic.h"
 #include <uiluax.h>
+#include <objbase.h>
+#include <GdiPlus.h>
+#pragma comment(lib,"GdiPlus.lib")
 
 class CUIGraphic
 {
@@ -107,9 +110,14 @@ public:
 	unsigned long ReleaseTexture(TEXTURE_HANDLE xlTexture);
 	BOOL SetLayeredWindowAttributes(HWND hWnd, COLORREF cr, BYTE bAlpha, DWORD dwFlags);
 	BOOL UpdateLayeredWindow(HWND hWnd, HDC hdcDst, POINT *pptDst, SIZE *psize, HDC hdcSrc, POINT *pptSrc, COLORREF crKey, BLENDFUNCTION *pblend, DWORD dwFlags);
-	HRGN GetRgnFromXLBitmap(BITMAP_HANDLE xlBmp,DWORD dwColor);
+	HRGN GetRgnFromUIBitmap(BITMAP_HANDLE xlBmp,DWORD dwColor);
+
+	void GdiDrawString();
 private:
 	HMODULE m_hGraphicDll;
+	ULONG_PTR m_ulGdiToken;
+private:
+	void InitGdiplus();
 public:
 	BEGIN_LUA_CALL_MAP(CUIGraphic)
 	END_LUA_CALL_MAP

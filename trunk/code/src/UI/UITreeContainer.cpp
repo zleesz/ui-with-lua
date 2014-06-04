@@ -3,6 +3,7 @@
 #include "UIImageObject.h"
 #include "UITextureObject.h"
 #include "UIButton.h"
+#include "UIText.h"
 #include "UIWindowBase.h"
 
 CUITreeContainer::CUITreeContainer(void)
@@ -56,6 +57,10 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 				else if((*pAttrObj)["class"] == "UIButton")
 				{
 					pUICtrl = new CUIButton(this, pObjNode2);
+				}
+				else if((*pAttrObj)["class"] == "UIText")
+				{
+					pUICtrl = new CUIText(this, pObjNode2);
 				}
 				else
 				{
@@ -245,6 +250,10 @@ int CUITreeContainer::CreateUIObject(lua_State* L)
 	else if(strcmp(pszClass, "UIButton") == 0)
 	{
 		pUICtrl = new CUIButton(pThis);
+	}
+	else if(strcmp(pszClass, "UIText") == 0)
+	{
+		pUICtrl = new CUIText(pThis);
 	}
 	else
 	{
