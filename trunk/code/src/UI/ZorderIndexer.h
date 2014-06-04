@@ -27,6 +27,7 @@ public:
 	void OnTreeModify(const LPTreeModifyData ptmt);
 	CUIControlBase* HitTest(int x, int y);
 private:
+	static bool CompareZorder(CUIControlBase* pCtrlA, CUIControlBase* pCtrlB);
 	void SortTreeObjectsByZorder();
 	void PrintTreeObject();
 	BOOL bDirty;
