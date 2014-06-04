@@ -49,6 +49,7 @@ public:
 public:
 	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
+	static int GetID(lua_State* luaState);
 	static int AddInputFilter(lua_State* L);
 	static int AttachListener(lua_State* L);
 	static int DetachListener(lua_State* L);

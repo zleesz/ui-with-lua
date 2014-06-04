@@ -101,8 +101,6 @@ BOOL CUIFrameWindow::CreateWnd(HWND hParent)
 		ShowWindow(SW_SHOW);
 		if (m_mapAttr["layered"].vt == VT_I2 && m_mapAttr["layered"].boolVal == VARIANT_TRUE)
 		{
-			// TryInvalidateRgn(NULL);
-			// ::UpdateLayeredWindow(m_hWnd, );
 			TryUpdateLayeredWindow();
 		}
 		UpdateWindow();

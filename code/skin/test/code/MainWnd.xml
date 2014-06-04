@@ -7,8 +7,9 @@
 			<height>400</height>
 			<visible>1</visible>
 			<appwindow>1</appwindow>
-			<layered>0</layered>
+			<layered>1</layered>
 			<title>测试窗口</title>
+			<alpha>200</alpha>
 		</attr>
 		<uitree>
 			<obj id="texture.bkg" class="UITextureObject">

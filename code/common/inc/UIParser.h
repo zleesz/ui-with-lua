@@ -132,7 +132,6 @@ public:
 	}
 	static void XMLCALL ElementStart(void *userData, const char *el, const char **attr)
 	{
-		LOG_DEBUG(_T("ElementStart el=") << el);
 		CXmlParser* pThis = (CXmlParser*) userData;
 		pThis->m_strCData.clear();
 		if(pThis->m_pNode->pMapChildNode == NULL)
