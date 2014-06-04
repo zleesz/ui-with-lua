@@ -171,6 +171,15 @@ LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	return 0;
 }
 
+int CUIWindowBase::GetID(lua_State* luaState)
+{
+	CUIWindowBase* pThis = (CUIWindowBase*) lua_touserdata(luaState, -1);
+	ATLASSERT(pThis);
+	std::string strID = pThis->GetID();
+	lua_pushstring(luaState, strID.c_str());
+	return 1;
+}
+
 int CUIWindowBase::AddInputFilter(lua_State* L)
 {
 	CUIWindowBase* pThis = (CUIWindowBase*)lua_touserdata(L, -1);

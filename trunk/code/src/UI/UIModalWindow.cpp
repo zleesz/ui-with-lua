@@ -55,12 +55,3 @@ BOOL CUIModalWindow::ParserAttr(LPXMLDOMNode pAttrNode)
 {
 	return TRUE;
 }
-
-int CUIModalWindow::GetID(lua_State* luaState)
-{
-	CUIWindowBase* pThis = (CUIWindowBase*) lua_touserdata(luaState, -1);
-	ATLASSERT(pThis);
-	std::string strID = pThis->GetID();
-	lua_pushstring(luaState, strID.c_str());
-	return 1;
-}
