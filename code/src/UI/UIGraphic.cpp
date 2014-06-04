@@ -33,15 +33,27 @@ CUIGraphic::CUIGraphic(void)
 	m_fnReleaseRefTexture = NULL;
 	m_fnSetLayeredWindowAttribute = NULL;
 	m_fnUpdateLayeredWindow = NULL;
+	m_ulGdiToken = 0;
 }
 
 CUIGraphic::~CUIGraphic(void)
 {
 }
 
+void CUIGraphic::InitGdiplus()
+{
+	if (m_ulGdiToken > 0)
+	{
+		return;
+	}
+	Gdiplus::GdiplusStartupInput GdiInput;
+	GdiplusStartup(&m_ulGdiToken ,&GdiInput ,NULL);
+}
+
 BOOL CUIGraphic::InitGraphic()
 {
-	if( m_hGraphicDll )
+	InitGdiplus();
+	if (m_hGraphicDll)
 	{
 		return FALSE;
 	}
@@ -50,7 +62,7 @@ BOOL CUIGraphic::InitGraphic()
 	::GetModuleFileName(NULL, szDllPath, MAX_PATH);
 	::PathCombine(szDllPath, szDllPath, _T("..\\UIGraphic.dll"));
 	m_hGraphicDll = ::LoadLibrary(szDllPath);
-	if(m_hGraphicDll == NULL)
+	if (m_hGraphicDll == NULL)
 	{
 		return FALSE;
 	}
@@ -113,6 +125,7 @@ BOOL CUIGraphic::InitGraphic()
 	return TRUE;
 
 }
+
 void CUIGraphic::UnInitGraphic()
 {
 	if(m_hGraphicDll)
@@ -121,8 +134,13 @@ void CUIGraphic::UnInitGraphic()
 		FreeLibrary(m_hGraphicDll);
 		m_hGraphicDll = NULL;
 	}
-
+	if (m_ulGdiToken > 0)
+	{
+		Gdiplus::GdiplusShutdown(m_ulGdiToken);
+		m_ulGdiToken = 0;
+	}
 }
+
 BITMAP_HANDLE CUIGraphic::LoadBitmapFromFile(const wchar_t* file, unsigned long type /* = 0 */)
 {
 	return m_fnLoadBitmapFromFile(file, type);
@@ -365,7 +383,7 @@ BOOL CUIGraphic::UpdateLayeredWindow(HWND hWnd, HDC hdcDst, POINT *pptDst, SIZE 
 }
 
 #define ALLOC_UNIT 100
-HRGN CUIGraphic::GetRgnFromXLBitmap(BITMAP_HANDLE xlBmp,DWORD dwColor)
+HRGN CUIGraphic::GetRgnFromUIBitmap(BITMAP_HANDLE xlBmp,DWORD dwColor)
 {
 	HRGN hRgn = NULL;
 	DWORD maxRects = ALLOC_UNIT;
@@ -462,4 +480,12 @@ HRGN CUIGraphic::GetRgnFromXLBitmap(BITMAP_HANDLE xlBmp,DWORD dwColor)
 	GlobalUnlock(hData); 
 	GlobalFree(hData);
 	return hRgn;
+}
+
+void CUIGraphic::GdiDrawString()
+{
+	if (m_ulGdiToken <= 0)
+	{
+		return;
+	}
 }
