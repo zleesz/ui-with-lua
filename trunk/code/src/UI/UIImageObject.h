@@ -34,7 +34,7 @@ public:
 	static int GetEnable(lua_State* L);
 	static int GetOwnerTree(lua_State* L);
 private:
-	void SetAttr(std::string strName, std::string strValue);
+	void SetAttr(const std::string& strName, const std::string& strValue);
 private:
 	std::string m_strImageID;
 	BOOL m_bStretch;

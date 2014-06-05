@@ -116,7 +116,7 @@ int CUIImageObject::GetImage(lua_State* L)
 	return 1;
 }
 
-void CUIImageObject::SetAttr(std::string strName, std::string strValue)
+void CUIImageObject::SetAttr(const std::string& strName, const std::string& strValue)
 {
 	__super::SetAttr(strName, strValue);
 }

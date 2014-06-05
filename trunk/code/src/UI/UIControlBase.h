@@ -45,10 +45,11 @@ public:
 	virtual void OnMouseMove(int x, int y);
 	virtual void OnMouseLeave(int x, int y);
 	virtual void OnMouseWheel(int x, int y);
+	virtual LRESULT OnSetCursor(int x, int y);
 public:
 	const std::string& GetID();
 	std::string SetID(const std::string& strID);
-	void SetAttr(std::string strName, std::string strValue);
+	void SetAttr(const std::string& strName, const std::string& strValue);
 	void GetAttr(std::string strName, VARIANT* v);
 	CUITreeContainer* GetOwnerTree();
 	ULONG GetZorder();

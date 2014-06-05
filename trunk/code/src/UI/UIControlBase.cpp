@@ -55,9 +55,9 @@ CUIControlBase::~CUIControlBase(void)
 {
 }
 
-void CUIControlBase::SetAttr(std::string strName, std::string strValue)
+void CUIControlBase::SetAttr(const std::string& strName, const std::string& strValue)
 {
-	if(strName == "left" ||
+	if (strName == "left" ||
 		strName == "top" ||
 		strName == "width" ||
 		strName == "height" ||
@@ -66,7 +66,7 @@ void CUIControlBase::SetAttr(std::string strName, std::string strValue)
 		CComVariant v(atoi(strValue.c_str()));
 		v.Detach(&m_mapAttr[strName]);
 	}
-	else if(strName == "visible")
+	else if (strName == "visible")
 	{
 		CComVariant v;
 		if(strValue == "true" || strValue == "1")
@@ -78,6 +78,10 @@ void CUIControlBase::SetAttr(std::string strName, std::string strValue)
 			v = VARIANT_FALSE;
 		}
 		v.Detach(&m_mapAttr[strName]);
+	}
+	else if (strName == "cursor")
+	{
+		m_mapAttr[strName] = CComVariant(strValue.c_str());
 	}
 }
 
@@ -244,6 +248,22 @@ void CUIControlBase::OnMouseLeave(int x, int y)
 void CUIControlBase::OnMouseWheel(int x, int y)
 {
 	
+}
+
+LRESULT CUIControlBase::OnSetCursor(int x, int y)
+{
+	CComVariant vCursor;
+	GetAttr("cursor", &vCursor);
+	if (vCursor.vt != VT_BSTR)
+	{
+		return FALSE;
+	}
+	if (wcscmp(vCursor.bstrVal, L"IDC_HAND") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+		return TRUE;
+	}
+	return FALSE;
 }
 
 void CUIControlBase::FireMouseEvent(std::string strName, int x, int y)

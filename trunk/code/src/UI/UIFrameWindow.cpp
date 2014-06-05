@@ -28,47 +28,17 @@ BOOL CUIFrameWindow::Render(CDCHandle dc)
 
 DWORD CUIFrameWindow::GetStyle()
 {
-	DWORD dwStyle = WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS |WS_SYSMENU|WS_TABSTOP;
-	if (m_mapAttr["enable"].vt == VT_I2 && m_mapAttr["enable"].boolVal != VARIANT_TRUE)
-	{
-		dwStyle |= WS_DISABLED;
-	}
-
-	if (m_mapAttr["resize"].vt == VT_I2 && m_mapAttr["resize"].boolVal == VARIANT_TRUE)
-	{
-		dwStyle |= WS_THICKFRAME;
-	}
-
-	if (m_mapAttr["max"].vt == VT_I2 && m_mapAttr["max"].boolVal == VARIANT_TRUE)
-	{
-		dwStyle |= WS_MAXIMIZEBOX;
-	}
-
-	if (m_mapAttr["min"].vt == VT_I2 && m_mapAttr["min"].boolVal == VARIANT_TRUE)
-	{
-		dwStyle |= WS_MINIMIZEBOX;
-	}
+	DWORD dwStyle = WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_SYSMENU | WS_TABSTOP | CUIWindowBase::GetStyle();
 	return dwStyle;
 }
 
 DWORD CUIFrameWindow::GetStyleEx()
 {
-	DWORD dwExStyle = 0; 
+	DWORD dwExStyle = CUIWindowBase::GetStyleEx(); 
 	if (m_mapAttr["appwindow"].vt == VT_I2 && m_mapAttr["appwindow"].boolVal == VARIANT_TRUE)
 	{
 		dwExStyle |= WS_EX_APPWINDOW;
 	}
-
-	if (m_mapAttr["topmost"].vt == VT_I2 && m_mapAttr["topmost"].boolVal == VARIANT_TRUE)
-	{
-		dwExStyle |= WS_EX_TOPMOST;
-	}	
-
-	if (m_mapAttr["layered"].vt == VT_I2 && m_mapAttr["layered"].boolVal == VARIANT_TRUE)
-	{
-		dwExStyle |= WS_EX_LAYERED;
-	}
-
 	return dwExStyle;
 }
 
@@ -108,8 +78,21 @@ BOOL CUIFrameWindow::CreateWnd(HWND hParent)
 	return TRUE;
 }
 
-void CUIFrameWindow::SetAttr(std::string strName, std::string strValue)
+void CUIFrameWindow::SetAttr(const std::string& strName, const std::string& strValue)
 {
+	if (strName == "sysmenu")
+	{
+		CComVariant v;
+		if(strValue == "true" || strValue == "1")
+		{
+			v = VARIANT_TRUE;
+		}
+		else
+		{
+			v = VARIANT_FALSE;
+		}
+		v.Detach(&m_mapAttr[strName]);
+	}
 }
 
 void CUIFrameWindow::GetAttr(std::string strName, VARIANT* v)

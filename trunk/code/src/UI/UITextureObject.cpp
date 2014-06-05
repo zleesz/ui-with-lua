@@ -116,7 +116,7 @@ int CUITextureObject::GetTexture(lua_State* L)
 	return 1;
 }
 
-void CUITextureObject::SetAttr(std::string strName, std::string strValue)
+void CUITextureObject::SetAttr(const std::string& strName, const std::string& strValue)
 {
 	__super::SetAttr(strName, strValue);
 }

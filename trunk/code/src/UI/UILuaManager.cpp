@@ -182,6 +182,7 @@ BOOL CUILuaManager::UILuaCall(lua_State* luaState, int nArgs, int nRet)
 	}
 	return FALSE;
 }
+
 int CUILuaManager::DoXmlLuaFile(const char* szFilePath, const char* szVMName)
 {
 	assert(szFilePath);

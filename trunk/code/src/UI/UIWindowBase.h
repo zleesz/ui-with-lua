@@ -33,21 +33,36 @@ private:
 	virtual BOOL ParserAttr(LPXMLDOMNode pAttrNode);
 	virtual BOOL ParserUITree(LPXMLDOMNode pNode);
 	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
+private:
+	BOOL IsInResizeLeftTopArea(const POINT& pt, const SIZE& sz);
+	BOOL IsInResizeLeftBottomArea(const POINT& pt, const SIZE& sz);
+	BOOL IsInResizeRightTopArea(const POINT& pt, const SIZE& sz);
+	BOOL IsInResizeRightBottomArea(const POINT& pt, const SIZE& sz);
+	BOOL IsInResizeLeftArea(const POINT& pt, const SIZE& sz);
+	BOOL IsInResizeTopArea(const POINT& pt, const SIZE& sz);
+	BOOL IsInResizeRightArea(const POINT& pt, const SIZE& sz);
+	BOOL IsInResizeBottomArea(const POINT& pt, const SIZE& sz);
 public:
 	typedef std::map<std::string, CComVariant> ID2AttrMap;
 	ID2AttrMap m_mapAttr;
 	virtual WindowType GetType() = 0;
 	virtual BOOL Render(CDCHandle dc) = 0;
 	virtual BOOL CreateWnd(HWND hParent) = 0;
-	void SetAttr(std::string strName, std::string strValue);
+	void SetAttr(const std::string& strName, const std::string& strValue);
 	void GetAttr(std::string strName, VARIANT* v);
 	const std::string& GetID() { return m_strID; };
 	void SetID(std::string strID) { m_strID = strID; };
 	const std::string& GetXMLPath() { return m_strXMLPath; };
 
 	BOOL GetLayered();
+	BOOL SetLayered(BOOL bLayered);
+	BOOL GetResizable();
+	BOOL SetResizable(BOOL bResizable);
 public:
 	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnNcHitTest(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnSetCursor(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnNcLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	static int GetID(lua_State* luaState);
 	static int AddInputFilter(lua_State* L);
@@ -59,10 +74,11 @@ public:
 	static int GetLayered(lua_State* luaState);
 	static int SetMaxTrackSize(lua_State* luaState);
 	static int SetMinTrackSize(lua_State* luaState);
+	static int SetResizable(lua_State* luaState);
 public:
 	CUITreeContainer* m_pUITreeContainer;
 	CUIEventWndContainer* m_pUIEventWindow;
-private:
-	virtual DWORD GetStyle() = 0;
-	virtual DWORD GetStyleEx() = 0;
+protected:
+	virtual DWORD GetStyle();
+	virtual DWORD GetStyleEx();
 };
