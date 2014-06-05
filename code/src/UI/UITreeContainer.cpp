@@ -410,6 +410,24 @@ LRESULT CUITreeContainer::OnCaptureChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPA
 	return 0;
 }
 
+LRESULT CUITreeContainer::OnSetCursor(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	POINT pt = {0};
+	::GetCursorPos(&pt);
+	::ScreenToClient(m_pBindWnd->m_hWnd, &pt);
+	CUIControlBase* pControl = m_ZorderIndexer.HitTest(pt.x, pt.y);
+	if(NULL != pControl)
+	{
+		LRESULT lres = pControl->OnSetCursor(pt.x, pt.y);
+		if (lres)
+		{
+			bHandled = TRUE;
+		}
+	}
+	return 0;
+}
+
 BOOL CUITreeContainer::SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture)
 {
 	if(bCapture)

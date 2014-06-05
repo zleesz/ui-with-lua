@@ -15,61 +15,86 @@ CUIEventWndContainer::~CUIEventWndContainer(void)
 }
 
 
-LRESULT CUIEventWndContainer::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[1];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
 
-	UIDISPPARAMS params = { avarParams, "OnCreate", 1, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnCreate", 1, 1, avarRets };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnClose(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[1];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
 
-	UIDISPPARAMS params = { avarParams, "OnClose", 1, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnClose", 1, 1, avarRets };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[2];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
 	avarParams[1].vt = VT_I2;
 	avarParams[1].boolVal = (VARIANT_BOOL)wParam;
 
-	UIDISPPARAMS params = { avarParams, "OnShowWindow", 2, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnShowWindow", 2, 1, avarRets };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[3];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
 	avarParams[1] = (int)(short) LOWORD(lParam);
 	avarParams[2] = (int)(short) HIWORD(lParam);
 
-	UIDISPPARAMS params = { avarParams, "OnMove", 3, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnMove", 3, 1 };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[5];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
@@ -79,14 +104,20 @@ LRESULT CUIEventWndContainer::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	avarParams[3] = pRc->right;
 	avarParams[4] = pRc->bottom;
 
-	UIDISPPARAMS params = { avarParams, "OnMoving", 5, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnMoving", 5, 1, avarRets };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[4];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
@@ -94,28 +125,40 @@ LRESULT CUIEventWndContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam
 	avarParams[2] = (int)(short) LOWORD(lParam);
 	avarParams[3] = (int)(short) HIWORD(lParam);
 
-	UIDISPPARAMS params = { avarParams, "OnSize", 4, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnSize", 4, 1, avarRets };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnEnableChange(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnEnableChange(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[2];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
 	avarParams[1].vt = VT_I2;
 	avarParams[1].boolVal = (VARIANT_BOOL)wParam;
 
-	UIDISPPARAMS params = { avarParams, "OnEnableChange", 2, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnEnableChange", 2, 1, avarRets };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[3];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
@@ -126,14 +169,20 @@ LRESULT CUIEventWndContainer::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*
 		avarParams[2] = (LONG)(LONG_PTR)wParam;
 	}
 
-	UIDISPPARAMS params = { avarParams, "OnFocusChange", 3, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnFocusChange", 3, 1, avarRets };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	LOG_AUTO();
+	bHandled = FALSE;
 	CComVariant avarParams[3];
 	avarParams[0].vt = VT_BYREF | VT_I4;
 	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
@@ -144,14 +193,20 @@ LRESULT CUIEventWndContainer::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /
 		avarParams[2] = (LONG)(LONG_PTR)wParam;
 	}
 
-	UIDISPPARAMS params = { avarParams, "OnFocusChange", 3, 0 };
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnFocusChange", 3, 1, avarRets };
 	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
 	return 0;
 }
 
-LRESULT CUIEventWndContainer::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+LRESULT CUIEventWndContainer::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	//LOG_AUTO();
+	bHandled = FALSE;
 	lua_State* L = UILuaGetLuaVM(NULL);
 	for(int i = 0; i < (int)m_vecFilter.size(); i++)
 	{
@@ -159,7 +214,15 @@ LRESULT CUIEventWndContainer::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 		lua_pushinteger(L, uMsg);
 		lua_pushinteger(L, wParam);
 		lua_pushinteger(L, lParam);
-		UILuaManagerInstance.CallLuaFuncByIndex(m_vecFilter[i].nFunc, 4, 0, NULL);
+		UILuaManagerInstance.CallLuaFuncByIndex(m_vecFilter[i].nFunc, 4, 1, NULL);
+		if (lua_isboolean(L, -1))
+		{
+			bHandled = (BOOL)lua_toboolean(L, -1);
+			if (bHandled)
+			{
+				break;
+			}
+		}
 	}
 	return 0;
 }

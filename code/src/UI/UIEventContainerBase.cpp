@@ -164,23 +164,36 @@ void CUIEventContainerBase::DispatchListener(UIDISPPARAMS& params)
 	LOG_AUTO();
 	lua_State* L = UILuaGetLuaVM(NULL);
 	LuaEventMap::const_iterator itLuaEvent = m_mapEvent.find(params.strName);
-	if (itLuaEvent != m_mapEvent.end())
+	if (itLuaEvent == m_mapEvent.end())
 	{
-		LPVecEvent pVecEvent = itLuaEvent->second;
-		for(VecEvent::size_type st = 0; st < pVecEvent->size(); st ++)
+		return;
+	}
+	LPVecEvent pVecEvent = itLuaEvent->second;
+	for(VecEvent::size_type st = 0; st < pVecEvent->size(); st ++)
+	{
+		LPEventNode pEventNode = (*pVecEvent)[st];
+		PushEventParams(params);
+		if(pEventNode->strPath.length() > 0)
 		{
-			LPEventNode pEventNode = (*pVecEvent)[st];
-			PushEventParams(params);
-			if(pEventNode->strPath.length() > 0)
-			{
-				UILuaManagerInstance.CallLuaFunc(pEventNode->strPath, pEventNode->strFuncName, params.nArgs, params.nRet, NULL);
-			}
-			else
-			{
-				UILuaManagerInstance.CallLuaFuncByIndex(pEventNode->nFuncIndex, params.nArgs, params.nRet, NULL);
-			}
-			lua_pop(L, (int)params.nRet);
+			UILuaManagerInstance.CallLuaFunc(pEventNode->strPath, pEventNode->strFuncName, params.nArgs, params.nRet + 1, NULL);
 		}
+		else
+		{
+			UILuaManagerInstance.CallLuaFuncByIndex(pEventNode->nFuncIndex, params.nArgs, params.nRet + 1, NULL);
+		}
+		if (lua_isboolean(L, -1))
+		{
+			if (lua_toboolean(L, -1))
+			{
+				for (int i = 0; i < (int)params.nRet; i++)
+				{
+					Util::lua::PutLuaStackToVariant(L, &params.rgvret[i], -1-i);
+				}
+				lua_pop(L, (int)params.nRet + 1);
+				break;
+			}
+		}
+		lua_pop(L, (int)params.nRet + 1);
 	}
 }
 

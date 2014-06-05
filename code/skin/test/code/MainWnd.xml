@@ -9,6 +9,8 @@
 			<appwindow>1</appwindow>
 			<layered>1</layered>
 			<title>测试窗口</title>
+			<resize>1</resize>
+			<resizeleft>7</resizeleft>
 		</attr>
 		<uitree>
 			<obj id="texture.bkg" class="UITextureObject">

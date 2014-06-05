@@ -136,7 +136,7 @@ CUIButton::~CUIButton(void)
 	UnRegisterClass(this);
 }
 
-void CUIButton::SetAttr(std::string strName, std::string strValue)
+void CUIButton::SetAttr(const std::string& strName, const std::string& strValue)
 {
 	__super::SetAttr(strName, strValue);
 }
@@ -193,6 +193,17 @@ void CUIButton::OnLButtonDown(int x, int y)
 		Invalidate();
 		SetCaptureMouse(TRUE);
 	}
+}
+
+LRESULT CUIButton::OnSetCursor(int x, int y)
+{
+	BOOL bEnable = CUIControlBase::GetEnable();
+	if (bEnable)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+		return TRUE;
+	}
+	return FALSE;
 }
 
 void CUIButton::FireOnClick(int x, int y)

@@ -43,7 +43,7 @@ BOOL CUIModalWindow::CreateWnd(HWND hParent)
 	return TRUE;
 }
 
-void CUIModalWindow::SetAttr(std::string strName, std::string strValue)
+void CUIModalWindow::SetAttr(const std::string& strName, const std::string& strValue)
 {
 }
 

@@ -102,6 +102,44 @@ namespace lua
 			break;
 		}
 	}
+	static void PutLuaStackToVariant(lua_State* luaState, VARIANT* pv, long lnPos = -1)
+	{
+		int t = lua_type(luaState, lnPos);
+		if (lua_isnumber(luaState, lnPos) && t == LUA_TNUMBER)
+		{
+			pv->vt = VT_I4;
+			*pv = CComVariant((int)lua_tointeger(luaState, lnPos));
+		}
+		else if (lua_isstring(luaState, lnPos))
+		{
+			size_t nLen = 0;
+			const char* szResult = (const char*)lua_tolstring(luaState, lnPos, &nLen);
+			std::wstring strResult;
+			Util::StringToWideString(szResult, strResult);
+			CComVariant(strResult.c_str()).Detach(pv);
+		}
+		else if (lua_isboolean(luaState, lnPos))
+		{
+			pv->vt = VT_BOOL;
+			pv->boolVal = lua_toboolean(luaState, lnPos) ? VARIANT_TRUE : VARIANT_FALSE;
+		}
+		else if (lua_isnoneornil(luaState, lnPos))
+		{
+		}
+		else if (lua_islightuserdata(luaState, lnPos) || lua_isuserdata(luaState, lnPos))
+		{
+			LONG nParam = (LONG)(LONG_PTR)lua_touserdata(luaState, lnPos);
+			*pv = CComVariant((LONG)nParam);
+		}
+		else if (lua_istable(luaState, lnPos))
+		{
+			// TODO: lua table
+		}
+		else
+		{
+			ATLASSERT(FALSE && "返回值类型不支持");
+		}
+	}
 }
 }
 //////////////////////////////////////////////////////////////////////////

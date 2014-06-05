@@ -17,7 +17,7 @@ public:
 	virtual WindowType GetType() { return WT_ModalHostWnd; };
 	virtual BOOL Render(CDCHandle dc);
 	virtual BOOL CreateWnd(HWND hParent);
-	void SetAttr(std::string strName, std::string strValue);
+	void SetAttr(const std::string& strName, const std::string& strValue);
 	void GetAttr(std::string strName, VARIANT* v);
 	virtual BOOL ParserAttr(LPXMLDOMNode pAttrNode);
 public:

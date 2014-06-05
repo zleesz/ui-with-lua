@@ -10,6 +10,7 @@ typedef struct tagUIDISPPARAMS
 	std::string strName;
 	UINT nArgs;
 	UINT nRet;
+	VARIANTARG *rgvret;
 }UIDISPPARAMS;
 
 typedef enum enumEventType {
