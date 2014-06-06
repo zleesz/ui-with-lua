@@ -61,11 +61,11 @@ end
 
 SetOnceTimer(function()
 	local windowFactory = UILuaGetObject("UI.WindowFactory")
-	local childwnd = windowFactory:Create("childwnd")
 	local mainwnd = windowFactory:GetWindow("mainwnd")
 	local mainwndHandle = mainwnd:GetHWND()
 	--UIMessageBox(tostring(mainwndHandle))
-	childwnd:SetParent(mainwndHandle)
+	--childwnd:SetParent(mainwndHandle)
+	local childwnd = windowFactory:Create("childwnd", mainwndHandle)
 	local maintree = mainwnd:GetTreeContainer()
 	local title = maintree:GetUIObject("text.title")
 	title:SetObjPos(50, 30, 200, 24)

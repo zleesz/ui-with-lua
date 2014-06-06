@@ -108,7 +108,7 @@ CUIWindowBase* CUITreeContainer::GetBindWnd(void)
 int CUITreeContainer::GetUIObject(lua_State* L)
 {
 	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
-	const char* pszID = lua_tostring(L, -2);
+	const char* pszID = lua_tostring(L, 2);
 	if(pszID == NULL)
 	{
 		assert(false);
@@ -152,9 +152,9 @@ int CUITreeContainer::RemoveUIObject(lua_State* L)
 		pControl = it->second;
 		pThis->m_mapCtrl.erase(it);
 	}
-	else if(lua_isuserdata(L, -2))
+	else if(lua_isuserdata(L, 2))
 	{
-		pControl = (CUIControlBase*) lua_touserdata(L, -2);
+		pControl = (CUIControlBase*) lua_touserdata(L, 2);
 		const std::string strID = pControl->GetID();
 		ID2ControlMap::iterator it = pThis->m_mapCtrl.find(strID);
 		if(it == pThis->m_mapCtrl.end())
@@ -191,7 +191,7 @@ int CUITreeContainer::RemoveUIObject(lua_State* L)
 int CUITreeContainer::AddUIObject(lua_State* L)
 {
 	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
-	CUIControlBase* pControl = (CUIControlBase*) lua_touserdata(L, -2);
+	CUIControlBase* pControl = (CUIControlBase*) lua_touserdata(L, 2);
 	if(NULL == pThis || NULL == pControl)
 	{
 		ATLASSERT(FALSE);
@@ -201,7 +201,7 @@ int CUITreeContainer::AddUIObject(lua_State* L)
 	int nIndex = 0;
 	if(lua_gettop(L) >= 3)
 	{
-		nIndex = (int)lua_tointeger(L, -3);
+		nIndex = (int)lua_tointeger(L, 3);
 	}
 	pThis->m_mapCtrl.insert(ID2ControlMap::value_type(pControl->GetID(), pControl));
 	TreeModifyData tmd;
@@ -225,8 +225,8 @@ int CUITreeContainer::CreateUIObject(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	const char* pszID = lua_tostring(L, -2);
-	const char* pszClass = lua_tostring(L, -3);
+	const char* pszID = lua_tostring(L, 2);
+	const char* pszClass = lua_tostring(L, 3);
 	if(NULL == pszID || pszClass)
 	{
 		ATLASSERT(FALSE);

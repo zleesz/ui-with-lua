@@ -1,8 +1,8 @@
 <ui>
 	<hostwnd id="childwnd" type="FrameHostWnd">
 		<attr>
-			<left>100</left>
-			<top>100</top>
+			<left>200</left>
+			<top>120</top>
 			<width>200</width>
 			<height>200</height>
 			<visible>1</visible>

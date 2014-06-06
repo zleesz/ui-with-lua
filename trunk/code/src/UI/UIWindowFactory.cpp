@@ -23,17 +23,25 @@ int CUIWindowFactory::GetWindow(lua_State* luaState)
 	UILuaPushClassObj(luaState, (void*)it->second);
 	return 1;
 }
+
 int CUIWindowFactory::Create(lua_State* luaState)
 {
 	CUIWindowFactory* pThis = (CUIWindowFactory*) lua_touserdata(luaState, -1);
 	ATLASSERT(pThis);
-	std::string strID = lua_tostring(luaState, -2);
+	std::string strID = lua_tostring(luaState, 2);
 	ATLASSERT(strID.length() > 0);
 	HWND hParent = NULL;
 	int top = lua_gettop(luaState);
-	if(top >= 3)
+	if (top >= 3)
 	{
-		hParent = (HWND)(LONG_PTR)(LONG)lua_tonumber(luaState, -3);
+		if (lua_isnumber(luaState, 3))
+		{
+			hParent = (HWND)(LONG_PTR)(LONG)lua_tonumber(luaState, 3);
+		}
+		else if (lua_isuserdata(luaState, 3))
+		{
+			hParent = (HWND)lua_touserdata(luaState, 3);
+		}
 	}
 
 	CUIWindowBase* pUIWindow = pThis->m_mapID2Window[strID];
@@ -41,7 +49,7 @@ int CUIWindowFactory::Create(lua_State* luaState)
 	if(pUIWindow)
 	{
 		// µ÷ÓÃCreate
-		pUIWindow->CreateWnd(hParent);
+		pUIWindow->CreateWnd(::IsWindow(hParent) ? hParent : NULL);
 	}
 	UILuaPushClassObj(luaState, (void*)pUIWindow);
 	return 1;
