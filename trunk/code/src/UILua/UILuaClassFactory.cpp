@@ -151,32 +151,38 @@ void UILuaClassFactory::PushClassObj(lua_State* L, const void* obj)
 {
 	assert(obj);
 	LOG_TRACE(_T("PushClassObj obj:") << obj);
-	if(NULL != obj)
+	if (NULL == obj)
 	{
-		LuaVM2MapLuaObjectMap::const_iterator it = m_mapClassObject.find(L);
-		if(it != m_mapClassObject.end())
-		{
-			Obj2LuaObjectMap::const_iterator it2 = it->second->find(obj);
-			if(it2 != it->second->end())
-			{
-				UILuaObject* pTheObj = it2->second;
-				assert(pTheObj);
-				LOG_TRACE(_T("PushClassObj pTheObj:") << pTheObj);
-				if(NULL == pTheObj)
-				{
-					lua_pushnil(L);
-					return;
-				}
-				userdataType *ud = static_cast<userdataType*>(lua_newuserdata(L, sizeof(userdataType)));
-				ud->p = (void*)obj;
-				luaL_getmetatable(L, pTheObj->ObjName);
-				lua_setmetatable(L, -2);
-				return;
-			}
-		}
 		assert(false);
+		lua_pushnil(L);
+		return;
 	}
-	lua_pushnil(L);
+	LuaVM2MapLuaObjectMap::const_iterator it = m_mapClassObject.find(L);
+	if (it == m_mapClassObject.end())
+	{
+		assert(false);
+		lua_pushnil(L);
+		return;
+	}
+	Obj2LuaObjectMap::const_iterator it2 = it->second->find(obj);
+	if(it2 == it->second->end())
+	{
+		assert(false);
+		lua_pushnil(L);
+		return;
+	}
+	UILuaObject* pTheObj = it2->second;
+	assert(pTheObj);
+	LOG_TRACE(_T("PushClassObj pTheObj:") << pTheObj);
+	if(NULL == pTheObj)
+	{
+		lua_pushnil(L);
+		return;
+	}
+	userdataType *ud = static_cast<userdataType*>(lua_newuserdata(L, sizeof(userdataType)));
+	ud->p = (void*)obj;
+	luaL_getmetatable(L, pTheObj->ObjName);
+	lua_setmetatable(L, -2);
 }
 
 UILuaClassFactory& UILuaClassFactory::GetInstance()

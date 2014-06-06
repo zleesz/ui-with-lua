@@ -80,29 +80,48 @@
 	__if_not_exists(this) { LOGGER_FATAL(LOGGER_DEFAULT(), msg); }
 
 #define LOG_AUTO_REAL(file, line) \
-	CLogAuto logAuto( LOG4CPLUS_C_STR_TO_TSTRING(file), line, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__) );
+	__if_exists(this) { CLogAuto logAuto(LOG4CPLUS_C_STR_TO_TSTRING(file), line, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__), (LONG)(LONG_PTR)this); } \
+	__if_not_exists(this) { CLogAuto logAuto(LOG4CPLUS_C_STR_TO_TSTRING(file), line, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__)); }
 #define LOG_AUTO() \
 	LOG_AUTO_REAL(__FILE__, __LINE__)
 #define LOG_CLS_AUTO_DEC() \
 class CLogAuto \
 { \
 public: \
-	CLogAuto(log4cplus::tstring file, LONG line, log4cplus::tstring tszFuncSig) : \
+	CLogAuto(log4cplus::tstring file, LONG line, log4cplus::tstring tszFuncSig, LONG lnThis = 0) : \
 		m_pszFuncSig(tszFuncSig), \
-		m_pszFile(file) \
+		m_pszFile(file), \
+		m_lnThis(lnThis) \
 	{ \
-	char szLine[20] = {0}; \
-	sprintf_s(szLine, "%d", line); \
-	m_pszLine = LOG4CPLUS_C_STR_TO_TSTRING(szLine); \
-	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "¡ú" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_pszLine << "]"); \
+	wsprintf(m_szLine, L"%d", line); \
+	if (m_lnThis > 0) \
+	{ \
+		wchar_t szThis[20] = {0}; \
+		wsprintf(szThis, L"0x%08X", m_lnThis); \
+		LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "¡ú" << m_pszFuncSig << ']' << " [" << szThis << "] " << " [" << m_pszFile << ":" << m_szLine << "]"); \
+	} \
+	else \
+	{ \
+		LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "¡ú" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_szLine << "]"); \
+	} \
 	} \
 	~CLogAuto() \
 	{ \
-	LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "¡û" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_pszLine << "]"); \
+	if (m_lnThis > 0) \
+	{ \
+		wchar_t szThis[20] = {0}; \
+		wsprintf(szThis, L"0x%08X", m_lnThis); \
+		LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "¡û" << m_pszFuncSig << ']' << " [" << szThis << "] " << " [" << m_pszFile << ":" << m_szLine << "]"); \
+	} \
+	else \
+	{ \
+		LOG4CPLUS_TRACE(getLogger(), '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << "¡û" << m_pszFuncSig << ']' << " [" << m_pszFile << ":" << m_szLine << "]"); \
+	} \
 	} \
 private: \
-	log4cplus::tstring m_pszFuncSig; \
-	log4cplus::tstring m_pszFile; \
-	log4cplus::tstring m_pszLine; \
+	log4cplus::tstring	m_pszFuncSig; \
+	log4cplus::tstring	m_pszFile; \
+	wchar_t				m_szLine[10]; \
+	LONG				m_lnThis; \
 }
 //////////////////////////////////////////////////////////////////////////
