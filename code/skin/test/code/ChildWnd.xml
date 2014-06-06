@@ -1,0 +1,42 @@
+<ui>
+	<hostwnd id="childwnd" type="FrameHostWnd">
+		<attr>
+			<left>100</left>
+			<top>100</top>
+			<width>200</width>
+			<height>200</height>
+			<visible>1</visible>
+			<layered>0</layered>
+			<title>测试子窗口</title>
+		</attr>
+		<uitree>
+			<obj id="texture.bkg" class="UITextureObject">
+				<attr>
+					<left>0</left>
+					<top>0</top>
+					<width>father.width</width>
+					<height>father.height</height>
+					<texture>texture.mainwnd.background.png</texture>
+					<stretch>false</stretch>
+					<visible>true</visible>
+				</attr>
+				<eventlist>
+					<event name="OnLButtonDown" file="ChildWnd.xml.lua" func="OnBkgLButtonDown" />
+				</eventlist>
+			</obj>
+			<obj id="text.title" class="UIText">
+				<attr>
+					<left>10</left>
+					<top>10</top>
+					<width>200</width>
+					<height>24</height>
+					<multiline>0</multiline>
+					<valign>true</valign>
+					<halign>true</halign>
+					<zorder>10</zorder>
+					<text>子窗口标题</text>
+				</attr>
+			</obj>
+		</uitree>
+	</hostwnd>
+</ui>

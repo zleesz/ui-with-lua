@@ -31,7 +31,7 @@ CUIBitmap::CUIBitmap(LPXMLDOMNode pNode, const char* pszPath)
 	PathCombineA(szPath, szPath, strPath.c_str());
 
 	std::wstring wstrPath;
-	Util::StringToWideString(szPath, wstrPath);
+	Util::UTF8_to_Unicode(szPath, wstrPath);
 	m_hBitmap = UIGraphicInstance->LoadBitmapFromFile(wstrPath.c_str());
 	assert(m_hBitmap);
 }

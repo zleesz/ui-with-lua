@@ -2,6 +2,7 @@
 #include "UIControlBase.h"
 #include "UITreeContainer.h"
 #include "UIWindowBase.h"
+#include <MathExpParser.h>
 
 CUIControlBase::CUIControlBase(void)
 {
@@ -63,8 +64,7 @@ void CUIControlBase::SetAttr(const std::string& strName, const std::string& strV
 		strName == "height" ||
 		strName == "zorder")
 	{
-		CComVariant v(atoi(strValue.c_str()));
-		v.Detach(&m_mapAttr[strName]);
+		m_mapAttr[strName] = CComVariant(strValue.c_str());
 	}
 	else if (strName == "visible")
 	{
@@ -123,31 +123,88 @@ ULONG CUIControlBase::GetZorder()
 	return v.ulVal;
 }
 
+void CUIControlBase::TranslateFatherPos(std::wstring& strPos, const RECT& fatherRc)
+{
+	wchar_t szFatherLeft[10] = {0};
+	wchar_t szFatherTop[10] = {0};
+	wchar_t szFatherWidth[10] = {0};
+	wchar_t szFatherHeight[10] = {0};
+
+	_itow(fatherRc.left, szFatherLeft, 10);
+	_itow(fatherRc.left, szFatherTop, 10);
+	_itow(fatherRc.right - fatherRc.left, szFatherWidth, 10);
+	_itow(fatherRc.bottom - fatherRc.top, szFatherHeight, 10);
+
+	Util::ReplaceAll(strPos, L"father.left", szFatherLeft);
+	Util::ReplaceAll(strPos, L"father.top", szFatherTop);
+	Util::ReplaceAll(strPos, L"father.width", szFatherWidth);
+	Util::ReplaceAll(strPos, L"father.height", szFatherHeight);
+}
+
 const RECT& CUIControlBase::GetObjPos()
 {
-	static RECT rc = {};
+	static RECT rc = {0};
 	CComVariant vLeft, vTop, vWidth, vHeight;
 	GetAttr("left", &vLeft);
 	GetAttr("top", &vTop);
 	GetAttr("width", &vWidth);
 	GetAttr("height", &vHeight);
-	if(vLeft.vt != VT_I4)
-		rc.left = 0;
-	else
-		rc.left = vLeft.intVal;
-	if(vTop.vt != VT_I4)
-		rc.top = 0;
-	else
-		rc.top = vTop.intVal;
-	if(vWidth.vt != VT_I4)
-		rc.right = 0;
-	else
-		rc.right = rc.left + vWidth.intVal;
-	if(vHeight.vt != VT_I4)
-		rc.bottom = 0;
-	else
-		rc.bottom = rc.top + vHeight.intVal;
+
+	RECT wndRc = {0};
+	m_pTree->GetBindWnd()->GetWindowRect(&wndRc);
+	if (vLeft.vt == VT_BSTR)
+	{
+		std::wstring strLeft(vLeft.bstrVal);
+		TranslateFatherPos(strLeft, wndRc);
+		CMathExpParser mathExpParser;
+		rc.left = mathExpParser.Calc(strLeft.c_str());
+	}
+	if (vTop.vt == VT_BSTR)
+	{
+		std::wstring strTop(vTop.bstrVal);
+		TranslateFatherPos(strTop, wndRc);
+		CMathExpParser mathExpParser;
+		rc.top = mathExpParser.Calc(strTop.c_str());
+	}
+	if (vWidth.vt == VT_BSTR)
+	{
+		std::wstring strWidth(vWidth.bstrVal);
+		TranslateFatherPos(strWidth, wndRc);
+		CMathExpParser mathExpParser;
+		rc.right = rc.left + mathExpParser.Calc(strWidth.c_str());
+	}
+	if (vHeight.vt == VT_BSTR)
+	{
+		std::wstring strHeight(vHeight.bstrVal);
+		TranslateFatherPos(strHeight, wndRc);
+		CMathExpParser mathExpParser;
+		rc.bottom = rc.top + mathExpParser.Calc(strHeight.c_str());
+	}
 	return rc;
+}
+
+void CUIControlBase::SetObjPos(const RECT& rc)
+{
+	char szLeft[10] = {0};
+	char szTop[10] = {0};
+	char szWidth[10] = {0};
+	char szHeight[10] = {0};
+
+	_itoa(rc.left, szLeft, 10);
+	_itoa(rc.top, szTop, 10);
+	_itoa(rc.right - rc.left, szWidth, 10);
+	_itoa(rc.bottom - rc.top, szHeight, 10);
+
+	const RECT oldRc = GetObjPos();
+
+	SetAttr("left", szLeft);
+	SetAttr("top", szTop);
+	SetAttr("width", szWidth);
+	SetAttr("height", szHeight);
+
+	RECT unionRc = {0};
+	::UnionRect(&unionRc, &rc, &oldRc);
+	InvalidateRect(unionRc);
 }
 
 BOOL CUIControlBase::OnHitTest(int x, int y)
@@ -203,6 +260,16 @@ void CUIControlBase::Invalidate()
 	pWindow->InvalidateRect(&rc, FALSE);
 }
 
+void CUIControlBase::InvalidateRect(const RECT& rc)
+{
+	if(NULL == m_pTree)
+		return;
+	CUIWindowBase* pWindow = m_pTree->GetBindWnd();
+	if(NULL == pWindow)
+		return;
+	pWindow->InvalidateRect(&rc, FALSE);
+}
+
 void CUIControlBase::SetCaptureMouse(BOOL bCapture)
 {
 	if(NULL == m_pTree)
@@ -222,35 +289,35 @@ void CUIControlBase::OnDetroy()
 
 void CUIControlBase::OnLButtonDown(int x, int y)
 {
-	
+	FireMouseEvent("OnLButtonDown", x, y);
 }
 
 void CUIControlBase::OnLButtonUp(int x, int y)
 {
-	
+	FireMouseEvent("OnLButtonUp", x, y);
 }
 
 void CUIControlBase::OnLButtonDbClick(int x, int y)
 {
-	
+	FireMouseEvent("OnLButtonDbClick", x, y);
 }
 
 void CUIControlBase::OnMouseMove(int x, int y)
 {
-	
+	FireMouseEvent("OnMouseMove", x, y);
 }
 
 void CUIControlBase::OnMouseLeave(int x, int y)
 {
-	
+	FireMouseEvent("OnMouseLeave", x, y);
 }
 
 void CUIControlBase::OnMouseWheel(int x, int y)
 {
-	
+	FireMouseEvent("OnMouseWheel", x, y);
 }
 
-LRESULT CUIControlBase::OnSetCursor(int x, int y)
+LRESULT CUIControlBase::OnSetCursor(int /*x*/, int /*y*/)
 {
 	CComVariant vCursor;
 	GetAttr("cursor", &vCursor);
@@ -261,6 +328,81 @@ LRESULT CUIControlBase::OnSetCursor(int x, int y)
 	if (wcscmp(vCursor.bstrVal, L"IDC_HAND") == 0)
 	{
 		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HAND)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_ARROW") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_ARROW)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_IBEAM") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_IBEAM)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_WAIT") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_WAIT)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_CROSS") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_CROSS)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_UPARROW") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_UPARROW)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_SIZE") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZE)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_ICON") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_ICON)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_SIZENWSE") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENWSE)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_SIZENESW") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENESW)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_SIZEWE") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_SIZENS") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENS)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_SIZEALL") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEALL)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_NO") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_NO)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_APPSTARTING") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_APPSTARTING)));
+		return TRUE;
+	}
+	else if (wcscmp(vCursor.bstrVal, L"IDC_HELP") == 0)
+	{
+		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_HELP)));
 		return TRUE;
 	}
 	return FALSE;
@@ -319,4 +461,17 @@ int CUIControlBase::GetOwnerTree(lua_State* L)
 	ATLASSERT(pThis);
 	UILuaPushClassObj(L, pThis->GetOwnerTree());
 	return 1;
+}
+
+int CUIControlBase::SetObjPos(lua_State* L)
+{
+	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	LONG lnLeft = (LONG)lua_tonumber(L, 2);
+	LONG lnTop = (LONG)lua_tonumber(L, 3);
+	LONG lnWidth = (LONG)lua_tonumber(L, 4);
+	LONG lnHeight = (LONG)lua_tonumber(L, 5);
+
+	RECT rc = {lnLeft, lnTop, lnLeft + lnWidth, lnTop + lnHeight};
+	pThis->SetObjPos(rc);
+	return 0;
 }

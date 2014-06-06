@@ -16,6 +16,7 @@ typedef enum enumControlType {
 	CT_UITexture,
 	CT_UIButton,
 	CT_UIText,
+	CT_UIWebBrowser,
 } ControlType;
 
 class CUIControlBase
@@ -32,6 +33,8 @@ public:
 	typedef std::map<std::string, CComVariant> ID2AttrMap;
 	ID2AttrMap m_mapAttr;
 	CUIEventCtrlContainer* m_pUIEventControl;
+private:
+	void TranslateFatherPos(std::wstring& strPos, const RECT& fatherRc);
 protected:
 	void FireMouseEvent(std::string strName, int x, int y);
 public:
@@ -58,7 +61,9 @@ public:
 	void SetVisible(BOOL bVisible);
 	BOOL GetEnable();
 	const RECT& GetObjPos();
+	void SetObjPos(const RECT& rc);
 	void Invalidate();
+	void InvalidateRect(const RECT& rc);
 	void SetCaptureMouse(BOOL bCapture);
 public:
 	static int GetID(lua_State* L);
@@ -66,6 +71,7 @@ public:
 	static int SetVisible(lua_State* L);
 	static int GetEnable(lua_State* L);
 	static int GetOwnerTree(lua_State* L);
+	static int SetObjPos(lua_State* L);
 
 public:
 	LOG_CLS_DEC();

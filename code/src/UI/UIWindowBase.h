@@ -11,6 +11,8 @@
 #include <Util.h>
 #include "UITreeContainer.h"
 #include "UIEventWndContainer.h"
+#include "UIWindowCaption.h"
+#include "UIWindowResizer.h"
 
 typedef enum enumWindowType {
 	WT_FrameHostWnd = 1,
@@ -22,8 +24,9 @@ typedef enum enumWindowType {
 class CUIWindowBase :
 	public CWindowImpl<CUIWindowBase>
 {
+protected:
+	CUIWindowBase(void) {};
 public:
-	CUIWindowBase(void);
 	CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode);
 	virtual ~CUIWindowBase(void);
 private:
@@ -42,9 +45,14 @@ private:
 	BOOL IsInResizeTopArea(const POINT& pt, const SIZE& sz);
 	BOOL IsInResizeRightArea(const POINT& pt, const SIZE& sz);
 	BOOL IsInResizeBottomArea(const POINT& pt, const SIZE& sz);
-public:
+protected:
 	typedef std::map<std::string, CComVariant> ID2AttrMap;
-	ID2AttrMap m_mapAttr;
+	ID2AttrMap				m_mapAttr;
+	CUITreeContainer*		m_pUITreeContainer;
+	CUIEventWndContainer*	m_pUIEventWindow;
+	CUIWindowResizer*		m_pUIWindowResizer;
+	CUIWindowCaption*		m_pUIWindowCaption;
+public:
 	virtual WindowType GetType() = 0;
 	virtual BOOL Render(CDCHandle dc) = 0;
 	virtual BOOL CreateWnd(HWND hParent) = 0;
@@ -58,6 +66,7 @@ public:
 	BOOL SetLayered(BOOL bLayered);
 	BOOL GetResizable();
 	BOOL SetResizable(BOOL bResizable);
+	void GetWindowRect(LPRECT rc);
 public:
 	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnNcHitTest(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
@@ -65,6 +74,12 @@ public:
 	LRESULT OnNcLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	static int GetID(lua_State* luaState);
+	static int GetTitle(lua_State* luaState);
+	static int SetTitle(lua_State* luaState);
+	static int GetVisible(lua_State* luaState);
+	static int SetVisible(lua_State* luaState);
+	static int Show(lua_State* luaState);
+	static int GetTreeContainer(lua_State* luaState);
 	static int AddInputFilter(lua_State* L);
 	static int AttachListener(lua_State* L);
 	static int DetachListener(lua_State* L);
@@ -75,9 +90,10 @@ public:
 	static int SetMaxTrackSize(lua_State* luaState);
 	static int SetMinTrackSize(lua_State* luaState);
 	static int SetResizable(lua_State* luaState);
-public:
-	CUITreeContainer* m_pUITreeContainer;
-	CUIEventWndContainer* m_pUIEventWindow;
+	static int GetWindowRect(lua_State* luaState);
+	static int GetParent(lua_State* luaState);
+	static int SetParent(lua_State* luaState);
+	static int GetHWND(lua_State* luaState);
 protected:
 	virtual DWORD GetStyle();
 	virtual DWORD GetStyleEx();

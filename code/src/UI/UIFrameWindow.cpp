@@ -1,10 +1,6 @@
 #include "StdAfx.h"
 #include "UIFrameWindow.h"
 
-CUIFrameWindow::CUIFrameWindow(void)
-{
-}
-
 CUIFrameWindow::~CUIFrameWindow(void)
 {
 	UnRegisterClass(this);
@@ -142,78 +138,6 @@ LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
 	}
 	bHandled = FALSE;
 	return 0;
-}
-
-int CUIFrameWindow::GetID(lua_State* L)
-{
-	CUIWindowBase* pThis = (CUIWindowBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	std::string strID = pThis->GetID();
-	lua_pushstring(L, strID.c_str());
-	return 1;
-}
-
-int CUIFrameWindow::GetTitle(lua_State* L)
-{
-	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	CComVariant vTitle = pThis->m_mapAttr["title"];
-	if(vTitle.vt == VT_BSTR)
-	{
-		std::string strTitle;
-		Util::BSTRToString(vTitle.bstrVal, strTitle);
-		lua_pushstring(L, strTitle.c_str());
-	}
-	return 1;
-}
-
-int CUIFrameWindow::SetTitle(lua_State* L)
-{
-	CUIWindowBase* pParent = (CUIWindowBase*) lua_touserdata(L, -1);
-	ATLASSERT(pParent);
-	const char* pszTitle = lua_tostring(L, -1);
-	pParent->SetAttr("title", pszTitle);
-	CUIFrameWindow* pThis = (CUIFrameWindow*)pParent;
-	if(pThis->m_hWnd)
-	{
-		CComVariant vTitle = pThis->m_mapAttr["title"];
-		if(vTitle.vt == VT_BSTR)
-		{
-			pThis->SetWindowText(vTitle.bstrVal);
-		}
-	}
-	return 0;
-}
-
-int CUIFrameWindow::GetVisible(lua_State* L)
-{
-	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
-	lua_pushboolean(L, pThis->IsWindowVisible());
-	return 1;
-}
-
-int CUIFrameWindow::SetVisible(lua_State* L)
-{
-	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
-	int bVisible = lua_toboolean(L, 2);
-	pThis->ShowWindow(bVisible == 0 ? SW_HIDE : SW_SHOWNORMAL);
-	return 0;
-}
-
-int CUIFrameWindow::Show(lua_State* L)
-{
-	CUIFrameWindow* pThis = (CUIFrameWindow*) lua_touserdata(L, -1);
-	int nCmd = (int)lua_tointeger(L, -2);
-	pThis->ShowWindow(nCmd);
-	return 0;
-}
-
-int CUIFrameWindow::GetTreeContainer(lua_State* L)
-{
-	CUIWindowBase* pThis = (CUIWindowBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	UILuaPushClassObj(L, (void*)pThis->m_pUITreeContainer);
-	return 1;
 }
 
 void CUIFrameWindow::TryUpdateLayeredWindow()

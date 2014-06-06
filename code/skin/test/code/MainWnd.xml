@@ -7,18 +7,21 @@
 			<height>400</height>
 			<visible>1</visible>
 			<appwindow>1</appwindow>
-			<layered>1</layered>
+			<layered>0</layered>
 			<title>测试窗口</title>
 			<resize>1</resize>
-			<resizeleft>7</resizeleft>
+			<resizerect>3,3,3,3,5,5,5,5</resizerect>
+			<captionrect>0,0,width,height</captionrect>
+			<minwidth>120</minwidth>
+			<minheight>150</minheight>
 		</attr>
 		<uitree>
 			<obj id="texture.bkg" class="UITextureObject">
 				<attr>
 					<left>0</left>
 					<top>0</top>
-					<width>400</width>
-					<height>400</height>
+					<width>father.width</width>
+					<height>father.height</height>
 					<texture>texture.mainwnd.background.png</texture>
 					<stretch>false</stretch>
 					<visible>true</visible>
@@ -42,7 +45,7 @@
 			</obj>
 			<obj id="button.min" class="UIButton">
 				<attr>
-					<left>297</left>
+					<left>father.width-103</left>
 					<top>0</top>
 					<width>29</width>
 					<height>24</height>
@@ -59,7 +62,7 @@
 			</obj>
 			<obj id="button.max" class="UIButton">
 				<attr>
-					<left>326</left>
+					<left>father.width-74</left>
 					<top>0</top>
 					<width>29</width>
 					<height>24</height>
@@ -76,7 +79,7 @@
 			</obj>
 			<obj id="button.restore" class="UIButton">
 				<attr>
-					<left>326</left>
+					<left>father.width-74</left>
 					<top>0</top>
 					<width>29</width>
 					<height>24</height>
@@ -94,7 +97,7 @@
 			</obj>
 			<obj id="button.close" class="UIButton">
 				<attr>
-					<left>355</left>
+					<left>father.width-45</left>
 					<top>0</top>
 					<width>45</width>
 					<height>24</height>
