@@ -48,6 +48,7 @@ public:
 		LUA_CALL_ENTRY(SetVisible)
 		LUA_CALL_ENTRY(GetEnable)
 		LUA_CALL_ENTRY(GetOwnerTree)
+		LUA_CALL_ENTRY(SetObjPos)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUITextureObject, UI.TextureObject);
 public:

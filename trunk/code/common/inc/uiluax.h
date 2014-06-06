@@ -115,7 +115,7 @@ namespace lua
 			size_t nLen = 0;
 			const char* szResult = (const char*)lua_tolstring(luaState, lnPos, &nLen);
 			std::wstring strResult;
-			Util::StringToWideString(szResult, strResult);
+			Util::UTF8_to_Unicode(szResult, strResult);
 			CComVariant(strResult.c_str()).Detach(pv);
 		}
 		else if (lua_isboolean(luaState, lnPos))

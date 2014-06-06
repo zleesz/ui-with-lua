@@ -59,7 +59,7 @@ void CUIText::Render(CDCHandle dc)
 {
 	RECT rc = GetObjPos();
 	std::wstring wstrText;
-	Util::StringToWideString(m_strText.c_str(), wstrText);
+	Util::UTF8_to_Unicode(m_strText.c_str(), wstrText);
 
 	HFONT m_hNormalFont = NULL;
 	HFONT hSysFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);

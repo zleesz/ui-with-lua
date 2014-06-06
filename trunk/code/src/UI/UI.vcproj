@@ -366,6 +366,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\common\inc\MathExpParser.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\common\inc\uilog4cplus.h"
 				>
 			</File>
@@ -509,6 +513,14 @@
 				RelativePath=".\UITextureObject.h"
 				>
 			</File>
+			<File
+				RelativePath=".\UIWebBrowser.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIWebBrowser.h"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="UIWindow"
@@ -554,11 +566,27 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UIWindowCaption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIWindowCaption.h"
+				>
+			</File>
+			<File
 				RelativePath=".\UIWindowFactory.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\UIWindowFactory.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIWindowResizer.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIWindowResizer.h"
 				>
 			</File>
 		</Filter>

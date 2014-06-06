@@ -27,7 +27,7 @@ namespace Util
 		}
 		return false;
 	}
-	static bool StringToWideString(const char* src, std::wstring& wstr)
+	static bool UTF8_to_Unicode(const char* src, std::wstring& wstr)
 	{
 		if(!src)
 			return false;
@@ -40,6 +40,17 @@ namespace Util
 		delete [] szm;
 		return false;
 	}
+	static std::wstring& ReplaceAll(std::wstring& str, const std::wstring& old_value, const std::wstring& new_value)
+	{
+		while (true)
+		{
+			std::wstring::size_type pos = str.find(old_value);
+			if (pos == std::wstring::npos)
+				break;
+			str.replace(pos, old_value.length(), new_value);     
+		}
+		return str;
+	} 
 	static HRESULT CreateInstanceFromHandle(HMODULE hModuleHandle, REFCLSID rclsid, REFIID riid, void** ppv)
 	{
 		if(hModuleHandle==NULL) return E_FAIL;

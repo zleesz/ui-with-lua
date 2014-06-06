@@ -16,7 +16,7 @@ class CUIFrameWindow :
 	public CUIWindowBase
 {
 private:
-	CUIFrameWindow(void);
+	CUIFrameWindow(void) {};
 public:
 	CUIFrameWindow(const std::string& strPath, LPXMLDOMNode pNode);
 	virtual ~CUIFrameWindow(void);
@@ -49,13 +49,6 @@ private:
 	virtual DWORD GetStyleEx();
 	void DoPaint(CDCHandle dc);
 public:
-	static int GetID(lua_State* luaState);
-	static int GetTitle(lua_State* luaState);
-	static int SetTitle(lua_State* luaState);
-	static int GetVisible(lua_State* luaState);
-	static int SetVisible(lua_State* luaState);
-	static int Show(lua_State* luaState);
-	static int GetTreeContainer(lua_State* luaState);
 public:
 	BEGIN_LUA_CALL_MAP(CUIFrameWindow)
 		LUA_CALL_ENTRY(GetID)
@@ -74,6 +67,9 @@ public:
 		LUA_CALL_ENTRY(GetLayered)
 		LUA_CALL_ENTRY(SetMaxTrackSize)
 		LUA_CALL_ENTRY(SetMinTrackSize)
+		LUA_CALL_ENTRY(SetParent)
+		LUA_CALL_ENTRY(GetParent)
+		LUA_CALL_ENTRY(GetHWND)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUIFrameWindow, UI.FrameWindow);
 public:
