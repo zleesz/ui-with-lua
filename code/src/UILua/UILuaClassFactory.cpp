@@ -141,6 +141,7 @@ int UILuaClassFactory::proxy(lua_State* L)
 	{
 		return 0;
 	}
+	// lua_pop(L, 1);
 	// 实际的调用函数
 	lua_pushlightuserdata(L, ud->p);
 	return pTheObj->MemberFunctions[i].func(L);
