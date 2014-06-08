@@ -6,6 +6,8 @@
 			<width>400</width>
 			<height>400</height>
 			<visible>1</visible>
+			<min>1</min>
+			<max>1</max>
 			<appwindow>1</appwindow>
 			<layered>0</layered>
 			<title>测试窗口</title>

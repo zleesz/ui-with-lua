@@ -24,7 +24,7 @@ BOOL CUIFrameWindow::Render(CDCHandle dc)
 
 DWORD CUIFrameWindow::GetStyle()
 {
-	DWORD dwStyle = WS_POPUP | WS_CLIPCHILDREN | WS_CLIPSIBLINGS | WS_SYSMENU | WS_TABSTOP | CUIWindowBase::GetStyle();
+	DWORD dwStyle = WS_POPUP | WS_CLIPCHILDREN | /*WS_THICKFRAME | */WS_CLIPSIBLINGS | WS_SYSMENU | WS_TABSTOP | CUIWindowBase::GetStyle();
 	return dwStyle;
 }
 
@@ -67,7 +67,7 @@ BOOL CUIFrameWindow::CreateWnd(HWND hParent)
 		ShowWindow(SW_SHOW);
 		if (m_mapAttr["layered"].vt == VT_I2 && m_mapAttr["layered"].boolVal == VARIANT_TRUE)
 		{
-			TryUpdateLayeredWindow();
+			TryUpdateWindow();
 		}
 		UpdateWindow();
 	}
@@ -129,6 +129,15 @@ LRESULT CUIFrameWindow::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 	return 0;
 }
 
+
+LRESULT CUIFrameWindow::OnNcPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	LOG_AUTO();
+	HDC WindowDC = ::GetWindowDC(m_hWnd);
+	::ReleaseDC(m_hWnd, WindowDC);
+	return 0;
+}
+
 LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	CComVariant vTitle = m_mapAttr["title"];
@@ -137,10 +146,21 @@ LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
 		SetWindowText(vTitle.bstrVal);
 	}
 	bHandled = FALSE;
+// 	int iRet; 
+// 	BOOL bRet; 
+// 	CRgn m_rgn1,m_rgn2,m_rgn3; 
+// 	RECT r; 
+// 
+// 	GetWindowRect(&r); 
+// 	OffsetRect(&r,-r.left,-r.top); 
+// 	m_rgn1.CreateRoundRectRgn(r.left,r.top,r.right+1,r.top+45,12,12); 
+// 	m_rgn2.CreateRoundRectRgn(r.left,r.top+18,r.right+1,r.bottom+2,12,12); 
+// 	m_rgn2.CombineRgn(m_rgn1,m_rgn2,RGN_OR); 
+// 	iRet = SetWindowRgn(m_rgn2,TRUE); 
 	return 0;
 }
 
-void CUIFrameWindow::TryUpdateLayeredWindow()
+void CUIFrameWindow::TryUpdateWindow()
 {
 	CPaintDC dc(m_hWnd);
 	CMemoryDC dcMem(dc.m_hDC, dc.m_ps.rcPaint);
