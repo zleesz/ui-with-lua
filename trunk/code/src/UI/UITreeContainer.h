@@ -6,6 +6,7 @@
 #include <map>
 #include <string>
 #include "ZorderIndexer.h"
+#include "UIWindowCaption.h"
 
 class CUIWindowBase;
 
@@ -17,17 +18,19 @@ public:
 	CUITreeContainer(CUIWindowBase* p);
 	virtual ~CUITreeContainer(void);
 private:
-	ID2ControlMap m_mapCtrl;
-	CUIWindowBase* m_pBindWnd;
-	CZorderIndexer m_ZorderIndexer;
-	CUIControlBase* m_pMouseControl;
-	CUIControlBase* m_pCaptrueControl;
-	BOOL			m_bTrackLeave;
+	ID2ControlMap		m_mapCtrl;
+	CUIWindowBase*		m_pBindWnd;
+	CZorderIndexer		m_ZorderIndexer;
+	CUIControlBase*		m_pMouseControl;
+	CUIControlBase*		m_pCaptrueControl;
+	BOOL				m_bTrackLeave;
+	CUIWindowCaption*	m_pUIWindowCaption;
 public:
 	BEGIN_MSG_MAP(CUITreeContainer)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
 		MESSAGE_HANDLER(WM_MOUSELEAVE, OnMouseLeave)
+		MESSAGE_HANDLER(WM_NCHITTEST, OnNcHitTest)
 		MESSAGE_HANDLER(WM_LBUTTONDOWN, OnLButtonDown)
 		MESSAGE_HANDLER(WM_LBUTTONUP, OnLButtonUp)
 		MESSAGE_HANDLER(WM_CAPTURECHANGED, OnCaptureChanged)
@@ -36,6 +39,7 @@ public:
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnMouseMove(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnMouseLeave(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnNcHitTest(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnLButtonUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnCaptureChanged(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
@@ -48,6 +52,7 @@ public:
 	void Render(CDCHandle dc);
 	CUIWindowBase* GetBindWnd(void);
 	BOOL SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture);
+	void AddCaptionRect(const RECT& rc);
 public:
 	static int GetUIObject(lua_State* L);
 	static int GetOwnerWnd(lua_State* L);

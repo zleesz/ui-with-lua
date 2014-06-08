@@ -44,7 +44,7 @@ public:
 	virtual BOOL OnBindEvent(const std::string& strPath);
 	virtual EventType GetType() = 0;
 	virtual void PushEventParams(UIDISPPARAMS& params);
-private:
+protected:
 	LuaEventMap m_mapEvent;
 public:
 	LOG_CLS_DEC();

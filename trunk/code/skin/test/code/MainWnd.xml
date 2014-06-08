@@ -11,7 +11,7 @@
 			<title>测试窗口</title>
 			<resize>1</resize>
 			<resizerect>3,3,3,3,5,5,5,5</resizerect>
-			<captionrect>0,0,width,height</captionrect>
+			<captionrect>0,0,400,100</captionrect>
 			<minwidth>120</minwidth>
 			<minheight>150</minheight>
 		</attr>
@@ -27,19 +27,19 @@
 					<visible>true</visible>
 				</attr>
 				<eventlist>
-					<event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" />
+					<!--event name="OnLButtonDown" file="MainWnd.xml.lua" func="OnBkgLButtonDown" /-->
 				</eventlist>
 			</obj>
 			<obj id="text.title" class="UIText">
 				<attr>
 					<left>10</left>
 					<top>10</top>
-					<width>200</width>
+					<width>father.width</width>
 					<height>24</height>
 					<multiline>0</multiline>
 					<valign>true</valign>
 					<halign>true</halign>
-					<zorder>10</zorder>
+					<zorder>1000</zorder>
 					<text>标题</text>
 				</attr>
 			</obj>

@@ -1,7 +1,6 @@
 #pragma once
 #include "UIEventContainerBase.h"
 #include <atlapp.h>
-#include <atlapp.h>
 #include <atlwin.h>
 #include <winuser.h>
 #include <atltypes.h>

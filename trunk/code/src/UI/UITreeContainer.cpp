@@ -11,15 +11,24 @@ CUITreeContainer::CUITreeContainer(void)
 }
 
 CUITreeContainer::CUITreeContainer(CUIWindowBase* p)
-	: m_pBindWnd(p), m_pMouseControl(NULL), m_pCaptrueControl(NULL), m_bTrackLeave(FALSE)
+	: m_pBindWnd(p), 
+	m_pMouseControl(NULL), 
+	m_pCaptrueControl(NULL), 
+	m_bTrackLeave(FALSE),
+	m_pUIWindowCaption(NULL)
 {
 	LOG_AUTO();
 	RegisterClass(this);
+	m_pUIWindowCaption = new CUIWindowCaption;
 }
 
 CUITreeContainer::~CUITreeContainer(void)
 {
 	UnRegisterClass(this);
+	if (m_pUIWindowCaption)
+	{
+		delete m_pUIWindowCaption;
+	}
 }
 
 BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
@@ -275,13 +284,12 @@ void CUITreeContainer::OnTreeModify(const LPTreeModifyData ptmt)
 
 LRESULT CUITreeContainer::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
-	/*
 	ID2ControlMap::const_iterator it = m_mapCtrl.begin();
 	for(; it != m_mapCtrl.end(); it++)
 	{
 		CUIControlBase* pUICtrl = it->second;
+		pUICtrl->OnInitControl();
 	}
-	*/
 	return 0;
 }
 
@@ -290,15 +298,15 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	// indexer zorder and hit test the object;
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
-	if (!m_bTrackLeave)  
-	{  
-		// 鼠标移入窗时，请求 WM_MOUSELEAVE 消息  
-		TRACKMOUSEEVENT tme;  
-		tme.cbSize = sizeof(tme);  
-		tme.hwndTrack = m_pBindWnd->m_hWnd;  
-		tme.dwFlags = TME_LEAVE;  
-		tme.dwHoverTime = HOVER_DEFAULT;  
-		m_bTrackLeave = TrackMouseEvent(&tme);  
+	if (!m_bTrackLeave)
+	{
+		// 鼠标移入窗时，请求 WM_MOUSELEAVE 消息
+		TRACKMOUSEEVENT tme;
+		tme.cbSize = sizeof(tme);
+		tme.hwndTrack = m_pBindWnd->m_hWnd;
+		tme.dwFlags = TME_LEAVE;
+		tme.dwHoverTime = HOVER_DEFAULT;
+		m_bTrackLeave = TrackMouseEvent(&tme);
 	}
 	if(NULL != m_pCaptrueControl)
 	{
@@ -361,20 +369,48 @@ LRESULT CUITreeContainer::OnMouseLeave(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	return 0;
 }
 
+LRESULT CUITreeContainer::OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	POINT pt = {0};
+	pt.x = GET_X_LPARAM(lParam);
+	pt.y = GET_Y_LPARAM(lParam);
+	::ScreenToClient(m_pBindWnd->m_hWnd, &pt);
+	CUIControlBase* pControl = m_ZorderIndexer.HitMouseEventTest(pt.x, pt.y);
+	if (pControl)
+	{
+		bHandled = TRUE;
+		return HTCLIENT;
+	}
+	LONG nHitTest = HTNOWHERE;
+	if (m_pUIWindowCaption->OnNcHitTest(pt, nHitTest))
+	{
+		bHandled = TRUE;
+		return nHitTest;
+	}
+	RECT rc = {0};
+	::GetWindowRect(m_pBindWnd->m_hWnd, &rc);
+	if (::PtInRect(&rc, pt))
+	{
+		return HTCLIENT;
+	}
+	return HTNOWHERE;
+}
+
 LRESULT CUITreeContainer::OnLButtonDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
 {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
-	if(NULL != m_pCaptrueControl)
+	if (NULL != m_pCaptrueControl)
 	{
 		const RECT rc = m_pCaptrueControl->GetObjPos();
 		m_pCaptrueControl->OnLButtonDown(xPos - rc.left, yPos - rc.top);
 		return 0;
 	}
-	if(NULL != m_pMouseControl)
+	if (NULL != m_pMouseControl)
 	{
 		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos);
-		if(bHit)
+		if (bHit)
 		{
 			m_pMouseControl->OnLButtonDown(xPos, yPos);
 		}
@@ -386,16 +422,16 @@ LRESULT CUITreeContainer::OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 {
 	int xPos = GET_X_LPARAM(lParam);
 	int yPos = GET_Y_LPARAM(lParam);
-	if(NULL != m_pCaptrueControl)
+	if (NULL != m_pCaptrueControl)
 	{
 		const RECT rc = m_pCaptrueControl->GetObjPos();
 		m_pCaptrueControl->OnLButtonUp(xPos - rc.left, yPos - rc.top);
 		return 0;
 	}
-	if(NULL != m_pMouseControl)
+	if (NULL != m_pMouseControl)
 	{
 		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos);
-		if(bHit)
+		if (bHit)
 		{
 			m_pMouseControl->OnLButtonUp(xPos, yPos);
 		}
@@ -417,7 +453,7 @@ LRESULT CUITreeContainer::OnSetCursor(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPa
 	::GetCursorPos(&pt);
 	::ScreenToClient(m_pBindWnd->m_hWnd, &pt);
 	CUIControlBase* pControl = m_ZorderIndexer.HitTest(pt.x, pt.y);
-	if(NULL != pControl)
+	if (NULL != pControl)
 	{
 		LRESULT lres = pControl->OnSetCursor(pt.x, pt.y);
 		if (lres)
@@ -441,4 +477,9 @@ BOOL CUITreeContainer::SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture)
 		m_pCaptrueControl = NULL;
 		return ::ReleaseCapture();
 	}
+}
+
+void CUITreeContainer::AddCaptionRect(const RECT& rc)
+{
+	m_pUIWindowCaption->AddCaptionRect(rc);
 }

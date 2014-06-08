@@ -49,6 +49,8 @@ public:
 	virtual void OnMouseLeave(int x, int y);
 	virtual void OnMouseWheel(int x, int y);
 	virtual LRESULT OnSetCursor(int x, int y);
+	virtual BOOL OnHitTest(int x, int y);
+	virtual BOOL OnHitMouseEventTest(int x, int y);
 public:
 	const std::string& GetID();
 	std::string SetID(const std::string& strID);
@@ -56,7 +58,6 @@ public:
 	void GetAttr(std::string strName, VARIANT* v);
 	CUITreeContainer* GetOwnerTree();
 	ULONG GetZorder();
-	BOOL OnHitTest(int x, int y);
 	BOOL GetVisible();
 	void SetVisible(BOOL bVisible);
 	BOOL GetEnable();

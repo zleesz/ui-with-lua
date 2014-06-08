@@ -5,9 +5,9 @@
 CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
 	: m_pUITreeContainer(NULL), 
 	m_pUIEventWindow(NULL), 
-	m_pUIWindowCaption(NULL),
 	m_pUIWindowResizer(NULL)
 {
+	LOG_AUTO();
 	if(pNode == NULL || pNode->pMapAttr == NULL)
 		return;
 	LPXMLAttrMap pMapAttr = pNode->pMapAttr;
@@ -21,7 +21,6 @@ CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
 	m_pUIEventWindow = new CUIEventWndContainer(this);
 	m_pUITreeContainer = new CUITreeContainer(this);
 	m_pUIWindowResizer = new CUIWindowResizer(this);
-	m_pUIWindowCaption = new CUIWindowCaption(this);
 	SetID((*pMapAttr)["id"]);
 	m_strXMLPath = strPath;
 	std::transform(strPath.begin(),strPath.end(),m_strXMLPath.begin(),tolower);
@@ -53,14 +52,81 @@ CUIWindowBase::~CUIWindowBase(void)
 	{
 		delete m_pUITreeContainer;
 	}
-	if(NULL != m_pUIWindowCaption)
-	{
-		delete m_pUIWindowCaption;
-	}
 	if(NULL != m_pUIWindowResizer)
 	{
 		delete m_pUIWindowResizer;
 	}
+}
+
+void CUIWindowBase::ParserResizeValue(const std::string& strValue)
+{
+	m_pUIWindowResizer->SetResizeEnable(TRUE);
+	m_pUIWindowResizer->SetResizeLeft(atoi(strValue.c_str()));
+	int nIndex = strValue.find(',');
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	m_pUIWindowResizer->SetResizeTop(atoi(strValue.c_str()));
+	nIndex = strValue.find(',', nIndex + 1);
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	m_pUIWindowResizer->SetResizeRight(atoi(strValue.c_str()));
+	nIndex = strValue.find(',', nIndex + 1);
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	m_pUIWindowResizer->SetResizeBottom(atoi(strValue.c_str()));
+	nIndex = strValue.find(',', nIndex + 1);
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	m_pUIWindowResizer->SetResizeLeftTop(atoi(strValue.c_str()));
+	nIndex = strValue.find(',', nIndex + 1);
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	m_pUIWindowResizer->SetResizeRightTop(atoi(strValue.c_str()));
+	nIndex = strValue.find(',', nIndex + 1);
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	m_pUIWindowResizer->SetResizeRightBottom(atoi(strValue.c_str()));
+	nIndex = strValue.find(',', nIndex + 1);
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	m_pUIWindowResizer->SetResizeLeftBottom(atoi(strValue.c_str()));
+}
+
+void CUIWindowBase::ParserCaptionValue(const std::string& strValue, RECT& rc)
+{
+	rc.left = atoi(strValue.c_str());
+	int nIndex = strValue.find(',');
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	rc.top = atoi(strValue.c_str() + nIndex + 1);
+	nIndex = strValue.find(',', nIndex + 1);
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	rc.right = atoi(strValue.c_str() + nIndex + 1);
+	nIndex = strValue.find(',', nIndex + 1);
+	if ((std::string::size_type)nIndex == std::string::npos)
+	{
+		return;
+	}
+	rc.bottom = atoi(strValue.c_str() + nIndex + 1);
 }
 
 void CUIWindowBase::SetAttr(const std::string& strName, const std::string& strValue)
@@ -74,8 +140,7 @@ void CUIWindowBase::SetAttr(const std::string& strName, const std::string& strVa
 	}
 	else if(strName == "visible" ||
 		strName == "layered" ||
-		strName == "appwindow" ||
-		strName == "resize")
+		strName == "appwindow")
 	{
 		CComVariant v;
 		if(strValue == "true" || strValue == "1")
@@ -95,68 +160,15 @@ void CUIWindowBase::SetAttr(const std::string& strName, const std::string& strVa
 		CComVariant v(wstrValue.c_str());
 		v.Detach(&m_mapAttr[strName]);
 	}
-	else if (strName == "resizeleft" || strName == "resizetop" || strName == "resizeright" || strName == "resizebottom" ||
-		strName == "resizelefttop" || strName == "resizeleftbottom" || strName == "resizerighttop" || strName == "resizerightbottom")
-	{
-		CComVariant v(atoi(strValue.c_str()));
-		v.Detach(&m_mapAttr[strName]);
-	}
 	else if (strName == "resizerect")
 	{
-		CComVariant vLeft(atoi(strValue.c_str()));
-		vLeft.Detach(&m_mapAttr["resizeleft"]);
-		int nIndex = strValue.find(',');
-		if ((std::string::size_type)nIndex == std::string::npos)
-		{
-			return;
-		}
-		CComVariant vTop(atoi(strValue.c_str() + nIndex + 1));
-		vTop.Detach(&m_mapAttr["resizetop"]);
-		nIndex = strValue.find(',', nIndex + 1);
-		if ((std::string::size_type)nIndex == std::string::npos)
-		{
-			return;
-		}
-		CComVariant vRight(atoi(strValue.c_str() + nIndex + 1));
-		vRight.Detach(&m_mapAttr["resizeright"]);
-		nIndex = strValue.find(',', nIndex + 1);
-		if ((std::string::size_type)nIndex == std::string::npos)
-		{
-			return;
-		}
-		CComVariant vBottom(atoi(strValue.c_str() + nIndex + 1));
-		vBottom.Detach(&m_mapAttr["resizebottom"]);
-		nIndex = strValue.find(',', nIndex + 1);
-		if ((std::string::size_type)nIndex == std::string::npos)
-		{
-			return;
-		}
-		CComVariant vLeftTop(atoi(strValue.c_str() + nIndex + 1));
-		vLeftTop.Detach(&m_mapAttr["resizelefttop"]);
-		nIndex = strValue.find(',', nIndex + 1);
-		if ((std::string::size_type)nIndex == std::string::npos)
-		{
-			return;
-		}
-		CComVariant vLeftBottom(atoi(strValue.c_str() + nIndex + 1));
-		vLeftBottom.Detach(&m_mapAttr["resizeleftbottom"]);
-		nIndex = strValue.find(',', nIndex + 1);
-		if ((std::string::size_type)nIndex == std::string::npos)
-		{
-			return;
-		}
-		CComVariant vRightTop(atoi(strValue.c_str() + nIndex + 1));
-		vRightTop.Detach(&m_mapAttr["resizerighttop"]);
-		nIndex = strValue.find(',', nIndex + 1);
-		if ((std::string::size_type)nIndex == std::string::npos)
-		{
-			return;
-		}
-		CComVariant vRightBottom(atoi(strValue.c_str() + nIndex + 1));
-		vRightBottom.Detach(&m_mapAttr["resizerightbottom"]);
+		ParserResizeValue(strValue);
 	}
 	else if (strName == "captionrect")
 	{
+		RECT rc = {0};
+		ParserCaptionValue(strValue, rc);
+		m_pUITreeContainer->AddCaptionRect(rc);
 	}
 }
 
@@ -318,237 +330,6 @@ LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	if (vMinHeight.vt == VT_I4 && vMinHeight.intVal > 0)
 	{
 		mminfo->ptMinTrackSize.y = vMinHeight.intVal;
-	}
-	return 0;
-}
-
-BOOL CUIWindowBase::IsInResizeLeftTopArea(const POINT& pt, const SIZE& /*sz*/)
-{
-	CComVariant vLeftTop;
-	GetAttr("resizelefttop", &vLeftTop);
-	if (vLeftTop.vt == VT_I4 && (pt.x <= vLeftTop.intVal) && pt.y <= vLeftTop.intVal)
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CUIWindowBase::IsInResizeLeftBottomArea(const POINT& pt, const SIZE& sz)
-{
-	CComVariant vLeftBottom;
-	GetAttr("resizeleftbottom", &vLeftBottom);
-	if (vLeftBottom.vt == VT_I4 && (pt.x <= vLeftBottom.intVal && sz.cy - pt.y <= vLeftBottom.intVal))
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CUIWindowBase::IsInResizeRightTopArea(const POINT& pt, const SIZE& sz)
-{
-	CComVariant vRightTop;
-	GetAttr("resizerighttop", &vRightTop);
-	if (vRightTop.vt == VT_I4 && (pt.y <= vRightTop.intVal && sz.cx - pt.x <= vRightTop.intVal))
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CUIWindowBase::IsInResizeRightBottomArea(const POINT& pt, const SIZE& sz)
-{
-	CComVariant vRightBottom;
-	GetAttr("resizerightbottom", &vRightBottom);
-	if (vRightBottom.vt == VT_I4 && (sz.cx - pt.x <= vRightBottom.intVal && sz.cy - pt.y <= vRightBottom.intVal))
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CUIWindowBase::IsInResizeLeftArea(const POINT& pt, const SIZE& /*sz*/)
-{
-	CComVariant vLeft;
-	GetAttr("resizeleft", &vLeft);
-	if (vLeft.vt == VT_I4 && pt.x <= vLeft.intVal)
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CUIWindowBase::IsInResizeTopArea(const POINT& pt, const SIZE& /*sz*/)
-{
-	CComVariant vTop;
-	GetAttr("resizetop", &vTop);
-	if (vTop.vt == VT_I4 && pt.y <= vTop.intVal)
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CUIWindowBase::IsInResizeRightArea(const POINT& pt, const SIZE& sz)
-{
-	CComVariant vRight;
-	GetAttr("resizeright", &vRight);
-	if (vRight.vt == VT_I4 && sz.cx - pt.x <= vRight.intVal)
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CUIWindowBase::IsInResizeBottomArea(const POINT& pt, const SIZE& sz)
-{
-	CComVariant vBottom;
-	GetAttr("resizebottom", &vBottom);
-	if (vBottom.vt == VT_I4 && sz.cy - pt.y <= vBottom.intVal)
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-LRESULT CUIWindowBase::OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	if (!GetResizable())
-	{
-		return 0;
-	}
-	POINT pt = {0};
-	pt.x = GET_X_LPARAM(lParam);
-	pt.y = GET_Y_LPARAM(lParam);
-	ScreenToClient(&pt);
-
-	RECT rc = {0};
-	GetWindowRect(&rc);
-	SIZE sz = {rc.right - rc.left, rc.bottom - rc.top};
-	if (IsInResizeLeftTopArea(pt, sz))
-	{
-		bHandled = TRUE;
-		return HTTOPLEFT;
-	}
-	else if (IsInResizeLeftBottomArea(pt, sz))
-	{
-		bHandled = TRUE;
-		return HTBOTTOMLEFT;
-	}
-	else if (IsInResizeRightTopArea(pt, sz))
-	{
-		bHandled = TRUE;
-		return HTTOPRIGHT;
-	}
-	else if (IsInResizeRightBottomArea(pt, sz))
-	{
-		bHandled = TRUE;
-		return HTBOTTOMRIGHT;
-	}
-	else if (IsInResizeLeftArea(pt, sz))
-	{
-		bHandled = TRUE;
-		return HTLEFT;
-	}
-	else if (IsInResizeTopArea(pt, sz))
-	{
-		bHandled = TRUE;
-		return HTTOP;
-	}
-	else if (IsInResizeRightArea(pt, sz))
-	{
-		bHandled = TRUE;
-		return HTRIGHT;
-	}
-	else if (IsInResizeBottomArea(pt, sz))
-	{
-		bHandled = TRUE;
-		return HTBOTTOM;
-	}
-	
-	return 0;
-}
-
-LRESULT CUIWindowBase::OnSetCursor(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	if (!GetResizable())
-	{
-		return 0;
-	}
-	int nHitTest = LOWORD(lParam);
-	switch (nHitTest)
-	{
-	case HTLEFT:
-	case HTRIGHT:
-		bHandled = TRUE;
-		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZEWE)));
-		break;
-	case HTTOP:
-	case HTBOTTOM:
-		bHandled = TRUE;
-		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENS)));
-		break;
-	case HTTOPLEFT:
-	case HTBOTTOMRIGHT:
-		bHandled = TRUE;
-		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENWSE)));
-		break;
-	case HTBOTTOMLEFT:
-	case HTTOPRIGHT:
-		bHandled = TRUE;
-		::SetCursor(::LoadCursor(NULL, MAKEINTRESOURCE(IDC_SIZENESW)));
-		break;
-	default:
-		break;
-	}
-	return 0;
-}
-
-LRESULT CUIWindowBase::OnNcLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
-{
-	bHandled = FALSE;
-	if (!GetResizable())
-	{
-		return 0;
-	}
-	int nHitTest = LOWORD(wParam);
-	switch (nHitTest)
-	{
-	case HTLEFT:
-		bHandled = TRUE;
-		SendMessage(WM_SYSCOMMAND, SC_SIZE | WMSZ_LEFT, lParam);
-		break;
-	case HTTOP:
-		bHandled = TRUE;
-		SendMessage(WM_SYSCOMMAND, SC_SIZE | WMSZ_TOP, lParam);
-		break;
-	case HTRIGHT:
-		bHandled = TRUE;
-		SendMessage(WM_SYSCOMMAND, SC_SIZE | WMSZ_RIGHT, lParam);
-		break;
-	case HTBOTTOM:
-		bHandled = TRUE;
-		SendMessage(WM_SYSCOMMAND, SC_SIZE | WMSZ_BOTTOM, lParam);
-		break;
-	case HTTOPLEFT:
-		bHandled = TRUE;
-		SendMessage(WM_SYSCOMMAND, SC_SIZE | WMSZ_TOPLEFT, lParam);
-		break;
-	case HTBOTTOMLEFT:
-		bHandled = TRUE;
-		SendMessage(WM_SYSCOMMAND, SC_SIZE | WMSZ_BOTTOMLEFT, lParam);
-		break;
-	case HTTOPRIGHT:
-		bHandled = TRUE;
-		SendMessage(WM_SYSCOMMAND, SC_SIZE | WMSZ_TOPRIGHT, lParam);
-		break;
-	case HTBOTTOMRIGHT:
-		bHandled = TRUE;
-		SendMessage(WM_SYSCOMMAND, SC_SIZE | WMSZ_BOTTOMRIGHT, lParam);
-		break;
-	default:
-		break;
 	}
 	return 0;
 }
