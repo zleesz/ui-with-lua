@@ -26,10 +26,8 @@ public:
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
-		ADD_MSG_MAP_MEMBER((*m_pUIEventWindow))
-		MESSAGE_HANDLER(WM_NCHITTEST, OnNcHitTest)
-		MESSAGE_HANDLER(WM_SETCURSOR, OnSetCursor)
-		MESSAGE_HANDLER(WM_NCLBUTTONDOWN, OnNcLButtonDown)
+		CHAIN_MSG_MAP_MEMBER((*m_pUIEventWindow))
+		CHAIN_MSG_MAP_MEMBER((*m_pUIWindowResizer))
 		CHAIN_MSG_MAP_MEMBER((*m_pUITreeContainer))
 	END_MSG_MAP()
 public:
@@ -48,7 +46,6 @@ private:
 	virtual DWORD GetStyle();
 	virtual DWORD GetStyleEx();
 	void DoPaint(CDCHandle dc);
-public:
 public:
 	BEGIN_LUA_CALL_MAP(CUIFrameWindow)
 		LUA_CALL_ENTRY(GetID)

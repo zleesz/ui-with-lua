@@ -9,9 +9,9 @@
 #include <atltypes.h>
 
 #include <Util.h>
+#include <uilog4cplus.h>
 #include "UITreeContainer.h"
 #include "UIEventWndContainer.h"
-#include "UIWindowCaption.h"
 #include "UIWindowResizer.h"
 
 typedef enum enumWindowType {
@@ -37,21 +37,14 @@ private:
 	virtual BOOL ParserUITree(LPXMLDOMNode pNode);
 	virtual BOOL ParserEvent(LPXMLDOMNode pNode);
 private:
-	BOOL IsInResizeLeftTopArea(const POINT& pt, const SIZE& sz);
-	BOOL IsInResizeLeftBottomArea(const POINT& pt, const SIZE& sz);
-	BOOL IsInResizeRightTopArea(const POINT& pt, const SIZE& sz);
-	BOOL IsInResizeRightBottomArea(const POINT& pt, const SIZE& sz);
-	BOOL IsInResizeLeftArea(const POINT& pt, const SIZE& sz);
-	BOOL IsInResizeTopArea(const POINT& pt, const SIZE& sz);
-	BOOL IsInResizeRightArea(const POINT& pt, const SIZE& sz);
-	BOOL IsInResizeBottomArea(const POINT& pt, const SIZE& sz);
+	void ParserResizeValue(const std::string& strValue);
+	void ParserCaptionValue(const std::string& strValue, RECT& rc);
 protected:
 	typedef std::map<std::string, CComVariant> ID2AttrMap;
 	ID2AttrMap				m_mapAttr;
 	CUITreeContainer*		m_pUITreeContainer;
 	CUIEventWndContainer*	m_pUIEventWindow;
 	CUIWindowResizer*		m_pUIWindowResizer;
-	CUIWindowCaption*		m_pUIWindowCaption;
 public:
 	virtual WindowType GetType() = 0;
 	virtual BOOL Render(CDCHandle dc) = 0;
@@ -69,9 +62,6 @@ public:
 	void GetWindowRect(LPRECT rc);
 public:
 	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnNcHitTest(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnSetCursor(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnNcLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	static int GetID(lua_State* luaState);
 	static int GetTitle(lua_State* luaState);
@@ -97,4 +87,6 @@ public:
 protected:
 	virtual DWORD GetStyle();
 	virtual DWORD GetStyleEx();
+public:
+	LOG_CLS_DEC();
 };

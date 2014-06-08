@@ -203,7 +203,7 @@ GRAPHIC_API(BITMAP_HANDLE) LoadBitmapFromMemory(const void *buffer, long size, u
 
 GRAPHIC_API(BITMAP_HANDLE) LoadBitmapFromFile(const wchar_t* filePath,unsigned long colorType)
 {
-	if (filePath == L"")
+	if (filePath == NULL || filePath[0] == L'\0')
 		return NULL;
 
     Bitmap* pBitmap = ImageLoaderFactory::Instance().LoadImageFromFile(filePath,colorType);   
@@ -212,7 +212,7 @@ GRAPHIC_API(BITMAP_HANDLE) LoadBitmapFromFile(const wchar_t* filePath,unsigned l
 
 GRAPHIC_API(BITMAP_HANDLE) LoadBitmapFromFileReverse(const wchar_t*filePath,unsigned long colorType)
 {
-	if (filePath == L"")
+	if (filePath == NULL || filePath[0] == L'\0')
 		return NULL;
 
 	Bitmap* pBitmap = ImageLoaderFactory::Instance().LoadImageFromFileReverse(filePath,colorType);   

@@ -209,13 +209,26 @@ void CUIControlBase::SetObjPos(const RECT& rc)
 
 BOOL CUIControlBase::OnHitTest(int x, int y)
 {
-	BOOL bVisible = GetVisible();
-	if(!bVisible)
-		return FALSE;
 	const RECT rc = GetObjPos();
 	if(x > rc.left && x < rc.right
 		&& y > rc.top && y < rc.bottom)
+	{
 		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL CUIControlBase::OnHitMouseEventTest(int x, int y)
+{
+	const RECT rc = GetObjPos();
+	if(x > rc.left && x < rc.right
+		&& y > rc.top && y < rc.bottom)
+	{
+		if (m_pUIEventControl->IsAttachedMouseEvent())
+		{
+			return TRUE;
+		}
+	}
 	return FALSE;
 }
 

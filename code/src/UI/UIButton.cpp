@@ -228,7 +228,7 @@ void CUIButton::OnLButtonUp(int x, int y)
 		return;
 	}
 	const RECT rc = GetObjPos();
-	if(OnHitTest(x + rc.left, y + rc.top))
+	if (OnHitTest(x + rc.left, y + rc.top))
 	{
 		m_state = BS_HOVER;
 	}

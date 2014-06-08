@@ -1,14 +1,17 @@
 #pragma once
-
-class CUIWindowBase;
+#include <atlapp.h>
+#include <atlwin.h>
 
 class CUIWindowCaption
 {
-private:
-	CUIWindowCaption(void) {};
 public:
-	CUIWindowCaption(CUIWindowBase* p) : m_pBindWnd(p) {};
-	virtual ~CUIWindowCaption(void);
+	typedef std::vector<RECT> VecRECT;
+public:
+	void ClearCaptionArea();
+	void AddCaptionRect(const RECT& rc);
+	void SetCaptionRect(const RECT& rc);
+public:
+	BOOL OnNcHitTest(const POINT& pt, LONG& lnHitTest);
 private:
-	CUIWindowBase* m_pBindWnd;
+	VecRECT				m_vecRECT;
 };

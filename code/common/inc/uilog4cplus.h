@@ -14,7 +14,7 @@
 #define LOGGER_DEC(logger)                      extern log4cplus::Logger logger
 #define LOGGER_IMP_EX(logger, loggername)       log4cplus::Logger logger = log4cplus::Logger::getInstance( loggername )
 #define LOGGER_DEFAULT()						log4cplus::Logger::getInstance( _T("") )
-#define LOGGER_METHOD(logger)                   LOG4CPLUS_TRACE_METHOD(logger, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__))
+#define LOGGER_METHOD(logger)                   LOG4CPLUS_TRACE_METHOD(logger, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCTION__))
 #define LOGGER_TRACE(logger,msg)                LOG4CPLUS_TRACE(logger, '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << LOG4CPLUS_C_STR_TO_TSTRING(__FUNCTION__) << "] " << msg )
 #define LOGGER_DEBUG(logger,msg)                LOG4CPLUS_DEBUG(logger, '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << LOG4CPLUS_C_STR_TO_TSTRING(__FUNCTION__) << "] " << msg )
 #define LOGGER_INFO(logger,msg)                 LOG4CPLUS_INFO(logger,  '[' << ::GetCurrentProcessId() << "][" << ::GetCurrentThreadId() << "][" << LOG4CPLUS_C_STR_TO_TSTRING(__FUNCTION__) << "] " << msg )
@@ -80,8 +80,8 @@
 	__if_not_exists(this) { LOGGER_FATAL(LOGGER_DEFAULT(), msg); }
 
 #define LOG_AUTO_REAL(file, line) \
-	__if_exists(this) { CLogAuto logAuto(LOG4CPLUS_C_STR_TO_TSTRING(file), line, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__), (LONG)(LONG_PTR)this); } \
-	__if_not_exists(this) { CLogAuto logAuto(LOG4CPLUS_C_STR_TO_TSTRING(file), line, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCSIG__)); }
+	__if_exists(this) { CLogAuto logAuto(LOG4CPLUS_C_STR_TO_TSTRING(file), line, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCTION__), (LONG)(LONG_PTR)this); } \
+	__if_not_exists(this) { CLogAuto logAuto(LOG4CPLUS_C_STR_TO_TSTRING(file), line, LOG4CPLUS_C_STR_TO_TSTRING(__FUNCTION__)); }
 #define LOG_AUTO() \
 	LOG_AUTO_REAL(__FILE__, __LINE__)
 #define LOG_CLS_AUTO_DEC() \
