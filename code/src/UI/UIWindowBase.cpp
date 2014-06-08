@@ -140,7 +140,8 @@ void CUIWindowBase::SetAttr(const std::string& strName, const std::string& strVa
 	}
 	else if(strName == "visible" ||
 		strName == "layered" ||
-		strName == "appwindow")
+		strName == "appwindow" ||
+		strName == "min" || strName == "max")
 	{
 		CComVariant v;
 		if(strValue == "true" || strValue == "1")
@@ -312,16 +313,33 @@ LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	GetAttr("maxheight", &vMaxHeight);
 	GetAttr("minwidth", &vMinWidth);
 	GetAttr("minheight", &vMinHeight);
-
+	HMONITOR hMonitor = ::MonitorFromWindow(m_hWnd , MONITOR_DEFAULTTONEAREST);
+	MONITORINFO monitorInfo = {0};
+	monitorInfo.cbSize = sizeof(MONITORINFO);
+	if (::GetMonitorInfo(hMonitor, &monitorInfo))
+	{
+		mminfo->ptMaxPosition.x = monitorInfo.rcWork.left;
+		mminfo->ptMaxPosition.y = monitorInfo.rcWork.top;
+	}
 	if (vMaxWidth.vt == VT_I4 && vMaxWidth.intVal > 0)
 	{
 		mminfo->ptMaxSize.x = vMaxWidth.intVal;
 		mminfo->ptMaxTrackSize.x = vMaxWidth.intVal;
 	}
+	else
+	{
+		mminfo->ptMaxSize.x = monitorInfo.rcWork.right - monitorInfo.rcWork.left;
+		mminfo->ptMaxTrackSize.x = monitorInfo.rcWork.right - monitorInfo.rcWork.left;
+	}
 	if (vMaxHeight.vt == VT_I4 && vMaxHeight.intVal > 0)
 	{
 		mminfo->ptMaxSize.y = vMaxHeight.intVal;
 		mminfo->ptMaxTrackSize.y = vMaxHeight.intVal;
+	}
+	else
+	{
+		mminfo->ptMaxSize.y = monitorInfo.rcWork.bottom - monitorInfo.rcWork.top;
+		mminfo->ptMaxTrackSize.y = monitorInfo.rcWork.bottom - monitorInfo.rcWork.top;
 	}
 	if (vMinWidth.vt == VT_I4 && vMinWidth.intVal > 0)
 	{
@@ -331,6 +349,59 @@ LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 	{
 		mminfo->ptMinTrackSize.y = vMinHeight.intVal;
 	}
+	return 0;
+}
+
+LRESULT CUIWindowBase::OnNcCalcSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	int xFrame = 0; /*左右边框的厚度*/
+	int yFrame = 0; /*下边框的厚度*/
+	int nTHight = 0; /*标题栏的高度*/
+	NCCALCSIZE_PARAMS * p; /*TRUE是的指针*/
+	RECT * rc; /*FALSE是的指针*/
+	RECT aRect;
+	RECT bRect;
+	RECT bcRect;
+
+
+	if(wParam == TRUE)
+	{
+		p = (NCCALCSIZE_PARAMS *)lParam; 
+
+
+		/*复制A B矩形位置*/
+		CopyRect(&aRect,&p->rgrc[1]); 
+		CopyRect(&bRect,&p->rgrc[0]);
+
+
+		/*指定BC的矩形的位置*/
+		bcRect.left = bRect.left + xFrame;
+		bcRect.top = bRect.top + nTHight;
+		bcRect.right = bRect.right - xFrame;
+		bcRect.bottom = bRect.bottom - yFrame;
+
+
+		/*各个矩形归位成BC B A*/
+		CopyRect(&p->rgrc[0],&bcRect);
+		CopyRect(&p->rgrc[1],&bRect);
+		CopyRect(&p->rgrc[2],&aRect);
+	}
+	else
+	{
+		rc = (RECT *)lParam;
+
+
+		rc->left = rc->left + xFrame;
+		rc->top = rc->top + nTHight;
+		rc->right = rc->right - xFrame;
+		rc->bottom = rc->bottom - yFrame;
+	}
+	return TRUE;
+}
+
+LRESULT CUIWindowBase::OnActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	//Invalidate(TRUE);
 	return 0;
 }
 
