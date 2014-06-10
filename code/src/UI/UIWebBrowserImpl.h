@@ -1,8 +1,11 @@
 #pragma once
-
+#include <atlwin.h>
 #include <ExDispId.h>
+#include <ExDisp.h>
 #include "DocHostUIHandler.h"
 #include "DownloadManager.h"
+
+class CUIWebBrowserImpl;
 
 #define DISPID_WEBBROWSER 1
 typedef IDispEventImpl<DISPID_WEBBROWSER, CUIWebBrowserImpl, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 0> DWebBrowserEventImpl;
@@ -14,25 +17,28 @@ class CUIWebBrowserImpl :
 	public CDocHostUIHandlerImpl,
 	public IOleCommandTarget,
 	public IServiceProviderImpl<CUIWebBrowserImpl>,
-	public IDownloadManager,
-	public INewWindowManager
-	public CMessageFilter
+	public IDownloadManager
 {
 public:
+	CUIWebBrowserImpl();
+	~CUIWebBrowserImpl(void);
+
 	BEGIN_COM_MAP(CUIWebBrowserImpl)
 		COM_INTERFACE_ENTRY(IDocHostUIHandler)
 		COM_INTERFACE_ENTRY(IOleCommandTarget)
 		COM_INTERFACE_ENTRY(IServiceProvider)
-		COM_INTERFACE_ENTRY(INewWindowManager)
 		COM_INTERFACE_ENTRY(IDownloadManager)
 	END_COM_MAP()
+
+	BEGIN_SERVICE_MAP(CUIWebBrowserImpl)
+		SERVICE_ENTRY(SID_SDownloadManager)
+	END_SERVICE_MAP()
 
 	BEGIN_SINK_MAP(CUIWebBrowserImpl)
 		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_BEFORENAVIGATE2, OnBeforeNavigate2)
 		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_NAVIGATECOMPLETE2, OnNavigatorComplete2)
 		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_DOCUMENTCOMPLETE, OnDocumentComplete)
 		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_NAVIGATEERROR, OnNavigateError)
-		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_SETSECURELOCKICON, OnSetSecureLockIcon)
 		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_NEWWINDOW2, OnNewWindow2) 
 		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_NEWWINDOW3, OnNewWindow3)
 
@@ -69,6 +75,35 @@ protected:
 	void __stdcall OnDownloadComplete();
 
 	void __stdcall OnQuit(void);
+
+	//IDocHostUIHandlerDispatch
+	STDMETHOD(GetExternal)(IDispatch **ppDispatch);
+
+	STDMETHOD(ShowContextMenu)(DWORD dwID, POINT FAR* ppt, IUnknown FAR* pcmdtReserved, IDispatch FAR* pdispReserved);
+
+	STDMETHOD(GetDropTarget)(IDropTarget* pDropTarget, IDropTarget** ppDropTarget);
+
+	// IOleCommandTarget
+	STDMETHOD(QueryStatus)(const GUID *pguidCmdGroup,ULONG cCmds,OLECMD prgCmds[],OLECMDTEXT *pCmdText);
+
+	STDMETHOD(Exec)(const GUID *pguidCmdGroup,DWORD nCmdID,DWORD nCmdexecopt,VARIANT *pvaIn,VARIANT *pvaOut);
+
+	STDMETHOD(GetDefaultDocHostUIHandler)(IDocHostUIHandler** ppHandler);
+
+	// INewWindowManager
+	STDMETHOD(EvaluateNewWindow)(LPCWSTR pszUrl,LPCWSTR pszName,LPCWSTR pszUrlContext,LPCWSTR pszFeatures,BOOL fReplace,DWORD dwFlags,DWORD dwUserActionTime);
+
+	// IDownloadManager
+	STDMETHOD(Download)( IMoniker *pmk, IBindCtx * pbc,DWORD dwBindVerb, LONG grfBINDF,BINDINFO * pBindInfo,LPCOLESTR pszHeaders,LPCOLESTR pszRedir, UINT uiCP);
+
+protected:
+	CComPtr<IDocHostUIHandler> m_spDefaultDocHostUIHandler;
+	CComPtr<IOleCommandTarget> m_spDefaultOleCommandTarget;
+	CComPtr<IObjectWithSite> m_spImgEmbedDetect;
+
+public:
+	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
+	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 public:
 	BEGIN_MSG_MAP(CUIWebBrowserImpl)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)

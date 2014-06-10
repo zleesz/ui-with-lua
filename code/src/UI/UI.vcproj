@@ -450,6 +450,14 @@
 			Name="UIControl"
 			>
 			<File
+				RelativePath=".\DocHostUIHandler.h"
+				>
+			</File>
+			<File
+				RelativePath=".\DownloadManager.h"
+				>
+			</File>
+			<File
 				RelativePath=".\UIButton.cpp"
 				>
 			</File>
@@ -519,6 +527,14 @@
 			</File>
 			<File
 				RelativePath=".\UIWebBrowser.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIWebBrowserImpl.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIWebBrowserImpl.h"
 				>
 			</File>
 		</Filter>
