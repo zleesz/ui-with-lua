@@ -1,4 +1,5 @@
 #pragma once
+#include <MsHtmHst.h>
 
 class ATL_NO_VTABLE CDocHostUIHandlerImpl : public IDocHostUIHandler
 {
