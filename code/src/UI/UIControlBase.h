@@ -27,16 +27,17 @@ public:
 	CUIControlBase(CUITreeContainer* pTree);
 	virtual ~CUIControlBase(void);
 private:
-	std::string m_strID;
-	CUITreeContainer* m_pTree;
+	std::string			m_strID;
+	CUITreeContainer*	m_pTree;
+	RECT				m_rc;
 public:
 	typedef std::map<std::string, CComVariant> ID2AttrMap;
 	ID2AttrMap m_mapAttr;
 	CUIEventCtrlContainer* m_pUIEventControl;
-private:
-	void TranslateFatherPos(std::wstring& strPos, const RECT& fatherRc);
 protected:
+	void TranslateFatherPos(std::wstring& strPos, const RECT& fatherRc);
 	void FireMouseEvent(std::string strName, int x, int y);
+	void FirePosChange(int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom);
 public:
 	virtual ControlType GetType() = 0;
 	virtual void Render(CDCHandle dc) = 0;
@@ -51,6 +52,13 @@ public:
 	virtual LRESULT OnSetCursor(int x, int y);
 	virtual BOOL OnHitTest(int x, int y);
 	virtual BOOL OnHitMouseEventTest(int x, int y);
+	virtual void OnPosChange(int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom);
+
+	virtual void AdjustItemPos(BOOL bFire = TRUE);
+	virtual BOOL GetVisible();
+	virtual void SetVisible(BOOL bVisible);
+	virtual const RECT& GetObjPos();
+	virtual void SetObjPos(const RECT& rc);
 public:
 	const std::string& GetID();
 	std::string SetID(const std::string& strID);
@@ -58,11 +66,7 @@ public:
 	void GetAttr(std::string strName, VARIANT* v);
 	CUITreeContainer* GetOwnerTree();
 	ULONG GetZorder();
-	BOOL GetVisible();
-	void SetVisible(BOOL bVisible);
 	BOOL GetEnable();
-	const RECT& GetObjPos();
-	void SetObjPos(const RECT& rc);
 	void Invalidate();
 	void InvalidateRect(const RECT& rc);
 	void SetCaptureMouse(BOOL bCapture);
