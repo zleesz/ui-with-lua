@@ -6,11 +6,13 @@
 
 CUIControlBase::CUIControlBase(void)
 {
+	ZeroMemory((void*)&m_rc, sizeof(m_rc));
 }
 
 CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	: m_pTree(pTree), m_pUIEventControl(NULL)
 {
+	ZeroMemory((void*)&m_rc, sizeof(m_rc));
 	if(pNode == NULL || pNode->pMapAttr == NULL)
 		return;
 	LPXMLAttrMap pMapAttr = pNode->pMapAttr;
@@ -49,6 +51,7 @@ CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 CUIControlBase::CUIControlBase(CUITreeContainer* pTree)
 : m_pTree(pTree), m_pUIEventControl(NULL)
 {
+	ZeroMemory((void*)&m_rc, sizeof(m_rc));
 	m_pUIEventControl = new CUIEventCtrlContainer;
 }
 
@@ -61,10 +64,14 @@ void CUIControlBase::SetAttr(const std::string& strName, const std::string& strV
 	if (strName == "left" ||
 		strName == "top" ||
 		strName == "width" ||
-		strName == "height" ||
-		strName == "zorder")
+		strName == "height")
 	{
 		m_mapAttr[strName] = CComVariant(strValue.c_str());
+		AdjustItemPos(FALSE);
+	}
+	else if (strName == "zorder")
+	{
+		m_mapAttr[strName] = CComVariant(atoi(strValue.c_str()));
 	}
 	else if (strName == "visible")
 	{
@@ -141,15 +148,15 @@ void CUIControlBase::TranslateFatherPos(std::wstring& strPos, const RECT& father
 	Util::ReplaceAll(strPos, L"father.height", szFatherHeight);
 }
 
-const RECT& CUIControlBase::GetObjPos()
+void CUIControlBase::AdjustItemPos(BOOL bFire)
 {
-	static RECT rc = {0};
 	CComVariant vLeft, vTop, vWidth, vHeight;
 	GetAttr("left", &vLeft);
 	GetAttr("top", &vTop);
 	GetAttr("width", &vWidth);
 	GetAttr("height", &vHeight);
 
+	RECT oldRc = m_rc;
 	RECT wndRc = {0};
 	m_pTree->GetBindWnd()->GetWindowRect(&wndRc);
 	if (vLeft.vt == VT_BSTR)
@@ -157,30 +164,39 @@ const RECT& CUIControlBase::GetObjPos()
 		std::wstring strLeft(vLeft.bstrVal);
 		TranslateFatherPos(strLeft, wndRc);
 		CMathExpParser mathExpParser;
-		rc.left = mathExpParser.Calc(strLeft.c_str());
+		m_rc.left = mathExpParser.Calc(strLeft.c_str());
 	}
 	if (vTop.vt == VT_BSTR)
 	{
 		std::wstring strTop(vTop.bstrVal);
 		TranslateFatherPos(strTop, wndRc);
 		CMathExpParser mathExpParser;
-		rc.top = mathExpParser.Calc(strTop.c_str());
+		m_rc.top = mathExpParser.Calc(strTop.c_str());
 	}
 	if (vWidth.vt == VT_BSTR)
 	{
 		std::wstring strWidth(vWidth.bstrVal);
 		TranslateFatherPos(strWidth, wndRc);
 		CMathExpParser mathExpParser;
-		rc.right = rc.left + mathExpParser.Calc(strWidth.c_str());
+		m_rc.right = m_rc.left + mathExpParser.Calc(strWidth.c_str());
 	}
 	if (vHeight.vt == VT_BSTR)
 	{
 		std::wstring strHeight(vHeight.bstrVal);
 		TranslateFatherPos(strHeight, wndRc);
 		CMathExpParser mathExpParser;
-		rc.bottom = rc.top + mathExpParser.Calc(strHeight.c_str());
+		m_rc.bottom = m_rc.top + mathExpParser.Calc(strHeight.c_str());
 	}
-	return rc;
+	if (bFire && !::EqualRect(&oldRc, &m_rc))
+	{
+		OnPosChange(m_rc.left, m_rc.top, m_rc.right, m_rc.bottom, oldRc.left, oldRc.top, oldRc.right, oldRc.bottom);
+		FirePosChange(m_rc.left, m_rc.top, m_rc.right, m_rc.bottom, oldRc.left, oldRc.top, oldRc.right, oldRc.bottom);
+	}
+}
+
+const RECT& CUIControlBase::GetObjPos()
+{
+	return m_rc;
 }
 
 void CUIControlBase::SetObjPos(const RECT& rc)
@@ -202,6 +218,7 @@ void CUIControlBase::SetObjPos(const RECT& rc)
 	SetAttr("width", szWidth);
 	SetAttr("height", szHeight);
 
+	AdjustItemPos();
 	RECT unionRc = {0};
 	::UnionRect(&unionRc, &rc, &oldRc);
 	InvalidateRect(unionRc);
@@ -230,6 +247,11 @@ BOOL CUIControlBase::OnHitMouseEventTest(int x, int y)
 		}
 	}
 	return FALSE;
+}
+
+void CUIControlBase::OnPosChange(int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+{
+
 }
 
 BOOL CUIControlBase::GetVisible()
@@ -431,6 +453,24 @@ void CUIControlBase::FireMouseEvent(std::string strName, int x, int y)
 	avarParams[2] = y;
 
 	UIDISPPARAMS params = { avarParams, strName.c_str(), 3, 0 };
+	m_pUIEventControl->DispatchListener(params);
+}
+
+void CUIControlBase::FirePosChange(int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom)
+{
+	CComVariant avarParams[9];
+	avarParams[0].vt = VT_BYREF | VT_I4;
+	avarParams[0].lVal = (LONG)(LONG_PTR)this;
+	avarParams[1] = left;
+	avarParams[2] = top;
+	avarParams[3] = right;
+	avarParams[4] = bottom;
+	avarParams[5] = oldLeft;
+	avarParams[6] = oldTop;
+	avarParams[7] = oldRight;
+	avarParams[8] = oldBottom;
+
+	UIDISPPARAMS params = { avarParams, "OnPosChange", 9, 0 };
 	m_pUIEventControl->DispatchListener(params);
 }
 

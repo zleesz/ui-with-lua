@@ -4,6 +4,7 @@
 #include "UITextureObject.h"
 #include "UIButton.h"
 #include "UIText.h"
+#include "UIWebBrowser.h"
 #include "UIWindowBase.h"
 
 CUITreeContainer::CUITreeContainer(void)
@@ -71,6 +72,10 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 				{
 					pUICtrl = new CUIText(this, pObjNode2);
 				}
+				else if((*pAttrObj)["class"] == "UIWebBrowser")
+				{
+					pUICtrl = new CUIWebBrowser(this, pObjNode2);
+				}
 				else
 				{
 					assert(false && "unknown control class.");
@@ -105,6 +110,7 @@ BOOL CUITreeContainer::OnCreate()
 
 void CUITreeContainer::Render(CDCHandle dc)
 {
+	LOG_AUTO();
 	// render objects by z-orders
 	m_ZorderIndexer.Render(dc);
 }
@@ -263,6 +269,10 @@ int CUITreeContainer::CreateUIObject(lua_State* L)
 	else if(strcmp(pszClass, "UIText") == 0)
 	{
 		pUICtrl = new CUIText(pThis);
+	}
+	else if(strcmp(pszClass, "UIWebBrowser") == 0)
+	{
+		pUICtrl = new CUIWebBrowser(pThis);
 	}
 	else
 	{
@@ -460,6 +470,19 @@ LRESULT CUITreeContainer::OnSetCursor(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPa
 		{
 			bHandled = TRUE;
 		}
+	}
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	LOG_AUTO();
+	bHandled = FALSE;
+	ID2ControlMap::const_iterator it = m_mapCtrl.begin();
+	for(; it != m_mapCtrl.end(); it++)
+	{
+		CUIControlBase* pUICtrl = it->second;
+		pUICtrl->AdjustItemPos();
 	}
 	return 0;
 }

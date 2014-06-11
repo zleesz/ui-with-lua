@@ -1,4 +1,5 @@
 #pragma once
+#include <uiluax.h>
 #include <atlwin.h>
 #include <ExDispId.h>
 #include <ExDisp.h>
@@ -6,6 +7,26 @@
 #include "DownloadManager.h"
 
 class CUIWebBrowserImpl;
+
+class IWebBrowserEvent
+{
+public:
+	virtual void OnBeforeNavigate2(IDispatch *pDisp,VARIANT *url,VARIANT *Flags, VARIANT *TargetFrameName,VARIANT *PostData,VARIANT *Headers,VARIANT_BOOL *Cancel) = 0;
+	virtual void OnNavigatorComplete2(IDispatch *pDisp, VARIANT *URL) = 0;
+	virtual void OnDocumentComplete(IDispatch* pDisp, VARIANT* URL) = 0;
+	virtual void OnNavigateError(IDispatch *pDisp,VARIANT *URL,VARIANT *TargetFrameName,VARIANT *StatusCode,VARIANT_BOOL *Cancel) = 0;
+	virtual void OnWindowClosing(VARIANT_BOOL IsChildWindow,VARIANT_BOOL *Cancel) = 0;
+	virtual void OnNewWindow2(IDispatch** ppDisp, VARIANT_BOOL* Cancel) = 0;
+	virtual void OnNewWindow3(IDispatch **ppDisp,VARIANT_BOOL *Cancel,DWORD dwFlags,BSTR bstrUrlContext,BSTR bstrUrl) = 0;
+	virtual void OnTitleChange(BSTR Text) = 0;
+	virtual void OnTitleIconChange(BSTR Text) = 0;
+	virtual void OnStatusTextChange(BSTR Text) = 0;
+	virtual void OnCommandStateChange(long Command, VARIANT_BOOL Enable) = 0;
+	virtual void ProgressChange(long Progress, long ProgressMax) = 0;
+	virtual void OnDownloadBegin() = 0;
+	virtual void OnDownloadComplete() = 0;
+	virtual void OnQuit(void) = 0;
+};
 
 #define DISPID_WEBBROWSER 1
 typedef IDispEventImpl<DISPID_WEBBROWSER, CUIWebBrowserImpl, &DIID_DWebBrowserEvents2, &LIBID_SHDocVw, 1, 0> DWebBrowserEventImpl;
@@ -22,6 +43,7 @@ class CUIWebBrowserImpl :
 public:
 	CUIWebBrowserImpl();
 	~CUIWebBrowserImpl(void);
+	DECLARE_WND_CLASS(_T("UIWebBrowser"))
 
 	BEGIN_COM_MAP(CUIWebBrowserImpl)
 		COM_INTERFACE_ENTRY(IDocHostUIHandler)
@@ -53,6 +75,11 @@ public:
 
 		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_QUIT, OnQuit)
 	END_SINK_MAP()
+public:
+	void SetWebBrowserEvent(IWebBrowserEvent* pWebBrowserEvent);
+	void Navigate(BSTR bstrURL);
+	HRESULT GetBrowser(IWebBrowser2** ppWebBrowser);
+	HWND Create(HWND hParentWnd);
 
 protected:
 	// DWebBrowserEvents2
@@ -61,45 +88,36 @@ protected:
 	void __stdcall OnDocumentComplete(IDispatch* pDisp, VARIANT* URL);
 	void __stdcall OnNavigateError(IDispatch *pDisp,VARIANT *URL,VARIANT *TargetFrameName,VARIANT *StatusCode,VARIANT_BOOL *Cancel);
 	void __stdcall OnWindowClosing(VARIANT_BOOL IsChildWindow,VARIANT_BOOL *Cancel);
-
 	void __stdcall OnNewWindow2(IDispatch** ppDisp, VARIANT_BOOL* Cancel);
 	void __stdcall OnNewWindow3(IDispatch **ppDisp,VARIANT_BOOL *Cancel,DWORD dwFlags,BSTR bstrUrlContext,BSTR bstrUrl);
-
 	void __stdcall OnTitleChange(BSTR Text);
 	void __stdcall OnTitleIconChange(BSTR Text);
 	void __stdcall OnStatusTextChange(BSTR Text);
 	void __stdcall OnCommandStateChange(long Command, VARIANT_BOOL Enable);
 	void __stdcall ProgressChange(long Progress, long ProgressMax);
-
 	void __stdcall OnDownloadBegin();
 	void __stdcall OnDownloadComplete();
-
 	void __stdcall OnQuit(void);
 
 	//IDocHostUIHandlerDispatch
 	STDMETHOD(GetExternal)(IDispatch **ppDispatch);
-
 	STDMETHOD(ShowContextMenu)(DWORD dwID, POINT FAR* ppt, IUnknown FAR* pcmdtReserved, IDispatch FAR* pdispReserved);
-
 	STDMETHOD(GetDropTarget)(IDropTarget* pDropTarget, IDropTarget** ppDropTarget);
 
 	// IOleCommandTarget
 	STDMETHOD(QueryStatus)(const GUID *pguidCmdGroup,ULONG cCmds,OLECMD prgCmds[],OLECMDTEXT *pCmdText);
-
 	STDMETHOD(Exec)(const GUID *pguidCmdGroup,DWORD nCmdID,DWORD nCmdexecopt,VARIANT *pvaIn,VARIANT *pvaOut);
-
 	STDMETHOD(GetDefaultDocHostUIHandler)(IDocHostUIHandler** ppHandler);
-
-	// INewWindowManager
-	STDMETHOD(EvaluateNewWindow)(LPCWSTR pszUrl,LPCWSTR pszName,LPCWSTR pszUrlContext,LPCWSTR pszFeatures,BOOL fReplace,DWORD dwFlags,DWORD dwUserActionTime);
 
 	// IDownloadManager
 	STDMETHOD(Download)( IMoniker *pmk, IBindCtx * pbc,DWORD dwBindVerb, LONG grfBINDF,BINDINFO * pBindInfo,LPCOLESTR pszHeaders,LPCOLESTR pszRedir, UINT uiCP);
 
 protected:
-	CComPtr<IDocHostUIHandler> m_spDefaultDocHostUIHandler;
-	CComPtr<IOleCommandTarget> m_spDefaultOleCommandTarget;
-	CComPtr<IObjectWithSite> m_spImgEmbedDetect;
+	CComPtr<IDocHostUIHandler>	m_spDefaultDocHostUIHandler;
+	CComPtr<IOleCommandTarget>	m_spDefaultOleCommandTarget;
+	CComPtr<IObjectWithSite>	m_spImgEmbedDetect;
+	IWebBrowserEvent*			m_pWebBrowserEvent;
+	HWND						m_hParentWnd;
 
 public:
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
@@ -109,4 +127,8 @@ public:
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 	END_MSG_MAP()
+public:
+	LOG_CLS_DEC();
 };
+
+typedef CComObject<CUIWebBrowserImpl> CComWebBrowserObj;

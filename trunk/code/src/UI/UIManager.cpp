@@ -39,6 +39,7 @@ void CUIManager::InitLog4CPlus()
 HRESULT CUIManager::FinalConstruct()
 {
 	LOG_AUTO();
+	::OleInitialize(NULL);
 	InitLog4CPlus();
 	UILuaCreateLuaVM(NULL);
 	// init timermanager
@@ -52,6 +53,7 @@ void CUIManager::FinalRelease()
 	LOG_AUTO();
 	UILuaDestroyLuaVM(NULL);
 	UIGraphicInstance->UnInitGraphic();
+	::OleUninitialize();
 }
 
 STDMETHODIMP CUIManager::LoadSkin(BSTR bstrPath)

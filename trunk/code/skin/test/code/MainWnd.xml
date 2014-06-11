@@ -114,6 +114,19 @@
 					<event name="OnClick" file="MainWnd.xml.lua" func="OnCloseClick" />
 				</eventlist>
 			</obj>
+			<obj id="webbrowser" class="UIWebBrowser">
+				<attr>
+					<left>10</left>
+					<top>30</top>
+					<width>father.width-20</width>
+					<height>father.height-40</height>
+					<zorder>100</zorder>
+					<url>http://www.baidu.com/</url>
+				</attr>
+				<eventlist>
+					<event name="OnClick" file="MainWnd.xml.lua" func="OnCloseClick" />
+				</eventlist>
+			</obj>
 		</uitree>
 		<eventlist>
 			<event name="OnCreate" file="MainWnd.xml.lua" func="OnCreate" />
