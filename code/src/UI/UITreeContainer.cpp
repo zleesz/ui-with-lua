@@ -110,7 +110,6 @@ BOOL CUITreeContainer::OnCreate()
 
 void CUITreeContainer::Render(CDCHandle dc)
 {
-	LOG_AUTO();
 	// render objects by z-orders
 	m_ZorderIndexer.Render(dc);
 }
@@ -476,7 +475,6 @@ LRESULT CUITreeContainer::OnSetCursor(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPa
 
 LRESULT CUITreeContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
-	LOG_AUTO();
 	bHandled = FALSE;
 	ID2ControlMap::const_iterator it = m_mapCtrl.begin();
 	for(; it != m_mapCtrl.end(); it++)

@@ -73,7 +73,6 @@ LRESULT CUIEventWndContainer::OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM 
 
 LRESULT CUIEventWndContainer::OnMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
 {
-	LOG_AUTO();
 	bHandled = FALSE;
 	CComVariant avarParams[3];
 	avarParams[0].vt = VT_BYREF | VT_I4;
@@ -93,7 +92,6 @@ LRESULT CUIEventWndContainer::OnMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lP
 
 LRESULT CUIEventWndContainer::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
 {
-	LOG_AUTO();
 	bHandled = FALSE;
 	CComVariant avarParams[5];
 	avarParams[0].vt = VT_BYREF | VT_I4;
@@ -116,7 +114,6 @@ LRESULT CUIEventWndContainer::OnMoving(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 LRESULT CUIEventWndContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
-	LOG_AUTO();
 	bHandled = FALSE;
 	CComVariant avarParams[4];
 	avarParams[0].vt = VT_BYREF | VT_I4;
