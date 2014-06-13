@@ -17,6 +17,7 @@ typedef enum enumControlType {
 	CT_UIButton,
 	CT_UIText,
 	CT_UIWebBrowser,
+	CT_UICaption,
 } ControlType;
 
 class CUIControlBase
@@ -50,8 +51,7 @@ public:
 	virtual void OnMouseLeave(int x, int y);
 	virtual void OnMouseWheel(int x, int y);
 	virtual LRESULT OnSetCursor(int x, int y);
-	virtual BOOL OnHitTest(int x, int y);
-	virtual BOOL OnHitMouseEventTest(int x, int y);
+	virtual BOOL OnHitTest(int x, int y, LONG& nHitTest);
 	virtual void OnPosChange(int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom);
 
 	virtual void AdjustItemPos(BOOL bFire = TRUE);

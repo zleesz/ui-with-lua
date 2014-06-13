@@ -6,7 +6,6 @@
 #include <map>
 #include <string>
 #include "ZorderIndexer.h"
-#include "UIWindowCaption.h"
 
 class CUIWindowBase;
 
@@ -24,7 +23,6 @@ private:
 	CUIControlBase*		m_pMouseControl;
 	CUIControlBase*		m_pCaptrueControl;
 	BOOL				m_bTrackLeave;
-	CUIWindowCaption*	m_pUIWindowCaption;
 public:
 	BEGIN_MSG_MAP(CUITreeContainer)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
@@ -54,7 +52,6 @@ public:
 	void Render(CDCHandle dc);
 	CUIWindowBase* GetBindWnd(void);
 	BOOL SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture);
-	void AddCaptionRect(const RECT& rc);
 public:
 	static int GetUIObject(lua_State* L);
 	static int GetOwnerWnd(lua_State* L);

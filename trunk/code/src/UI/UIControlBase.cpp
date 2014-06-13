@@ -224,27 +224,14 @@ void CUIControlBase::SetObjPos(const RECT& rc)
 	InvalidateRect(unionRc);
 }
 
-BOOL CUIControlBase::OnHitTest(int x, int y)
+BOOL CUIControlBase::OnHitTest(int x, int y, LONG& nHitTest)
 {
 	const RECT rc = GetObjPos();
 	if(x > rc.left && x < rc.right
 		&& y > rc.top && y < rc.bottom)
 	{
+		nHitTest = HTCLIENT;
 		return TRUE;
-	}
-	return FALSE;
-}
-
-BOOL CUIControlBase::OnHitMouseEventTest(int x, int y)
-{
-	const RECT rc = GetObjPos();
-	if(x > rc.left && x < rc.right
-		&& y > rc.top && y < rc.bottom)
-	{
-		if (m_pUIEventControl->IsAttachedMouseEvent())
-		{
-			return TRUE;
-		}
 	}
 	return FALSE;
 }

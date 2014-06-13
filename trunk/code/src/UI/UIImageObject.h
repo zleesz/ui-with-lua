@@ -25,7 +25,6 @@ public:
 	virtual void OnRButtonUp(int x, int y);
 	virtual void OnLButtonDown(int x, int y);
 public:
-	static int GetID(lua_State* L);
 	static int GetStretch(lua_State* L);
 	static int SetStretch(lua_State* L);
 	static int GetImage(lua_State* L);

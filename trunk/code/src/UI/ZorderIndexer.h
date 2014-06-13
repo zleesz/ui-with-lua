@@ -25,8 +25,7 @@ public:
 	void Init(const LPID2ControlMap pMapControl);
 	void Render(CDCHandle dc);
 	void OnTreeModify(const LPTreeModifyData ptmt);
-	CUIControlBase* HitTest(int x, int y);
-	CUIControlBase* HitMouseEventTest(int x, int y);
+	CUIControlBase* HitTest(int x, int y, LONG& nHitTest);
 private:
 	static bool CompareZorder(CUIControlBase* pCtrlA, CUIControlBase* pCtrlB);
 	void SortTreeObjectsByZorder();

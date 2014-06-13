@@ -466,6 +466,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\UICaption.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UICaption.h"
+				>
+			</File>
+			<File
 				RelativePath=".\UICheckBox.cpp"
 				>
 			</File>

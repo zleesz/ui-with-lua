@@ -138,7 +138,7 @@ CUIButton::~CUIButton(void)
 
 void CUIButton::SetAttr(const std::string& strName, const std::string& strValue)
 {
-	__super::SetAttr(strName, strValue);
+	CUIControlBase::SetAttr(strName, strValue);
 }
 
 void CUIButton::Render(CDCHandle dc)
@@ -228,7 +228,8 @@ void CUIButton::OnLButtonUp(int x, int y)
 		return;
 	}
 	const RECT rc = GetObjPos();
-	if (OnHitTest(x + rc.left, y + rc.top))
+	LONG nHitTest = 0;
+	if (OnHitTest(x + rc.left, y + rc.top, nHitTest))
 	{
 		m_state = BS_HOVER;
 	}
