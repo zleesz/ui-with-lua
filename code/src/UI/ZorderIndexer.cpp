@@ -22,7 +22,7 @@ void CZorderIndexer::OnTreeModify(const LPTreeModifyData /*ptmt*/)
 	bDirty = TRUE;
 }
 
-CUIControlBase* CZorderIndexer::HitTest(int x, int y)
+CUIControlBase* CZorderIndexer::HitTest(int x, int y, LONG& nHitTest)
 {
 	if (NULL == m_pMapID2Control)
 		return NULL;
@@ -33,26 +33,7 @@ CUIControlBase* CZorderIndexer::HitTest(int x, int y)
 	for (int i = 0; i < (int)m_vecControl.size(); i++)
 	{
 		CUIControlBase* pControl = m_vecControl[i];
-		if (pControl->GetVisible() && pControl->OnHitTest(x, y))
-		{
-			return pControl;
-		}
-	}
-	return NULL;
-}
-
-CUIControlBase* CZorderIndexer::HitMouseEventTest(int x, int y)
-{
-	if (NULL == m_pMapID2Control)
-		return NULL;
-	if (bDirty)
-	{
-		SortTreeObjectsByZorder();
-	}
-	for (int i = 0; i < (int)m_vecControl.size(); i++)
-	{
-		CUIControlBase* pControl = m_vecControl[i];
-		if (pControl->GetVisible() && pControl->OnHitMouseEventTest(x, y))
+		if (pControl->GetVisible() && pControl->OnHitTest(x, y, nHitTest))
 		{
 			return pControl;
 		}

@@ -106,29 +106,6 @@ void CUIWindowBase::ParserResizeValue(const std::string& strValue)
 	m_pUIWindowResizer->SetResizeLeftBottom(atoi(strValue.c_str()));
 }
 
-void CUIWindowBase::ParserCaptionValue(const std::string& strValue, RECT& rc)
-{
-	rc.left = atoi(strValue.c_str());
-	int nIndex = strValue.find(',');
-	if ((std::string::size_type)nIndex == std::string::npos)
-	{
-		return;
-	}
-	rc.top = atoi(strValue.c_str() + nIndex + 1);
-	nIndex = strValue.find(',', nIndex + 1);
-	if ((std::string::size_type)nIndex == std::string::npos)
-	{
-		return;
-	}
-	rc.right = atoi(strValue.c_str() + nIndex + 1);
-	nIndex = strValue.find(',', nIndex + 1);
-	if ((std::string::size_type)nIndex == std::string::npos)
-	{
-		return;
-	}
-	rc.bottom = atoi(strValue.c_str() + nIndex + 1);
-}
-
 void CUIWindowBase::SetAttr(const std::string& strName, const std::string& strValue)
 {
 	if(strName == "left" || strName == "top" || strName == "width" || strName == "height" ||
@@ -164,12 +141,6 @@ void CUIWindowBase::SetAttr(const std::string& strName, const std::string& strVa
 	else if (strName == "resizerect")
 	{
 		ParserResizeValue(strValue);
-	}
-	else if (strName == "captionrect")
-	{
-		RECT rc = {0};
-		ParserCaptionValue(strValue, rc);
-		m_pUITreeContainer->AddCaptionRect(rc);
 	}
 }
 

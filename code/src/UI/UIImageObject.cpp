@@ -5,6 +5,7 @@
 
 CUIImageObject::CUIImageObject(void)
 {
+	RegisterClass(this);
 }
 
 CUIImageObject::CUIImageObject(CUITreeContainer* pTree, LPXMLDOMNode pNode)
@@ -54,15 +55,6 @@ CUIImageObject::CUIImageObject(CUITreeContainer* pTree)
 CUIImageObject::~CUIImageObject(void)
 {
 	UnRegisterClass(this);
-}
-
-int CUIImageObject::GetID(lua_State* L)
-{
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	std::string strID = pThis->GetID();
-	lua_pushstring(L, strID.c_str());
-	return 1;
 }
 
 int CUIImageObject::GetStretch(lua_State* L)
@@ -118,15 +110,11 @@ int CUIImageObject::GetImage(lua_State* L)
 
 void CUIImageObject::SetAttr(const std::string& strName, const std::string& strValue)
 {
-	__super::SetAttr(strName, strValue);
+	CUIControlBase::SetAttr(strName, strValue);
 }
 
 void CUIImageObject::Render(CDCHandle dc)
 {
-	if (!CUIControlBase::GetVisible())
-	{
-		return;
-	}
 	CUIBitmap* pUIBitmap = UIResFactoryInstance->GetBitmap(m_strImageID.c_str());
 	if(NULL == pUIBitmap)
 	{

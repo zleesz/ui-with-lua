@@ -5,31 +5,27 @@
 #include "UIButton.h"
 #include "UIText.h"
 #include "UIWebBrowser.h"
+#include "UICaption.h"
 #include "UIWindowBase.h"
 
 CUITreeContainer::CUITreeContainer(void)
 {
+	RegisterClass(this);
 }
 
-CUITreeContainer::CUITreeContainer(CUIWindowBase* p)
-	: m_pBindWnd(p), 
+CUITreeContainer::CUITreeContainer(CUIWindowBase* p) :
+	m_pBindWnd(p), 
 	m_pMouseControl(NULL), 
 	m_pCaptrueControl(NULL), 
-	m_bTrackLeave(FALSE),
-	m_pUIWindowCaption(NULL)
+	m_bTrackLeave(FALSE)
 {
 	LOG_AUTO();
 	RegisterClass(this);
-	m_pUIWindowCaption = new CUIWindowCaption;
 }
 
 CUITreeContainer::~CUITreeContainer(void)
 {
 	UnRegisterClass(this);
-	if (m_pUIWindowCaption)
-	{
-		delete m_pUIWindowCaption;
-	}
 }
 
 BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
@@ -56,25 +52,29 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 				if(pAttrObj == NULL)
 					continue;
 				CUIControlBase* pUICtrl = NULL;
-				if((*pAttrObj)["class"] == "UIImageObject")
+				if ((*pAttrObj)["class"] == "UIImageObject")
 				{
 					pUICtrl = new CUIImageObject(this, pObjNode2);
 				}
-				else if((*pAttrObj)["class"] == "UITextureObject")
+				else if ((*pAttrObj)["class"] == "UITextureObject")
 				{
 					pUICtrl = new CUITextureObject(this, pObjNode2);
 				}
-				else if((*pAttrObj)["class"] == "UIButton")
+				else if ((*pAttrObj)["class"] == "UIButton")
 				{
 					pUICtrl = new CUIButton(this, pObjNode2);
 				}
-				else if((*pAttrObj)["class"] == "UIText")
+				else if ((*pAttrObj)["class"] == "UIText")
 				{
 					pUICtrl = new CUIText(this, pObjNode2);
 				}
-				else if((*pAttrObj)["class"] == "UIWebBrowser")
+				else if ((*pAttrObj)["class"] == "UIWebBrowser")
 				{
 					pUICtrl = new CUIWebBrowser(this, pObjNode2);
+				}
+				else if ((*pAttrObj)["class"] == "UICaption")
+				{
+					pUICtrl = new CUICaption(this, pObjNode2);
 				}
 				else
 				{
@@ -273,6 +273,10 @@ int CUITreeContainer::CreateUIObject(lua_State* L)
 	{
 		pUICtrl = new CUIWebBrowser(pThis);
 	}
+	else if (strcmp(pszClass, "UICaption") == 0)
+	{
+		pUICtrl = new CUICaption(pThis);
+	}
 	else
 	{
 		assert(false && "unknown control class.");
@@ -339,7 +343,8 @@ LRESULT CUITreeContainer::OnMouseMove(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 			m_pMouseControl = NULL;
 		}
 	}*/
-	CUIControlBase* pControl = m_ZorderIndexer.HitTest(xPos, yPos);
+	LONG nHitTest = 0;
+	CUIControlBase* pControl = m_ZorderIndexer.HitTest(xPos, yPos, nHitTest);
 	if(NULL != pControl)
 	{
 		if(m_pMouseControl && m_pMouseControl != pControl)
@@ -385,14 +390,9 @@ LRESULT CUITreeContainer::OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	pt.x = GET_X_LPARAM(lParam);
 	pt.y = GET_Y_LPARAM(lParam);
 	::ScreenToClient(m_pBindWnd->m_hWnd, &pt);
-	CUIControlBase* pControl = m_ZorderIndexer.HitMouseEventTest(pt.x, pt.y);
+	LONG nHitTest = 0;
+	CUIControlBase* pControl = m_ZorderIndexer.HitTest(pt.x, pt.y, nHitTest);
 	if (pControl)
-	{
-		bHandled = TRUE;
-		return HTCLIENT;
-	}
-	LONG nHitTest = HTNOWHERE;
-	if (m_pUIWindowCaption->OnNcHitTest(pt, nHitTest))
 	{
 		bHandled = TRUE;
 		return nHitTest;
@@ -418,7 +418,8 @@ LRESULT CUITreeContainer::OnLButtonDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
 	}
 	if (NULL != m_pMouseControl)
 	{
-		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos);
+		LONG nHitTest = 0;
+		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos, nHitTest);
 		if (bHit)
 		{
 			m_pMouseControl->OnLButtonDown(xPos, yPos);
@@ -439,7 +440,8 @@ LRESULT CUITreeContainer::OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	}
 	if (NULL != m_pMouseControl)
 	{
-		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos);
+		LONG nHitTest = 0;
+		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos, nHitTest);
 		if (bHit)
 		{
 			m_pMouseControl->OnLButtonUp(xPos, yPos);
@@ -461,7 +463,8 @@ LRESULT CUITreeContainer::OnSetCursor(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPa
 	POINT pt = {0};
 	::GetCursorPos(&pt);
 	::ScreenToClient(m_pBindWnd->m_hWnd, &pt);
-	CUIControlBase* pControl = m_ZorderIndexer.HitTest(pt.x, pt.y);
+	LONG nHitTest = 0;
+	CUIControlBase* pControl = m_ZorderIndexer.HitTest(pt.x, pt.y, nHitTest);
 	if (NULL != pControl)
 	{
 		LRESULT lres = pControl->OnSetCursor(pt.x, pt.y);
@@ -498,9 +501,4 @@ BOOL CUITreeContainer::SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture)
 		m_pCaptrueControl = NULL;
 		return ::ReleaseCapture();
 	}
-}
-
-void CUITreeContainer::AddCaptionRect(const RECT& rc)
-{
-	m_pUIWindowCaption->AddCaptionRect(rc);
 }

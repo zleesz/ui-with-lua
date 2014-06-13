@@ -7,7 +7,5 @@ public:
 	CUIEventCtrlContainer(void);
 	virtual ~CUIEventCtrlContainer(void);
 public:
-	BOOL IsAttachedMouseEvent();
-public:
 	virtual EventType GetType() { return ET_Control; };
 };

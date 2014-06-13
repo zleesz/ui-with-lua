@@ -13,11 +13,18 @@
 			<title>测试窗口</title>
 			<resize>1</resize>
 			<resizerect>3,3,3,3,5,5,5,5</resizerect>
-			<captionrect>0,0,400,100</captionrect>
 			<minwidth>120</minwidth>
 			<minheight>150</minheight>
 		</attr>
 		<uitree>
+			<obj id="caption" class="UICaption">
+				<attr>
+					<left>0</left>
+					<top>0</top>
+					<width>father.width</width>
+					<height>father.height</height>
+				</attr>
+			</obj>
 			<obj id="texture.bkg" class="UITextureObject">
 				<attr>
 					<left>0</left>
@@ -36,7 +43,7 @@
 				<attr>
 					<left>10</left>
 					<top>10</top>
-					<width>father.width</width>
+					<width>father.width-200</width>
 					<height>24</height>
 					<multiline>0</multiline>
 					<valign>true</valign>
