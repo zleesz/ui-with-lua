@@ -12,7 +12,7 @@
 			<layered>0</layered>
 			<title>测试窗口</title>
 			<resize>1</resize>
-			<resizerect>3,3,3,3,5,5,5,5</resizerect>
+			<resizerect>3,3,3,3,7,7,7,7</resizerect>
 			<minwidth>120</minwidth>
 			<minheight>150</minheight>
 		</attr>
@@ -43,7 +43,7 @@
 				<attr>
 					<left>10</left>
 					<top>10</top>
-					<width>father.width-200</width>
+					<width>40</width>
 					<height>24</height>
 					<multiline>0</multiline>
 					<valign>true</valign>
