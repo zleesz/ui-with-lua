@@ -132,8 +132,11 @@ void CUITextureObject::Render(CDCHandle dc)
 	const RECT rc = GetObjPos();
 	SIZE sz = {rc.right - rc.left, rc.bottom - rc.top};
 	BITMAP_HANDLE hBitmap = pUITexture->GetTextureBitmap(sz);
-	UIGraphicInstance->AlphaPaintBitmap(dc.m_hDC, hBitmap, rc.left, rc.top, sz.cx, sz.cy);
-	UIGraphicInstance->ReleaseBitmap(hBitmap);
+	if (hBitmap)
+	{
+		UIGraphicInstance->AlphaPaintBitmap(dc.m_hDC, hBitmap, rc.left, rc.top, sz.cx, sz.cy);
+		UIGraphicInstance->ReleaseBitmap(hBitmap);
+	}
 }
 
 int CUITextureObject::GetOwnerTree(lua_State* L)

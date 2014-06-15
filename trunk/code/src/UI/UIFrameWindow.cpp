@@ -156,7 +156,14 @@ LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
 // 	m_rgn1.CreateRoundRectRgn(r.left,r.top,r.right+1,r.top+45,12,12); 
 // 	m_rgn2.CreateRoundRectRgn(r.left,r.top+18,r.right+1,r.bottom+2,12,12); 
 // 	m_rgn2.CombineRgn(m_rgn1,m_rgn2,RGN_OR); 
-// 	iRet = SetWindowRgn(m_rgn2,TRUE); 
+// 	iRet = SetWindowRgn(m_rgn2,TRUE);
+	return 0;
+}
+
+LRESULT CUIFrameWindow::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	//TryUpdateWindow();
 	return 0;
 }
 
@@ -165,6 +172,57 @@ void CUIFrameWindow::TryUpdateWindow()
 	CPaintDC dc(m_hWnd);
 	CMemoryDC dcMem(dc.m_hDC, dc.m_ps.rcPaint);
 	DoPaint(dcMem.m_hDC);
+}
+
+void CUIFrameWindow::SaveBitmapBits(HBITMAP hBitmap, BYTE** ppBits, DWORD* pdwByteSize)
+{
+	if (!ppBits || !pdwByteSize)
+	{
+		return;
+	}
+	ATLASSERT(*ppBits == NULL);
+	delete[] *ppBits;
+
+	BITMAP bmp;
+	if (GetObject(hBitmap, sizeof(BITMAP), &bmp))
+	{
+		DWORD dwPxByteSize = bmp.bmWidth*bmp.bmHeight*bmp.bmBitsPixel/8;
+		BYTE* pBits = new BYTE[dwPxByteSize];
+		if (pBits)
+		{
+			::memcpy(pBits, (BYTE*)bmp.bmBits, dwPxByteSize);
+			*ppBits = pBits;
+			*pdwByteSize = dwPxByteSize;
+		}
+	}
+}
+
+void CUIFrameWindow::MixAlpha(HBITMAP hBitmap, BYTE* pBitsSrc, DWORD dwSize)
+{
+	BITMAP bmp;
+	::GetObject(hBitmap, sizeof(BITMAP), (void*)&bmp);
+	BYTE* pDest = (BYTE*)bmp.bmBits;
+	BYTE* pSrc = pBitsSrc;
+	if (pDest == NULL)
+	{
+		return;
+	}		
+
+	WORD wBitSet = bmp.bmBitsPixel/8;
+	DWORD dwPxByteSize = bmp.bmWidth*bmp.bmHeight*wBitSet;
+
+	if (dwPxByteSize != dwSize)
+	{
+		return;
+	}
+
+	for(DWORD i = 0; i < dwPxByteSize; i+=DWORD(wBitSet))
+	{
+		if (::memcmp(pSrc+i, pDest+i, 3) != 0)
+		{			
+			pDest[i+3] = 0xFF;
+		}
+	}
 }
 
 void CUIFrameWindow::DoPaint(CDCHandle dc)
@@ -176,6 +234,30 @@ void CUIFrameWindow::DoPaint(CDCHandle dc)
 	}
 	if (GetLayered())
 	{
+		HDC hDC = CreateCompatibleDC(NULL);
+		RECT rc;
+		GetWindowRect(&rc);
+
+		BITMAPINFO bmi;
+		::memset(&bmi, 0, sizeof(BITMAPINFO));
+		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+		bmi.bmiHeader.biWidth = rc.right-rc.left;
+		bmi.bmiHeader.biHeight = rc.bottom-rc.top;
+		bmi.bmiHeader.biPlanes = 1;
+		bmi.bmiHeader.biBitCount = 32;
+		bmi.bmiHeader.biCompression = BI_RGB;
+		bmi.bmiHeader.biSizeImage = 0;
+
+		BYTE* pBits = NULL;
+		HBITMAP hDIBitmap = ::CreateDIBSection(NULL, &bmi, DIB_RGB_COLORS, (void**)&pBits, NULL, 0);
+		HBITMAP hOldDIBitmap = (HBITMAP)::SelectObject(hDC, hDIBitmap);
+
+		::FillRect(hDC, &rc, (HBRUSH)GetStockObject(BLACK_BRUSH));
+
+		DWORD dwSize = 0;
+		BYTE* pBitmapBits = NULL;
+		SaveBitmapBits(hDIBitmap, &pBitmapBits, &dwSize);
+
 		BLENDFUNCTION bfunc;
 		bfunc.AlphaFormat = AC_SRC_ALPHA;
 		bfunc.BlendFlags = 0;
@@ -185,28 +267,17 @@ void CUIFrameWindow::DoPaint(CDCHandle dc)
 		{
 			bfunc.SourceConstantAlpha = (BYTE)m_mapAttr["alpha"].intVal;
 		}
-		RECT wndrc = {0};
-		GetWindowRect(&wndrc);
-		POINT pt = {wndrc.left, wndrc.top};
-		SIZE sz = {wndrc.right - wndrc.left, wndrc.bottom - wndrc.top};
-		HDC hMemDc = ::CreateCompatibleDC(dc.m_hDC);
-		BITMAPINFO bmpinfo;
-		bmpinfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-		bmpinfo.bmiHeader.biWidth = sz.cx;
-		bmpinfo.bmiHeader.biHeight = sz.cy;
-		bmpinfo.bmiHeader.biPlanes = 1;
-		bmpinfo.bmiHeader.biBitCount = 32;//32bpp
-		bmpinfo.bmiHeader.biCompression = BI_RGB;
-		void* pBits = NULL;
-		HBITMAP hBitmap = CreateDIBSection(dc.m_hDC, &bmpinfo, DIB_RGB_COLORS, &pBits, NULL, 0);
-		HBITMAP hOldBitmap = (HBITMAP)::SelectObject(hMemDc,hBitmap);
-		m_pUITreeContainer->Render(hMemDc);
+		m_pUITreeContainer->Render(hDC);
 
+		MixAlpha(hDIBitmap, pBitmapBits, dwSize);
+		POINT pt = {rc.left, rc.top};
+		SIZE sz = {rc.right - rc.left, rc.bottom - rc.top};
 		POINT ptSrc = {0, 0};
-		UIGraphicInstance->UpdateLayeredWindow(m_hWnd, dc.m_hDC, &pt, &sz, hMemDc, &ptSrc, 0, &bfunc, ULW_ALPHA);
-		::SelectObject(hMemDc, hOldBitmap);
-		::DeleteObject(hBitmap);
-		::DeleteDC(hMemDc);
+		UIGraphicInstance->UpdateLayeredWindow(m_hWnd, NULL, &pt, &sz, hDC, &ptSrc, 0, &bfunc, ULW_ALPHA);
+
+		SelectObject(hDC, hOldDIBitmap);
+		::DeleteObject(hDIBitmap);
+		::DeleteDC(hDC);
 	}
 	else
 	{

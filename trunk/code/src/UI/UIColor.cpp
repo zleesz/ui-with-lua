@@ -6,11 +6,13 @@
 void CUIColor::Init()
 {
 	m_color = 0;
+	m_oldColor = 0;
 	m_uAlpha = 0;
 }
 
 CUIColor::CUIColor()
 {
+	RegisterClass(this);
 	Init();
 }
 
@@ -21,8 +23,8 @@ CUIColor::~CUIColor(void)
 
 CUIColor::CUIColor(LPXMLDOMNode pNode) : CUIResBase(pNode)
 {
-	Init();
 	RegisterClass(this);
+	Init();
 	if(pNode == NULL)
 		return;
 	LPXMLAttrMap pMapAttr = pNode->pMapAttr;
@@ -49,9 +51,26 @@ CUIColor::CUIColor(LPXMLDOMNode pNode) : CUIResBase(pNode)
 	}
 	else if((*pMapAttr)["rgba"].length() > 0)
 	{
+		std ::string strValue = (*pMapAttr)["rgba"];
+		LONG nValude = 0;
+		sscanf(strValue.c_str() + 1,"%x",&nValude);
+		m_color = RGB(nValude >> 24 & 0xFF, nValude >> 16 & 0xFF, nValude >> 8 & 0xFF);
+		m_uAlpha = nValude & 0xFF;
+		if (m_color == 0x0)
+		{
+			m_color = RGB(0x00, 0x00, 0x01);
+		}
 	}
 	else if((*pMapAttr)["rgb"].length() > 0)
 	{
+		std ::string strValue = (*pMapAttr)["rgb"];
+		LONG nValude = 0;
+		sscanf(strValue.c_str() + 1,"%x",&nValude);
+		m_color = RGB(nValude >> 16 & 0xFF, nValude >> 8 & 0xFF, nValude & 0xFF);
+		if (m_color == 0x0)
+		{
+			m_color = RGB(0x00, 0x00, 0x01);
+		}
 	}
 }
 
@@ -138,4 +157,14 @@ void CUIColor::SetRBGAValue()
 void CUIColor::SetHSLValue()
 {
 
+}
+
+void CUIColor::SelectObject(CDCHandle dc)
+{
+	m_oldColor = dc.SetTextColor(m_color);
+}
+
+void CUIColor::RestoreObject(CDCHandle dc)
+{
+	dc.SetTextColor(m_oldColor);
 }

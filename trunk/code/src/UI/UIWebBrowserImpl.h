@@ -5,9 +5,72 @@
 #include <ExDisp.h>
 #include "DocHostUIHandler.h"
 #include "DownloadManager.h"
+#include <UrlMon.h>
+
+#ifndef _INTERNETFEATURELIST_DEFINED
+typedef enum _tagINTERNETFEATURELIST {
+	FEATURE_OBJECT_CACHING = 0,
+	FEATURE_ZONE_ELEVATION = 1,
+	FEATURE_MIME_HANDLING = 2,
+	FEATURE_MIME_SNIFFING = 3,
+	FEATURE_WINDOW_RESTRICTIONS = 4,
+	FEATURE_WEBOC_POPUPMANAGEMENT = 5,
+	FEATURE_BEHAVIORS = 6,
+	FEATURE_DISABLE_MK_PROTOCOL = 7,
+	FEATURE_LOCALMACHINE_LOCKDOWN = 8,
+	FEATURE_SECURITYBAND = 9,
+	FEATURE_RESTRICT_ACTIVEXINSTALL = 10,
+	FEATURE_VALIDATE_NAVIGATE_URL = 11,
+	FEATURE_RESTRICT_FILEDOWNLOAD = 12,
+	FEATURE_ADDON_MANAGEMENT = 13,
+	FEATURE_PROTOCOL_LOCKDOWN = 14,
+	FEATURE_HTTP_USERNAME_PASSWORD_DISABLE = 15,
+	FEATURE_SAFE_BINDTOOBJECT = 16,
+	FEATURE_UNC_SAVEDFILECHECK = 17,
+	FEATURE_GET_URL_DOM_FILEPATH_UNENCODED = 18,
+	FEATURE_TABBED_BROWSING = 19,
+	FEATURE_SSLUX = 20,
+	FEATURE_DISABLE_NAVIGATION_SOUNDS = 21,
+	FEATURE_DISABLE_LEGACY_COMPRESSION = 22,
+	FEATURE_FORCE_ADDR_AND_STATUS = 23,
+	FEATURE_XMLHTTP = 24,
+	FEATURE_DISABLE_TELNET_PROTOCOL = 25,
+	FEATURE_FEEDS = 26,
+	FEATURE_BLOCK_INPUT_PROMPTS = 27,
+	FEATURE_ENTRY_COUNT = 28
+} INTERNETFEATURELIST;
+
+//http://msdn.microsoft.com/zh-cn/library/ms537168(en-us,VS.85).aspx
+const DWORD SET_FEATURE_ON_THREAD = 0x00000001;
+const DWORD SET_FEATURE_ON_PROCESS = 0x00000002;
+const DWORD SET_FEATURE_IN_REGISTRY = 0x00000004;
+const DWORD SET_FEATURE_ON_THREAD_LOCALMACHINE = 0x00000008;
+const DWORD SET_FEATURE_ON_THREAD_INTRANET = 0x00000010;
+const DWORD SET_FEATURE_ON_THREAD_TRUSTED = 0x00000020;
+const DWORD SET_FEATURE_ON_THREAD_INTERNET = 0x00000040;
+const DWORD SET_FEATURE_ON_THREAD_RESTRICTED = 0x00000080;
+
+#define GET_FEATURE_FROM_THREAD 0x00000001L 
+#define GET_FEATURE_FROM_PROCESS 0x00000002L 
+#define GET_FEATURE_FROM_REGISTRY 0x00000004L 
+#define GET_FEATURE_FROM_THREAD_LOCALMACHINE 0x00000008L 
+#define GET_FEATURE_FROM_THREAD_INTRANET 0x00000010L
+#define GET_FEATURE_FROM_THREAD_TRUSTED 0x00000020L 
+#define GET_FEATURE_FROM_TRREAD_INTERNET 0x00000040L 
+#define GET_FEATURE_FROM_THREAD_RESTRICTED 0x00000080L 
+
+#endif
+
+//http://msdn.microsoft.com/zh-cn/library/ms537168(en-us,VS.85).aspx
+extern "C" typedef HRESULT (__stdcall *PCoInternetSetFeatureEnabled)( INTERNETFEATURELIST FeatureEntry, DWORD dwFlags, BOOL fEnable );
+//http://msdn.microsoft.com/zh-cn/library/ms537164(en-us,VS.85).aspx
+extern "C" typedef HRESULT (__stdcall *PCoInternetIsFeatureEnabled)( INTERNETFEATURELIST FeatureEntry, DWORD dwFlags );
+//http://msdn.microsoft.com/en-us/library/ms537166(VS.85).aspx
+extern "C" typedef HRESULT (__stdcall *PCoInternetIsFeatureEnabledForUrl)( INTERNETFEATURELIST FeatureEntry,DWORD dwFlags,LPCWSTR szURL,IInternetSecurityManager *pSecMgr );
+//http://msdn.microsoft.com/zh-cn/library/aa767908(en-us,VS.85).aspx
+extern "C" typedef HRESULT (__stdcall *PCoInternetGetSession)(DWORD dwSessionMode, IInternetSession **ppIInternetSession, DWORD dwReserved);
 
 class CUIWebBrowserImpl;
-
 class IWebBrowserEvent
 {
 public:
@@ -75,6 +138,10 @@ public:
 
 		SINK_ENTRY_EX(DISPID_WEBBROWSER, DIID_DWebBrowserEvents2, DISPID_QUIT, OnQuit)
 	END_SINK_MAP()
+private:
+	static HRESULT InternetSetFeatureEnabled(INTERNETFEATURELIST FeatureEntry, DWORD dwFlags, BOOL fEnable);
+	HRESULT SetAmbientDisp();
+
 public:
 	void SetWebBrowserEvent(IWebBrowserEvent* pWebBrowserEvent);
 	void Navigate(BSTR bstrURL);
@@ -82,6 +149,7 @@ public:
 	HWND Create(HWND hParentWnd);
 
 protected:
+
 	// DWebBrowserEvents2
 	void __stdcall OnBeforeNavigate2(IDispatch *pDisp,VARIANT *url,VARIANT *Flags, VARIANT *TargetFrameName,VARIANT *PostData,VARIANT *Headers,VARIANT_BOOL *Cancel);
 	void __stdcall OnNavigatorComplete2(IDispatch *pDisp, VARIANT *URL);

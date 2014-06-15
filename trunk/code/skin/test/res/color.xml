@@ -1,5 +1,5 @@
 <ui>
-	<color id="color.system.black" value="#0000000" />
-	<color id="color.system.white" value="#FFFFFF00" />
-	<color id="color.system.red" value="#FF000000" />
+	<color id="color.system.black" rgba="#00000000" />
+	<color id="color.system.white" rgba="#FFFFFF00" />
+	<color id="color.system.red" rgba="#FF000000" />
 </ui>

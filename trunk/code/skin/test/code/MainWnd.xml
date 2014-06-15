@@ -9,7 +9,7 @@
 			<min>1</min>
 			<max>1</max>
 			<appwindow>1</appwindow>
-			<layered>0</layered>
+			<layered>1</layered>
 			<title>测试窗口</title>
 			<resize>1</resize>
 			<resizerect>3,3,3,3,7,7,7,7</resizerect>
@@ -50,6 +50,8 @@
 					<halign>true</halign>
 					<zorder>1000</zorder>
 					<text>标题</text>
+					<color>color.system.black</color>
+					<font>font.default</font>
 				</attr>
 			</obj>
 			<obj id="button.min" class="UIButton">
@@ -129,6 +131,7 @@
 					<height>father.height-40</height>
 					<zorder>100</zorder>
 					<visible>false</visible>
+					<url>http://aplayer.open.xunlei.com/</url>
 				</attr>
 				<eventlist>
 					<event name="OnClick" file="MainWnd.xml.lua" func="OnCloseClick" />

@@ -18,6 +18,7 @@ typedef enum enumControlType {
 	CT_UIText,
 	CT_UIWebBrowser,
 	CT_UICaption,
+	CT_UIMenuItem,
 } ControlType;
 
 class CUIControlBase

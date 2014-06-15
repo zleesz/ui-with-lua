@@ -3,7 +3,7 @@ function OnCreate(self)
 	SetOnceTimer(function()
 		local tree = self:GetTreeContainer()
 		local webbrowser = tree:GetUIObject("webbrowser")
-		webbrowser:Navigate("http://www.baidu.com/")
+		--webbrowser:Navigate("http://aplayer.open.xunlei.com/")
 		webbrowser:SetVisible(true)
 	end, 2000)
 end
