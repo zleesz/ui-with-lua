@@ -558,14 +558,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\UIMenuWindow.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\UIMenuWindow.h"
-				>
-			</File>
-			<File
 				RelativePath=".\UIModalWindow.cpp"
 				>
 			</File>
@@ -587,14 +579,6 @@
 			</File>
 			<File
 				RelativePath=".\UIWindowBase.h"
-				>
-			</File>
-			<File
-				RelativePath=".\UIWindowCaption.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\UIWindowCaption.h"
 				>
 			</File>
 			<File
@@ -703,6 +687,26 @@
 			</File>
 			<File
 				RelativePath=".\UIGraphic.h"
+				>
+			</File>
+		</Filter>
+		<Filter
+			Name="Menu"
+			>
+			<File
+				RelativePath=".\UIMenuItem.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIMenuItem.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UIMenuWindow.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UIMenuWindow.h"
 				>
 			</File>
 		</Filter>

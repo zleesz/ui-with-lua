@@ -1,5 +1,6 @@
 #pragma once
 #include "uicontrolbase.h"
+#include "UIResFactory.h"
 #include "UIFont.h"
 #include "UIColor.h"
 
@@ -17,12 +18,6 @@ public:
 	virtual void Render(CDCHandle dc);
 	virtual void OnInitControl();
 	virtual void OnDetroy();
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonDbClick);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseWheel);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseMove);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseLeave);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonDown);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonUp);
 private:
 	void SetAttr(const std::string& strName, const std::string& strValue);
 private:
@@ -32,9 +27,13 @@ private:
 public:
 	std::string SetText(const std::string& strText);
 	void GetText(std::string& strText);
+	std::string SetTextColor(const std::string& strTextColor);
+	void GetTextColor(std::string& strTextColor);
 
-	static int SetText(lua_State* L);
 	static int GetText(lua_State* L);
+	static int SetText(lua_State* L);
+	static int GetTextColor(lua_State* L);
+	static int SetTextColor(lua_State* L);
 public:
 	BEGIN_LUA_CALL_MAP(CUIText)
 		LUA_CALL_ENTRY(GetID)
@@ -42,8 +41,10 @@ public:
 		LUA_CALL_ENTRY(SetVisible)
 		LUA_CALL_ENTRY(GetEnable)
 		LUA_CALL_ENTRY(GetOwnerTree)
-		LUA_CALL_ENTRY(SetText)
 		LUA_CALL_ENTRY(GetText)
+		LUA_CALL_ENTRY(SetText)
+		LUA_CALL_ENTRY(GetTextColor)
+		LUA_CALL_ENTRY(SetTextColor)
 		LUA_CALL_ENTRY(SetObjPos)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUIText, UI.Text);

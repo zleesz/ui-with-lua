@@ -5,13 +5,6 @@
 #include <Util.h>
 #include <UIParser.h>
 
-#define ADD_MSG_MAP_MEMBER(theChainClass) \
-	{ \
-		BOOL bHandled = theChainClass.ProcessWindowMessage(hWnd, uMsg, wParam, lParam, lResult); \
-		if (bHandled) \
-			return TRUE; \
-	}
-
 class CUIFrameWindow : 
 	public CUIWindowBase
 {
@@ -21,12 +14,14 @@ public:
 	CUIFrameWindow(const std::string& strPath, LPXMLDOMNode pNode);
 	virtual ~CUIFrameWindow(void);
 public:
+	DECLARE_WND_CLASS(_T("UIFrameWindow"))
 	BEGIN_MSG_MAP(CUIFrameWindow)
 		MESSAGE_HANDLER(WM_PAINT, OnPaint)
 		MESSAGE_HANDLER(WM_NCPAINT, OnNcPaint)
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
-		//MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
+		MESSAGE_HANDLER(WM_SIZE, OnSize)
+		MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
 		//MESSAGE_HANDLER(WM_NCCALCSIZE, OnNcCalcSize)
 		//MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
 		CHAIN_MSG_MAP_MEMBER((*m_pUIEventWindow))
@@ -38,6 +33,7 @@ public:
 	LRESULT OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnNcPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	virtual WindowType GetType() { return WT_FrameHostWnd; };
 	virtual BOOL Render(CDCHandle dc);
@@ -50,6 +46,8 @@ private:
 	virtual DWORD GetStyle();
 	virtual DWORD GetStyleEx();
 	void DoPaint(CDCHandle dc);
+	void SaveBitmapBits(HBITMAP hBitmap, BYTE** ppBits, DWORD* pdwByteSize);
+	void MixAlpha(HBITMAP hBitmap, BYTE* pBitsSrc, DWORD dwSize);
 public:
 	BEGIN_LUA_CALL_MAP(CUIFrameWindow)
 		LUA_CALL_ENTRY(GetID)

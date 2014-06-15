@@ -1,4 +1,6 @@
 #pragma once
+#include <atlapp.h>
+#include <atlgdi.h>
 #include "UIResBase.h"
 #include <Util.h>
 #include <uiluax.h>
@@ -15,6 +17,7 @@ public:
 private:
 	COLORREF m_color;
 	BYTE m_uAlpha;
+	COLORREF m_oldColor;
 private:
 	void Init();
 public:
@@ -22,6 +25,8 @@ public:
 	void GetHSLValue(UINT* puHue, UINT* puSat, UINT* puLum);
 	void SetRBGAValue();
 	void SetHSLValue();
+	void SelectObject(CDCHandle dc);
+	void RestoreObject(CDCHandle dc);
 public:
 	BEGIN_LUA_CALL_MAP(CUIColor)
 	END_LUA_CALL_MAP

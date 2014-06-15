@@ -18,6 +18,7 @@ CUIWebBrowser::CUIWebBrowser(CUITreeContainer* pTree)
 	RegisterClass(this);
 	HRESULT hr = CComWebBrowserObj::CreateInstance(&m_pWebBrowserObj);
 	m_pWebBrowserObj->AddRef();
+	m_pWebBrowserObj->SetWebBrowserEvent(this);
 	ATLASSERT(SUCCEEDED(hr) && m_pWebBrowserObj);
 }
 
@@ -27,6 +28,7 @@ CUIWebBrowser::CUIWebBrowser(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	RegisterClass(this);
 	HRESULT hr = CComWebBrowserObj::CreateInstance(&m_pWebBrowserObj);
 	m_pWebBrowserObj->AddRef();
+	m_pWebBrowserObj->SetWebBrowserEvent(this);
 	ATLASSERT(SUCCEEDED(hr) && m_pWebBrowserObj);
 	if(pNode == NULL || pNode->pMapAttr == NULL)
 		return;

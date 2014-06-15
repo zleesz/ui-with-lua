@@ -60,29 +60,27 @@ void CUIText::Render(CDCHandle dc)
 	RECT rc = GetObjPos();
 	std::wstring wstrText;
 	Util::UTF8_to_Unicode(m_strText.c_str(), wstrText);
-
-	HFONT m_hNormalFont = NULL;
-	HFONT hSysFont = (HFONT)GetStockObject(DEFAULT_GUI_FONT);
-	if (hSysFont)
-	{
-		LOGFONT lf;
-		GetObject(hSysFont, sizeof(LOGFONT), &lf);			
-		if (m_hNormalFont == NULL)
-		{
-			lf.lfUnderline = 0;
-			m_hNormalFont = ::CreateFontIndirect(&lf);
-		}
-	}
 	int oldBkMode = dc.SetBkMode(TRANSPARENT);
-	HFONT hOldFont = dc.SelectFont(m_hNormalFont);
-	COLORREF color = RGB(00, 65, 109);
-	COLORREF oldcolor = dc.SetTextColor(color);
+	CUIFont* pFont = UIResFactoryInstance->GetFont(m_strFontID.c_str());
+	if (pFont)
+	{
+		pFont->SelectObject(dc);
+	}
+	CUIColor* pColor = UIResFactoryInstance->GetColor(m_strColorID.c_str());
+	if (pColor)
+	{
+		pColor->SelectObject(dc);
+	}
 	dc.DrawText(wstrText.c_str(), -1, &rc, DT_LEFT | DT_VCENTER);
-	dc.SetTextColor(oldcolor);
-	dc.SelectFont(hOldFont);
+	if (pFont)
+	{
+		pFont->RestoreObject(dc);
+	}
+	if (pColor)
+	{
+		pColor->RestoreObject(dc);
+	}
 	dc.SetBkMode(oldBkMode);
-	::DeleteObject(m_hNormalFont);
-	::DeleteObject(hSysFont);
 }
 
 void CUIText::OnInitControl()
@@ -95,6 +93,11 @@ void CUIText::OnDetroy()
 
 }
 
+void CUIText::GetText(std::string& strText)
+{
+	strText = m_strText;
+}
+
 std::string CUIText::SetText(const std::string& strText)
 {
 	std::string strTmp(m_strText);
@@ -102,9 +105,25 @@ std::string CUIText::SetText(const std::string& strText)
 	return strTmp;
 }
 
-void CUIText::GetText(std::string& strText)
+void CUIText::GetTextColor(std::string& strTextColor)
 {
-	strText = m_strText;
+	strTextColor = m_strColorID;
+}
+
+std::string CUIText::SetTextColor(const std::string& strTextColor)
+{
+	std::string strOldColor = m_strColorID;
+	m_strColorID = strTextColor;
+	return strOldColor;
+}
+
+int CUIText::GetText(lua_State* L)
+{
+	CUIText* pThis = (CUIText*) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
+	std::string strOldText;
+	pThis->GetText(strOldText);
+	lua_pushstring(L, strOldText.c_str());
+	return 1;
 }
 
 int CUIText::SetText(lua_State* L)
@@ -118,11 +137,22 @@ int CUIText::SetText(lua_State* L)
 	return 1;
 }
 
-int CUIText::GetText(lua_State* L)
+int CUIText::GetTextColor(lua_State* L)
 {
 	CUIText* pThis = (CUIText*) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
 	std::string strOldText;
 	pThis->GetText(strOldText);
+	lua_pushstring(L, strOldText.c_str());
+	return 1;
+}
+
+int CUIText::SetTextColor(lua_State* L)
+{
+	CUIText* pThis = (CUIText*) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
+	const char* pszText = lua_tostring(L, -2);
+	if (pszText == NULL)
+		pszText = "";
+	std::string strOldText = pThis->SetText(pszText);
 	lua_pushstring(L, strOldText.c_str());
 	return 1;
 }

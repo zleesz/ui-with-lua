@@ -168,6 +168,61 @@ STDMETHODIMP CUIWebBrowserImpl::Download(IMoniker *pmk, IBindCtx * pbc,DWORD dwB
 	return S_OK;
 }
 
+HRESULT CUIWebBrowserImpl::InternetSetFeatureEnabled(INTERNETFEATURELIST FeatureEntry, DWORD dwFlags, BOOL fEnable)
+{
+	HRESULT hr = E_FAIL;
+	HMODULE hModule = LoadLibrary( _T("urlmon.dll") );
+	if ( !hModule )
+	{
+		return hr;
+	}
+	PCoInternetSetFeatureEnabled CoInternetSetFeatureEnabled = (PCoInternetSetFeatureEnabled)GetProcAddress( hModule, "CoInternetSetFeatureEnabled" );
+	if ( CoInternetSetFeatureEnabled )
+	{
+		if ( SUCCEEDED(CoInternetSetFeatureEnabled(FeatureEntry, dwFlags, fEnable)) )
+		{
+			////Check to make sure that the API worked as expected
+			PCoInternetIsFeatureEnabled CoInternetIsFeatureEnabled = (PCoInternetIsFeatureEnabled)GetProcAddress( hModule, "CoInternetIsFeatureEnabled" );
+			if ( CoInternetIsFeatureEnabled )
+			{
+				HRESULT hFeature = CoInternetIsFeatureEnabled(FeatureEntry, dwFlags);
+
+				if ( SUCCEEDED(hFeature) )
+				{
+					hr = S_OK;
+				}
+#ifdef _DEBUG
+				if ( hFeature == S_OK )
+				{
+					ATLASSERT( fEnable == TRUE );
+				}
+				else if ( hFeature == S_FALSE )
+				{
+					ATLASSERT( fEnable == FALSE );
+				}
+#endif
+			}
+		}
+	}
+
+	FreeLibrary(hModule);
+	return hr;
+}
+
+HRESULT CUIWebBrowserImpl::SetAmbientDisp()
+{
+	HRESULT hr = E_FAIL;
+	CComPtr<IAxWinAmbientDispatch> spHost;
+	if ( SUCCEEDED(QueryHost(IID_IAxWinAmbientDispatch, (void**)&spHost)) && spHost )
+	{
+		if ( !SUCCEEDED(spHost->put_DocHostFlags(DOCHOSTUIFLAG_NO3DBORDER | DOCHOSTUIFLAG_ENABLE_FORMS_AUTOCOMPLETE | DOCHOSTUIFLAG_THEME )))
+		{
+			ATLASSERT(FALSE);
+		}		
+	}
+	return hr;
+}
+
 LRESULT CUIWebBrowserImpl::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	SetParent(m_hParentWnd);
@@ -186,6 +241,54 @@ LRESULT CUIWebBrowserImpl::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 			spOws->SetSite(spSP);
 		}
 	}
+	//NWM
+	if ( FAILED(InternetSetFeatureEnabled(FEATURE_WEBOC_POPUPMANAGEMENT, SET_FEATURE_ON_PROCESS, TRUE ) ) )
+	{
+		ATLASSERT(FALSE);
+	}
+	//http://msdn.microsoft.com/en-us/library/ms537184(v=vs.85).aspx
+	//Restrict ActiveX Install (FEATURE_RESTRICT_ACTIVEXINSTALL) - This control allows applications hosting the WebBrowser Control to opt in to blocking new         //ActiveX controls, and prevents installation of updates for ActiveX controls that are not already installed. If FEATURE_SECURITYBAND is on, the Information     //Bar will appear when an ActiveX control is blocked, to enable the user to unblock it.
+	if ( FAILED(InternetSetFeatureEnabled(FEATURE_RESTRICT_ACTIVEXINSTALL, SET_FEATURE_ON_PROCESS, TRUE ) ) )
+	{
+		ATLASSERT(FALSE);
+	}
+
+	//http://msdn.microsoft.com/en-us/library/ms537184(v=vs.85).aspx
+	//Security Band (FEATURE_SECURITYBAND) - This control enables applications hosting the WebBrowser Control to show the default Internet Explorer Information      //Bar when file download or code installation is restricted.
+
+	if ( FAILED(InternetSetFeatureEnabled(FEATURE_SECURITYBAND, SET_FEATURE_ON_PROCESS, TRUE ) ) )
+	{
+		ATLASSERT(FALSE);
+	}
+
+	SetAmbientDisp();
+
+	// Connect events
+	CComPtr<IWebBrowser2> spWebBrowser2;
+	HRESULT hRet = QueryControl(IID_IWebBrowser2, (void**)&spWebBrowser2);
+	if (SUCCEEDED(hRet) && spWebBrowser2)
+	{
+		// 在系统注册浏览器 保证使用同一个WindowName打开的页面在一个浏览器中
+		spWebBrowser2->put_TheaterMode(VARIANT_TRUE);
+		spWebBrowser2->put_RegisterAsBrowser(VARIANT_TRUE);
+		if (m_dwEventCookie == 0xFEFEFEFE)
+		{
+			if (FAILED(DispEventAdvise(spWebBrowser2, &DIID_DWebBrowserEvents2)))
+			{
+				ATLASSERT(FALSE);
+			}
+		}
+
+		if (m_spImgEmbedDetect)
+		{
+			m_spImgEmbedDetect->SetSite(spWebBrowser2);
+		}
+	}
+	else
+	{	
+		ATLASSERT(FALSE);
+	}
+
 	return 0;
 }
 

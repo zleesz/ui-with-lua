@@ -1,12 +1,11 @@
 #pragma once
 #include <atlapp.h>
 #include <atlgdi.h>
-#include <string>
-#include <map>
-#include <atlapp.h>
 #include <atlwin.h>
 #include <winuser.h>
 #include <atltypes.h>
+#include <string>
+#include <map>
 
 #include <Util.h>
 #include <uilog4cplus.h>
@@ -20,6 +19,13 @@ typedef enum enumWindowType {
 	WT_MenuHostWnd,
 	WT_TipHostWnd,
 } WindowType;
+
+#define ADD_MSG_MAP_MEMBER(theChainClass) \
+{ \
+	BOOL bHandled = theChainClass.ProcessWindowMessage(hWnd, uMsg, wParam, lParam, lResult); \
+	if (bHandled) \
+	return TRUE; \
+	}
 
 class CUIWindowBase :
 	public CWindowImpl<CUIWindowBase>
