@@ -23,6 +23,7 @@
 					<top>0</top>
 					<width>father.width</width>
 					<height>father.height</height>
+					<zorder>20</zorder>
 				</attr>
 			</obj>
 			<obj id="texture.bkg" class="UITextureObject">
@@ -48,7 +49,7 @@
 					<multiline>0</multiline>
 					<valign>true</valign>
 					<halign>true</halign>
-					<zorder>1000</zorder>
+					<zorder>10</zorder>
 					<text>标题</text>
 					<color>color.system.black</color>
 					<font>font.default</font>
