@@ -401,6 +401,7 @@ LRESULT CUITreeContainer::OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	::GetWindowRect(m_pBindWnd->m_hWnd, &rc);
 	if (::PtInRect(&rc, pt))
 	{
+		bHandled = TRUE;
 		return HTCLIENT;
 	}
 	return HTNOWHERE;
