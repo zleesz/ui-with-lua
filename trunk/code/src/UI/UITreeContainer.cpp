@@ -6,6 +6,7 @@
 #include "UIText.h"
 #include "UIWebBrowser.h"
 #include "UICaption.h"
+#include "UISimpleEdit.h"
 #include "UIWindowBase.h"
 
 CUITreeContainer::CUITreeContainer(void)
@@ -75,6 +76,10 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 				else if ((*pAttrObj)["class"] == "UICaption")
 				{
 					pUICtrl = new CUICaption(this, pObjNode2);
+				}
+				else if ((*pAttrObj)["class"] == "UISimpleEdit")
+				{
+					pUICtrl = new CUISimpleEdit(this, pObjNode2);
 				}
 				else
 				{
@@ -276,6 +281,10 @@ int CUITreeContainer::CreateUIObject(lua_State* L)
 	else if (strcmp(pszClass, "UICaption") == 0)
 	{
 		pUICtrl = new CUICaption(pThis);
+	}
+	else if (strcmp(pszClass, "UISimpleEdit") == 0)
+	{
+		pUICtrl = new CUISimpleEdit(pThis);
 	}
 	else
 	{

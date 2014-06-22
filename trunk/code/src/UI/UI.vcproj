@@ -498,19 +498,19 @@
 				>
 			</File>
 			<File
-				RelativePath=".\UIEdit.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\UIEdit.h"
-				>
-			</File>
-			<File
 				RelativePath=".\UIImageObject.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\UIImageObject.h"
+				>
+			</File>
+			<File
+				RelativePath=".\UISimpleEdit.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\UISimpleEdit.h"
 				>
 			</File>
 			<File

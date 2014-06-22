@@ -31,7 +31,6 @@ public:
 	static int GetVisible(lua_State* L);
 	static int SetVisible(lua_State* L);
 	static int GetEnable(lua_State* L);
-	static int GetOwnerTree(lua_State* L);
 private:
 	void SetAttr(const std::string& strName, const std::string& strValue);
 private:
