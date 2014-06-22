@@ -42,12 +42,14 @@ CUIGraphic::~CUIGraphic(void)
 
 void CUIGraphic::InitGdiplus()
 {
+	/*
 	if (m_ulGdiToken > 0)
 	{
 		return;
 	}
 	Gdiplus::GdiplusStartupInput GdiInput;
 	GdiplusStartup(&m_ulGdiToken ,&GdiInput ,NULL);
+	*/
 }
 
 BOOL CUIGraphic::InitGraphic()
@@ -123,7 +125,6 @@ BOOL CUIGraphic::InitGraphic()
 
 	m_fnInitGraphicLib(NULL);
 	return TRUE;
-
 }
 
 void CUIGraphic::UnInitGraphic()
@@ -134,11 +135,13 @@ void CUIGraphic::UnInitGraphic()
 		FreeLibrary(m_hGraphicDll);
 		m_hGraphicDll = NULL;
 	}
+	/*
 	if (m_ulGdiToken > 0)
 	{
 		Gdiplus::GdiplusShutdown(m_ulGdiToken);
 		m_ulGdiToken = 0;
 	}
+	*/
 }
 
 BITMAP_HANDLE CUIGraphic::LoadBitmapFromFile(const wchar_t* file, unsigned long type /* = 0 */)

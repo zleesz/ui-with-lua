@@ -1,11 +1,11 @@
 
 function OnCreate(self)
-	SetOnceTimer(function()
-		local tree = self:GetTreeContainer()
-		local webbrowser = tree:GetUIObject("webbrowser")
-		--webbrowser:Navigate("http://aplayer.open.xunlei.com/")
-		webbrowser:SetVisible(true)
-	end, 2000)
+	-- SetOnceTimer(function()
+		-- local tree = self:GetTreeContainer()
+		-- local webbrowser = tree:GetUIObject("webbrowser")
+		-- webbrowser:Navigate("http://aplayer.open.xunlei.com/")
+		-- webbrowser:SetVisible(true)
+	-- end, 2000)
 end
 
 function OnClose(self)

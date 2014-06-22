@@ -126,15 +126,6 @@ void CUIImageObject::Render(CDCHandle dc)
 	UIGraphicInstance->AlphaPaintBitmap(dc.m_hDC, hBitmap, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top);
 }
 
-int CUIImageObject::GetOwnerTree(lua_State* L)
-{
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
-	const CUITreeContainer* pTree = pThis->GetOwnerTree();
-	UILuaPushClassObj(L, pTree);
-	return 1;
-}
-
 void CUIImageObject::OnInitControl()
 {
 

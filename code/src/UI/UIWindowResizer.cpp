@@ -99,6 +99,10 @@ LRESULT CUIWindowResizer::OnNcHitTest(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	{
 		return 0;
 	}
+	if (::IsZoomed(m_pBindWnd->m_hWnd))
+	{
+		return 0;
+	}
 	POINT pt = {0};
 	pt.x = GET_X_LPARAM(lParam);
 	pt.y = GET_Y_LPARAM(lParam);
@@ -158,6 +162,10 @@ LRESULT CUIWindowResizer::OnSetCursor(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	{
 		return 0;
 	}
+	if (::IsZoomed(m_pBindWnd->m_hWnd))
+	{
+		return 0;
+	}
 	int nHitTest = LOWORD(lParam);
 	switch (nHitTest)
 	{
@@ -191,6 +199,10 @@ LRESULT CUIWindowResizer::OnNcLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM l
 {
 	bHandled = FALSE;
 	if (!m_bEnable)
+	{
+		return 0;
+	}
+	if (::IsZoomed(m_pBindWnd->m_hWnd))
 	{
 		return 0;
 	}
