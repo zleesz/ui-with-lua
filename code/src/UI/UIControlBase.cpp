@@ -6,12 +6,16 @@
 
 CUIControlBase::CUIControlBase(void)
 {
+	m_bFocus = FALSE;
 	ZeroMemory((void*)&m_rc, sizeof(m_rc));
+	m_pUIEventControl = new CUIEventCtrlContainer;
 }
 
 CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
-	: m_pTree(pTree), m_pUIEventControl(NULL)
+	: m_pTree(pTree)
 {
+	m_pUIEventControl = NULL;
+	m_bFocus = FALSE;
 	ZeroMemory((void*)&m_rc, sizeof(m_rc));
 	if(pNode == NULL || pNode->pMapAttr == NULL)
 		return;
@@ -35,7 +39,7 @@ CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 				XMLChildNodes::const_iterator it2 = pAttrChildNodes->begin();
 				for(; it2 != pAttrChildNodes->end(); it2++)
 				{
-					SetAttr(it2->first, it2->second->strUData);
+					_SetAttr(it2->first, it2->second->strUData);
 				}
 			}
 		}
@@ -49,17 +53,24 @@ CUIControlBase::CUIControlBase(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 }
 
 CUIControlBase::CUIControlBase(CUITreeContainer* pTree)
-: m_pTree(pTree), m_pUIEventControl(NULL)
+: m_pTree(pTree)
 {
+	m_pUIEventControl = NULL;
+	m_bFocus = FALSE;
 	ZeroMemory((void*)&m_rc, sizeof(m_rc));
 	m_pUIEventControl = new CUIEventCtrlContainer;
 }
 
 CUIControlBase::~CUIControlBase(void)
 {
+	if (m_pUIEventControl)
+	{
+		delete m_pUIEventControl;
+		m_pUIEventControl = NULL;
+	}
 }
 
-void CUIControlBase::SetAttr(const std::string& strName, const std::string& strValue)
+BOOL CUIControlBase::_SetAttr(const std::string& strName, const std::string& strValue)
 {
 	if (strName == "left" ||
 		strName == "top" ||
@@ -68,10 +79,12 @@ void CUIControlBase::SetAttr(const std::string& strName, const std::string& strV
 	{
 		m_mapAttr[strName] = CComVariant(strValue.c_str());
 		AdjustItemPos(FALSE);
+		return TRUE;
 	}
 	else if (strName == "zorder")
 	{
 		m_mapAttr[strName] = CComVariant(atoi(strValue.c_str()));
+		return TRUE;
 	}
 	else if (strName == "visible")
 	{
@@ -85,18 +98,21 @@ void CUIControlBase::SetAttr(const std::string& strName, const std::string& strV
 			v = VARIANT_FALSE;
 		}
 		v.Detach(&m_mapAttr[strName]);
+		return TRUE;
 	}
 	else if (strName == "cursor")
 	{
 		m_mapAttr[strName] = CComVariant(strValue.c_str());
+		return TRUE;
 	}
+	return FALSE;
 }
 
 void CUIControlBase::GetAttr(std::string strName, VARIANT* v)
 {
 	VariantInit(v);
 	ID2AttrMap::const_iterator it = m_mapAttr.find(strName);
-	if(it != m_mapAttr.end())
+	if (it != m_mapAttr.end())
 	{
 		CComVariant vAttr;
 		vAttr = it->second;
@@ -339,6 +355,16 @@ void CUIControlBase::OnMouseWheel(int x, int y)
 	FireMouseEvent("OnMouseWheel", x, y);
 }
 
+void CUIControlBase::OnSetFocus(BOOL bFocus)
+{
+	if (m_bFocus == bFocus)
+	{
+		return;
+	}
+	m_bFocus = bFocus;
+	FireOnSetFocusEvent(bFocus);
+}
+
 LRESULT CUIControlBase::OnSetCursor(int /*x*/, int /*y*/)
 {
 	CComVariant vCursor;
@@ -440,6 +466,18 @@ void CUIControlBase::FireMouseEvent(std::string strName, int x, int y)
 	avarParams[2] = y;
 
 	UIDISPPARAMS params = { avarParams, strName.c_str(), 3, 0 };
+	m_pUIEventControl->DispatchListener(params);
+}
+
+void CUIControlBase::FireOnSetFocusEvent(BOOL bFocus)
+{
+	CComVariant avarParams[2];
+	avarParams[0].vt = VT_BYREF | VT_I4;
+	avarParams[0].lVal = (LONG)(LONG_PTR)this;
+	avarParams[1].vt = VT_BOOL;
+	avarParams[1].boolVal = bFocus ? VARIANT_TRUE : VARIANT_FALSE;
+
+	UIDISPPARAMS params = { avarParams, "OnSetFocus", 2, 0 };
 	m_pUIEventControl->DispatchListener(params);
 }
 

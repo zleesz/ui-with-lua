@@ -2,4 +2,5 @@
 	<font id="font.default" name="微软雅黑" height="12" />
 	<font id="font.bold.default" name="宋体" bold="1" height="20" />
 	<font id="font.underline.default" name="微软雅黑" height="14" underline="1" />
+	<font id="font.edit.default" name="微软雅黑" height="14" />
 </ui>

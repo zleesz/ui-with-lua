@@ -118,7 +118,10 @@ int CUITextureObject::GetTexture(lua_State* L)
 
 void CUITextureObject::SetAttr(const std::string& strName, const std::string& strValue)
 {
-	CUIControlBase::SetAttr(strName, strValue);
+	if (_SetAttr(strName, strValue))
+	{
+		return;
+	}
 }
 
 void CUITextureObject::Render(CDCHandle dc)

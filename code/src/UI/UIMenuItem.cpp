@@ -33,3 +33,11 @@ void CUIMenuItem::OnDetroy()
 {
 
 }
+
+void CUIMenuItem::SetAttr(const std::string& strName, const std::string& strValue)
+{
+	if (_SetAttr(strName, strValue))
+	{
+		return;
+	}
+}

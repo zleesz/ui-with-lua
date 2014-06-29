@@ -110,7 +110,10 @@ int CUIImageObject::GetImage(lua_State* L)
 
 void CUIImageObject::SetAttr(const std::string& strName, const std::string& strValue)
 {
-	CUIControlBase::SetAttr(strName, strValue);
+	if (_SetAttr(strName, strValue))
+	{
+		return;
+	}
 }
 
 void CUIImageObject::Render(CDCHandle dc)

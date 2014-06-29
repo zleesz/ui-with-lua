@@ -71,9 +71,9 @@ public:
 	virtual void OnMouseLeave(int x, int y);
 	virtual void OnLButtonDown(int x, int y);
 	virtual void OnLButtonUp(int x, int y);
-	LRESULT OnSetCursor(int x, int y);
+	virtual LRESULT OnSetCursor(int x, int y);
+	virtual void SetAttr(const std::string& strName, const std::string& strValue);
 private:
-	void SetAttr(const std::string& strName, const std::string& strValue);
 	void FireOnClick(int x, int y);
 	ButtonState m_state;
 	CUIButtonBase* m_pButton;

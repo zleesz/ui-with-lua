@@ -40,6 +40,7 @@ public:
 	virtual BOOL GetVisible();
 	virtual void SetVisible(BOOL bVisible);
 	virtual void OnPosChange(int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom);
+	virtual void SetAttr(const std::string& strName, const std::string& strValue);
 private:
 	BOOL GetInitVisible();
 public:

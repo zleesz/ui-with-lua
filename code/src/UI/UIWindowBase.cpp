@@ -110,7 +110,8 @@ void CUIWindowBase::SetAttr(const std::string& strName, const std::string& strVa
 {
 	if(strName == "left" || strName == "top" || strName == "width" || strName == "height" ||
 		strName == "alpha" ||
-		strName == "minwidth" || strName == "minheight" || strName == "maxwidth" || strName == "maxheight")
+		strName == "minwidth" || strName == "minheight" || strName == "maxwidth" || strName == "maxheight" ||
+		strName == "cornereclipse")
 	{
 		CComVariant v(atoi(strValue.c_str()));
 		v.Detach(&m_mapAttr[strName]);

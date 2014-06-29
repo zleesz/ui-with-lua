@@ -138,6 +138,21 @@ LRESULT CUIFrameWindow::OnNcPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*
 	return 0;
 }
 
+void CUIFrameWindow::UpdateCornerRect()
+{
+	CComVariant vCornerEclipse = m_mapAttr["cornereclipse"];
+	if (vCornerEclipse.vt != VT_I4 || vCornerEclipse.intVal <= 0)
+	{
+		return;
+	}
+	CRgn rgn;
+	RECT r;
+	GetWindowRect(&r);
+	OffsetRect(&r, -r.left, -r.top);
+	rgn.CreateRoundRectRgn(r.left, r.top, r.right+1, r.bottom+1, vCornerEclipse.intVal, vCornerEclipse.intVal);
+	SetWindowRgn(rgn, TRUE);
+}
+
 LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	CComVariant vTitle = m_mapAttr["title"];
@@ -146,17 +161,8 @@ LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
 		SetWindowText(vTitle.bstrVal);
 	}
 	bHandled = FALSE;
-// 	int iRet; 
-// 	BOOL bRet; 
-// 	CRgn m_rgn1,m_rgn2,m_rgn3; 
-// 	RECT r; 
-// 
-// 	GetWindowRect(&r); 
-// 	OffsetRect(&r,-r.left,-r.top); 
-// 	m_rgn1.CreateRoundRectRgn(r.left,r.top,r.right+1,r.top+45,12,12); 
-// 	m_rgn2.CreateRoundRectRgn(r.left,r.top+18,r.right+1,r.bottom+2,12,12); 
-// 	m_rgn2.CombineRgn(m_rgn1,m_rgn2,RGN_OR); 
-// 	iRet = SetWindowRgn(m_rgn2,TRUE);
+
+	UpdateCornerRect();
 	return 0;
 }
 
@@ -164,6 +170,7 @@ LRESULT CUIFrameWindow::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, 
 {
 	bHandled = FALSE;
 	//TryUpdateWindow();
+	UpdateCornerRect();
 	return 0;
 }
 
