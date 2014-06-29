@@ -18,6 +18,7 @@ public:
 	virtual void OnInitControl();
 	virtual void OnDetroy();
 	virtual BOOL OnHitTest(int x, int y, LONG& nHitTest);
+	virtual void SetAttr(const std::string& /*strName*/, const std::string& /*strValue*/);
 public:
 	BEGIN_LUA_CALL_MAP(CUICaption)
 		LUA_CALL_ENTRY(GetID)

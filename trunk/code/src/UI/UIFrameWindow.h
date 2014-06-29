@@ -48,6 +48,7 @@ private:
 	void DoPaint(CDCHandle dc);
 	void SaveBitmapBits(HBITMAP hBitmap, BYTE** ppBits, DWORD* pdwByteSize);
 	void MixAlpha(HBITMAP hBitmap, BYTE* pBitsSrc, DWORD dwSize);
+	void UpdateCornerRect();
 public:
 	BEGIN_LUA_CALL_MAP(CUIFrameWindow)
 		LUA_CALL_ENTRY(GetID)

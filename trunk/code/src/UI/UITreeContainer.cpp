@@ -9,7 +9,11 @@
 #include "UISimpleEdit.h"
 #include "UIWindowBase.h"
 
-CUITreeContainer::CUITreeContainer(void)
+CUITreeContainer::CUITreeContainer(void) : 
+	m_pMouseControl(NULL), 
+	m_pCaptrueControl(NULL), 
+	m_pFocusControl(NULL), 
+	m_bTrackLeave(FALSE)
 {
 	RegisterClass(this);
 }
@@ -18,6 +22,7 @@ CUITreeContainer::CUITreeContainer(CUIWindowBase* p) :
 	m_pBindWnd(p), 
 	m_pMouseControl(NULL), 
 	m_pCaptrueControl(NULL), 
+	m_pFocusControl(NULL), 
 	m_bTrackLeave(FALSE)
 {
 	LOG_AUTO();
@@ -426,12 +431,22 @@ LRESULT CUITreeContainer::OnLButtonDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
 		m_pCaptrueControl->OnLButtonDown(xPos - rc.left, yPos - rc.top);
 		return 0;
 	}
+	if (m_pFocusControl && m_pFocusControl != m_pMouseControl)
+	{
+		m_pFocusControl->OnSetFocus(FALSE);
+		m_pFocusControl = NULL;
+	}
 	if (NULL != m_pMouseControl)
 	{
 		LONG nHitTest = 0;
 		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos, nHitTest);
 		if (bHit)
 		{
+			if (m_pFocusControl != m_pMouseControl)
+			{
+				m_pFocusControl = m_pMouseControl;
+				m_pFocusControl->OnSetFocus(TRUE);
+			}
 			m_pMouseControl->OnLButtonDown(xPos, yPos);
 		}
 	}
@@ -494,6 +509,23 @@ LRESULT CUITreeContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
 	{
 		CUIControlBase* pUICtrl = it->second;
 		pUICtrl->AdjustItemPos();
+	}
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	if (m_pFocusControl)
+	{
+		m_pFocusControl->OnSetFocus(FALSE);
+		m_pFocusControl = NULL;
 	}
 	return 0;
 }

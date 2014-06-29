@@ -138,7 +138,10 @@ CUIButton::~CUIButton(void)
 
 void CUIButton::SetAttr(const std::string& strName, const std::string& strValue)
 {
-	CUIControlBase::SetAttr(strName, strValue);
+	if (_SetAttr(strName, strValue))
+	{
+		return;
+	}
 }
 
 void CUIButton::Render(CDCHandle dc)

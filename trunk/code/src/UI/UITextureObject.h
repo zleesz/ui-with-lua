@@ -24,6 +24,7 @@ public:
 	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseWheel);
 	virtual void OnRButtonUp(int x, int y);
 	virtual void OnLButtonDown(int x, int y);
+	virtual void SetAttr(const std::string& strName, const std::string& strValue);
 public:
 	static int GetID(lua_State* L);
 	static int GetStretch(lua_State* L);
@@ -33,8 +34,6 @@ public:
 	static int SetVisible(lua_State* L);
 	static int GetEnable(lua_State* L);
 	static int GetOwnerTree(lua_State* L);
-private:
-	void SetAttr(const std::string& strName, const std::string& strValue);
 private:
 	std::string m_strTextureID;
 	BOOL m_bStretch;

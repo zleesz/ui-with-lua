@@ -182,6 +182,11 @@ void CUIWebBrowser::OnPosChange(int left, int top, int right, int bottom, int /*
 	m_pWebBrowserObj->MoveWindow(left, top, right - left, bottom - top);
 }
 
+void CUIWebBrowser::SetAttr(const std::string& /*strName*/, const std::string& /*strValue*/)
+{
+
+}
+
 int CUIWebBrowser::Navigate(lua_State* L)
 {
 	LOG_AUTO();

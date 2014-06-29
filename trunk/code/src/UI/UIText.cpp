@@ -102,6 +102,7 @@ std::string CUIText::SetText(const std::string& strText)
 {
 	std::string strTmp(m_strText);
 	m_strText = strText;
+	Invalidate();
 	return strTmp;
 }
 
@@ -114,6 +115,7 @@ std::string CUIText::SetTextColor(const std::string& strTextColor)
 {
 	std::string strOldColor = m_strColorID;
 	m_strColorID = strTextColor;
+	Invalidate();
 	return strOldColor;
 }
 
@@ -140,19 +142,19 @@ int CUIText::SetText(lua_State* L)
 int CUIText::GetTextColor(lua_State* L)
 {
 	CUIText* pThis = (CUIText*) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
-	std::string strOldText;
-	pThis->GetText(strOldText);
-	lua_pushstring(L, strOldText.c_str());
+	std::string strTextColor;
+	pThis->GetTextColor(strTextColor);
+	lua_pushstring(L, strTextColor.c_str());
 	return 1;
 }
 
 int CUIText::SetTextColor(lua_State* L)
 {
 	CUIText* pThis = (CUIText*) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
-	const char* pszText = lua_tostring(L, -2);
-	if (pszText == NULL)
-		pszText = "";
-	std::string strOldText = pThis->SetText(pszText);
-	lua_pushstring(L, strOldText.c_str());
+	const char* pszTextColor = lua_tostring(L, -2);
+	if (pszTextColor == NULL)
+		pszTextColor = "";
+	std::string strOldTextColor = pThis->SetTextColor(pszTextColor);
+	lua_pushstring(L, strOldTextColor.c_str());
 	return 1;
 }

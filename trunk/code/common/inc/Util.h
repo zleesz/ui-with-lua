@@ -10,22 +10,49 @@ namespace Util
 {
 	static bool BSTRToString( BSTR src, std::string& dest)
 	{
-		if(!src)
-			return false;
-		int  iLen = (int)wcslen(src);
-		if(iLen > 0)
+		if (!src)
 		{
-			char* szdest = new  char[iLen * 4];
-			if(NULL == szdest)
-				return false;
-			ZeroMemory(szdest, iLen * 4);			
-			int nLen = WideCharToMultiByte(CP_UTF8, NULL, src, iLen, szdest, iLen * 4, 0, 0);
-			szdest[nLen] = '\0'; 
-			dest = szdest;
-			delete [] szdest ;
-			return true;
+			return false;
 		}
-		return false;
+		int  iLen = (int)wcslen(src);
+		if (iLen <= 0)
+		{
+			return false;
+		}
+		char* szdest = new  char[iLen * 4];
+		if(NULL == szdest)
+		{
+			return false;
+		}
+		ZeroMemory(szdest, iLen * 4);			
+		int nLen = WideCharToMultiByte(CP_UTF8, NULL, src, iLen, szdest, iLen * 4, 0, 0);
+		szdest[nLen] = '\0'; 
+		dest = szdest;
+		delete [] szdest ;
+		return true;
+	}
+	static bool Unicode_to_UTF8( const wchar_t* src, std::string& dest)
+	{
+		if (!src)
+		{
+			return false;
+		}
+		int  iLen = (int)wcslen(src);
+		if (iLen <= 0)
+		{
+			return false;
+		}
+		char* szdest = new char[iLen * 4];
+		if(NULL == szdest)
+		{
+			return false;
+		}
+		ZeroMemory(szdest, iLen * 4);			
+		int nLen = WideCharToMultiByte(CP_UTF8, NULL, src, iLen, szdest, iLen * 4, 0, 0);
+		szdest[nLen] = '\0'; 
+		dest = szdest;
+		delete [] szdest ;
+		return true;
 	}
 	static bool UTF8_to_Unicode(const char* src, std::wstring& wstr)
 	{

@@ -2,4 +2,5 @@
 	<color id="color.system.black" rgba="#00000000" />
 	<color id="color.system.white" rgba="#FFFFFF00" />
 	<color id="color.system.red" rgba="#FF000000" />
+	<color id="color.edit.default" rgba="#00000000" />
 </ui>

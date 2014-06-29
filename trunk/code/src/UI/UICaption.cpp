@@ -49,3 +49,11 @@ BOOL CUICaption::OnHitTest(int x, int y, LONG& nHitTest)
 	}
 	return FALSE;
 }
+
+void CUICaption::SetAttr(const std::string& strName, const std::string& strValue)
+{
+	if (_SetAttr(strName, strValue))
+	{
+		return;
+	}
+}

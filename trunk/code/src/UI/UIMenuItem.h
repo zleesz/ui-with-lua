@@ -17,17 +17,10 @@ public:
 	void Render(CDCHandle dc);
 	virtual void OnInitControl();
 	virtual void OnDetroy();
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonUp);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonDbClick);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseMove);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseLeave);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseWheel);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnRButtonUp);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonDown);
+	virtual void SetAttr(const std::string& strName, const std::string& strValue);
 public:
 	static int GetOwnerTree(lua_State* L);
-private:
-	void SetAttr(const std::string& strName, const std::string& strValue);
+public:
 private:
 	std::string m_strImageID;
 	BOOL m_bStretch;

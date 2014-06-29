@@ -13,6 +13,7 @@
 			<title>测试窗口</title>
 			<resize>1</resize>
 			<resizerect>3,3,3,3,7,7,7,7</resizerect>
+			<cornereclipse>4</cornereclipse>
 			<minwidth>120</minwidth>
 			<minheight>150</minheight>
 		</attr>
@@ -129,9 +130,13 @@
 					<left>10</left>
 					<top>30</top>
 					<width>father.width-20</width>
-					<height>30</height>
+					<height>100</height>
 					<zorder>100</zorder>
-					<text>这是个TextEdit框。</text>
+					<text>SimpleEdit</text>
+					<color>color.edit.default</color>
+					<font>font.edit.default</font>
+					<valign>left</valign>
+					<halign>top</halign>
 				</attr>
 			</obj>
 			<obj id="webbrowser" class="UIWebBrowser">
@@ -141,7 +146,8 @@
 					<width>father.width-20</width>
 					<height>father.height-40</height>
 					<zorder>100</zorder>
-					<url>http://aplayer.open.xunlei.com/</url>
+					<visible>false</visible>
+					<!--url>http://aplayer.open.xunlei.com/</url-->
 				</attr>
 			</obj>
 		</uitree>
