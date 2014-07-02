@@ -141,9 +141,11 @@ int UILuaClassFactory::proxy(lua_State* L)
 	{
 		return 0;
 	}
-	// lua_pop(L, 1);
 	// 实际的调用函数
-	lua_pushlightuserdata(L, ud->p);
+	void* p = lua_newuserdata(L, sizeof(void*));
+	*((void**)p) = ud->p;
+	luaL_getmetatable(L, pTheObj->ObjName);
+	lua_setmetatable(L, -2);
 	return pTheObj->MemberFunctions[i].func(L);
 }
 

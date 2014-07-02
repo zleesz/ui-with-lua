@@ -501,7 +501,8 @@ void CUIControlBase::FirePosChange(int left, int top, int right, int bottom, int
 
 int CUIControlBase::GetID(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	CUIControlBase** ppThis = (CUIControlBase**) lua_touserdata(L, -1);
+	CUIControlBase* pThis = *ppThis;
 	ATLASSERT(pThis);
 	std::string strID = pThis->GetID();
 	lua_pushstring(L, strID.c_str());
@@ -510,7 +511,8 @@ int CUIControlBase::GetID(lua_State* L)
 
 int CUIControlBase::GetVisible(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	CUIControlBase** ppThis = (CUIControlBase**) lua_touserdata(L, -1);
+	CUIControlBase* pThis = *ppThis;
 	ATLASSERT(pThis);
 	lua_pushboolean(L, pThis->GetVisible());
 	return 1;
@@ -518,7 +520,8 @@ int CUIControlBase::GetVisible(lua_State* L)
 
 int CUIControlBase::SetVisible(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	CUIControlBase** ppThis = (CUIControlBase**) lua_touserdata(L, -1);
+	CUIControlBase* pThis = *ppThis;
 	ATLASSERT(pThis);
 	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
 	pThis->SetVisible(bVisible);
@@ -527,7 +530,8 @@ int CUIControlBase::SetVisible(lua_State* L)
 
 int CUIControlBase::GetEnable(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	CUIControlBase** ppThis = (CUIControlBase**) lua_touserdata(L, -1);
+	CUIControlBase* pThis = *ppThis;
 	ATLASSERT(pThis);
 	lua_pushboolean(L, pThis->GetEnable());
 	return 1;
@@ -535,7 +539,8 @@ int CUIControlBase::GetEnable(lua_State* L)
 
 int CUIControlBase::GetOwnerTree(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	CUIControlBase** ppThis = (CUIControlBase**) lua_touserdata(L, -1);
+	CUIControlBase* pThis = *ppThis;
 	ATLASSERT(pThis);
 	UILuaPushClassObj(L, pThis->GetOwnerTree());
 	return 1;
@@ -543,7 +548,8 @@ int CUIControlBase::GetOwnerTree(lua_State* L)
 
 int CUIControlBase::SetObjPos(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
+	CUIControlBase** ppThis = (CUIControlBase**) lua_touserdata(L, -1);
+	CUIControlBase* pThis = *ppThis;
 	LONG lnLeft = (LONG)lua_tonumber(L, 2);
 	LONG lnTop = (LONG)lua_tonumber(L, 3);
 	LONG lnWidth = (LONG)lua_tonumber(L, 4);

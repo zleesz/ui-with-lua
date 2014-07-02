@@ -93,6 +93,12 @@ public:
 	static int SetParent(lua_State* luaState);
 	static int GetHWND(lua_State* luaState);
 protected:
+	virtual const char* _GetRigisterClassName()
+	{
+		ATLASSERT(FALSE && "√ª∂®“Â GetRigisterClassName" );
+		return NULL;
+	}
+protected:
 	virtual DWORD GetStyle();
 	virtual DWORD GetStyleEx();
 public:

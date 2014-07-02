@@ -175,8 +175,13 @@ int CUIResFactory::GetColor(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	return pThis->PushResObject<CUIColor, RT_UICOLOR>(L);
 }
 
@@ -188,8 +193,13 @@ int CUIResFactory::GetFont(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	return pThis->PushResObject<CUIFont, RT_UIFONT>(L);
 }
 
@@ -201,8 +211,13 @@ int CUIResFactory::GetBitmap(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	return pThis->PushResObject<CUIBitmap, RT_UIBITMAP>(L);
 }
 
@@ -214,8 +229,13 @@ int CUIResFactory::GetIcon(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	return pThis->PushResObject<CUIIcon, RT_UIICON>(L);
 }
 
@@ -227,8 +247,13 @@ int CUIResFactory::GetImagelist(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	return pThis->PushResObject<CUIImagelist, RT_UIIMAGELIST>(L);
 }
 
@@ -240,7 +265,12 @@ int CUIResFactory::GetTexture(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory* pThis = (CUIResFactory*)lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	return pThis->PushResObject<CUITexture, RT_UITEXTURE>(L);
 }
