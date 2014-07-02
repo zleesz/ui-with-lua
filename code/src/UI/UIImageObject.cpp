@@ -59,32 +59,52 @@ CUIImageObject::~CUIImageObject(void)
 
 int CUIImageObject::GetStretch(lua_State* L)
 {
-	CUIImageObject* pThis = (CUIImageObject*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	lua_pushboolean(L, pThis->m_bStretch);
 	return 1;
 }
 
 int CUIImageObject::SetStretch(lua_State* L)
 {
-	CUIImageObject* pThis = (CUIImageObject*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	pThis->m_bStretch = (BOOL)lua_toboolean(L, -2);
 	return 0;
 }
 
 int CUIImageObject::GetVisible(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIControlBase* pThis = static_cast<CUIControlBase*>(*ppThis);
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	lua_pushboolean(L, pThis->GetVisible());
 	return 1;
 }
 
 int CUIImageObject::SetVisible(lua_State* L)
 {
-	CUIImageObject* pThis = (CUIImageObject*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
 	pThis->SetAttr("visible", bVisible ? "true" : "false");
 	return 0;
@@ -92,16 +112,26 @@ int CUIImageObject::SetVisible(lua_State* L)
 
 int CUIImageObject::GetEnable(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIControlBase* pThis = static_cast<CUIControlBase*>(*ppThis);
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	lua_pushboolean(L, pThis->GetEnable());
 	return 1;
 }
 
 int CUIImageObject::GetImage(lua_State* L)
 {
-	CUIImageObject* pThis = (CUIImageObject*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	CUIBitmap* pUIBitmap = UIResFactoryInstance->GetBitmap(pThis->m_strImageID.c_str());
 
 	UILuaPushClassObj(L, pUIBitmap);

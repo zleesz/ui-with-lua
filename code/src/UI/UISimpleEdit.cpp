@@ -252,7 +252,12 @@ void CUISimpleEdit::GetTextExtent(LONG& lnWidth, LONG& lnHeight)
 
 int CUISimpleEdit::GetText(lua_State* L)
 {
-	CUISimpleEdit* pThis = (CUISimpleEdit*) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit** ppThis = (CUISimpleEdit**) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
 	std::wstring wstrText;
 	pThis->GetText(wstrText);
 	std::string strText;
@@ -263,7 +268,12 @@ int CUISimpleEdit::GetText(lua_State* L)
 
 int CUISimpleEdit::SetText(lua_State* L)
 {
-	CUISimpleEdit* pThis = (CUISimpleEdit*) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit** ppThis = (CUISimpleEdit**) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
 	const char* pszText = lua_tostring(L, -2);
 	if (pszText == NULL)
 		pszText = "";
@@ -274,7 +284,12 @@ int CUISimpleEdit::SetText(lua_State* L)
 
 int CUISimpleEdit::GetTextColor(lua_State* L)
 {
-	CUISimpleEdit* pThis = (CUISimpleEdit*) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit** ppThis = (CUISimpleEdit**) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
 	std::string strTextColor;
 	pThis->GetTextColor(strTextColor);
 	lua_pushstring(L, strTextColor.c_str());
@@ -283,7 +298,12 @@ int CUISimpleEdit::GetTextColor(lua_State* L)
 
 int CUISimpleEdit::SetTextColor(lua_State* L)
 {
-	CUISimpleEdit* pThis = (CUISimpleEdit*) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit** ppThis = (CUISimpleEdit**) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
 	const char* pszTextColor = lua_tostring(L, -2);
 	if (pszTextColor == NULL)
 		pszTextColor = "";
@@ -294,7 +314,12 @@ int CUISimpleEdit::SetTextColor(lua_State* L)
 
 int CUISimpleEdit::GetTextExtent(lua_State* L)
 {
-	CUISimpleEdit* pThis = (CUISimpleEdit*) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit** ppThis = (CUISimpleEdit**) luaL_checkudata(L, -1, CUISimpleEdit::GetRigisterClassName());
+	CUISimpleEdit* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
 	LONG lnWidth = 0, lnHeight = 0;
 	pThis->GetTextExtent(lnWidth, lnHeight);
 	lua_pushinteger(L, (lua_Integer)lnWidth);

@@ -131,7 +131,13 @@ CUIWindowBase* CUITreeContainer::GetBindWnd(void)
 
 int CUITreeContainer::GetUIObject(lua_State* L)
 {
-	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	const char* pszID = lua_tostring(L, 2);
 	if(pszID == NULL)
 	{
@@ -152,16 +158,26 @@ int CUITreeContainer::GetUIObject(lua_State* L)
 
 int CUITreeContainer::GetOwnerWnd(lua_State* L)
 {
-	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	UILuaPushClassObj(L, (const void*)pThis->GetBindWnd());
 	return 1;
 }
 
 int CUITreeContainer::RemoveUIObject(lua_State* L)
 {
-	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	CUIControlBase* pControl = NULL;
 	if(lua_isstring(L, -2))
 	{
@@ -178,7 +194,8 @@ int CUITreeContainer::RemoveUIObject(lua_State* L)
 	}
 	else if(lua_isuserdata(L, 2))
 	{
-		pControl = (CUIControlBase*) lua_touserdata(L, 2);
+		CUIControlBase** ppControl = (CUIControlBase**) lua_touserdata(L, 2);
+		pControl = *ppControl;
 		const std::string strID = pControl->GetID();
 		ID2ControlMap::iterator it = pThis->m_mapCtrl.find(strID);
 		if(it == pThis->m_mapCtrl.end())
@@ -214,9 +231,17 @@ int CUITreeContainer::RemoveUIObject(lua_State* L)
 
 int CUITreeContainer::AddUIObject(lua_State* L)
 {
-	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
-	CUIControlBase* pControl = (CUIControlBase*) lua_touserdata(L, 2);
-	if(NULL == pThis || NULL == pControl)
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		lua_pushboolean(L, 0);
+		return 1;
+	}
+	CUIControlBase** ppControl = (CUIControlBase**) lua_touserdata(L, 2);
+	CUIControlBase* pControl = *ppControl;
+	if(NULL == pControl)
 	{
 		ATLASSERT(FALSE);
 		lua_pushboolean(L, 0);
@@ -238,10 +263,11 @@ int CUITreeContainer::AddUIObject(lua_State* L)
 
 int CUITreeContainer::CreateUIObject(lua_State* L)
 {
-	CUITreeContainer* pThis = (CUITreeContainer*) lua_touserdata(L, -1);
-	if(NULL == pThis)
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer* pThis = *ppThis;
+	if (!pThis)
 	{
-		ATLASSERT(FALSE);
+		ATLASSERT(pThis);
 		return 0;
 	}
 	if(lua_gettop(L) < 3)

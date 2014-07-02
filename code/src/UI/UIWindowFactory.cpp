@@ -13,7 +13,13 @@ CUIWindowFactory::~CUIWindowFactory(void)
 
 int CUIWindowFactory::GetWindow(lua_State* luaState)
 {
-	CUIWindowFactory* pThis = (CUIWindowFactory*) lua_touserdata(luaState, -1);
+	CUIWindowFactory** ppThis = (CUIWindowFactory**) luaL_checkudata(luaState, -1, CUIWindowFactory::GetRigisterClassName());
+	CUIWindowFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
 	std::string strName = lua_tostring(luaState, -2);
 	UIWindowMap::const_iterator it = pThis->m_mapID2Window.find(strName);
 	if(it == pThis->m_mapID2Window.end())
@@ -26,8 +32,13 @@ int CUIWindowFactory::GetWindow(lua_State* luaState)
 
 int CUIWindowFactory::Create(lua_State* luaState)
 {
-	CUIWindowFactory* pThis = (CUIWindowFactory*) lua_touserdata(luaState, -1);
-	ATLASSERT(pThis);
+	CUIWindowFactory** ppThis = (CUIWindowFactory**) luaL_checkudata(luaState, -1, CUIWindowFactory::GetRigisterClassName());
+	CUIWindowFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
 	std::string strID = lua_tostring(luaState, 2);
 	ATLASSERT(strID.length() > 0);
 	HWND hParent = NULL;

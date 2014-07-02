@@ -128,7 +128,10 @@ int UILuaGlobalFactory::proxy(lua_State* L)
 		return 0;
 	}
 	// 实际的调用函数
-	lua_pushlightuserdata(L, ud->p);
+	void* p = lua_newuserdata(L, sizeof(void*));
+	*((void**)p) = ud->p;
+	luaL_getmetatable(L, pTheObj->ObjName);
+	lua_setmetatable(L, -2);
 	return pTheObj->MemberFunctions[i].func(L);
 }
 
@@ -136,32 +139,35 @@ void UILuaGlobalFactory::PushGlobalObj(lua_State* L,const char* szName)
 {
 	assert(szName);
 	LOG_TRACE(_T("PushGlobalObj name:") << szName);
-	if(NULL != szName)
+	if (NULL == szName)
 	{
-		LuaVM2MapLuaObjectMap::const_iterator it = m_mapGlobalObject.find(L);
-		if(it != m_mapGlobalObject.end())
-		{
-			ID2LuaObjectMap::const_iterator it2 = it->second->find(szName);
-			if(it2 != it->second->end())
-			{
-				UILuaObject* pTheObj = it2->second;
-				assert(pTheObj);
-				LOG_TRACE(_T("PushGlobalObj pTheObj:") << pTheObj);
-				if(NULL == pTheObj)
-				{
-					lua_pushnil(L);
-					return;
-				}
-				void* p = lua_newuserdata(L, sizeof(void*));
-				p = (void*)pTheObj->pfnGetObject(NULL);
-				luaL_getmetatable(L, pTheObj->ObjName);
-				lua_setmetatable(L, -2);
-				return;
-			}
-		}
-		assert(false);
+		lua_pushnil(L);
+		return;
 	}
-	lua_pushnil(L);
+	LuaVM2MapLuaObjectMap::const_iterator it = m_mapGlobalObject.find(L);
+	if (it == m_mapGlobalObject.end())
+	{
+		lua_pushnil(L);
+		return;
+	}
+	ID2LuaObjectMap::const_iterator it2 = it->second->find(szName);
+	if (it2 == it->second->end())
+	{
+		lua_pushnil(L);
+		return;
+	}
+	UILuaObject* pTheObj = it2->second;
+	assert(pTheObj);
+	LOG_TRACE(_T("PushGlobalObj pTheObj:") << pTheObj);
+	if (NULL == pTheObj)
+	{
+		lua_pushnil(L);
+		return;
+	}
+	userdataType *ud = static_cast<userdataType*>(lua_newuserdata(L, sizeof(userdataType)));
+	ud->p = (void*)pTheObj->pfnGetObject(NULL);
+	luaL_getmetatable(L, pTheObj->ObjName);
+	lua_setmetatable(L, -2);
 }
 
 UILuaGlobalFactory& UILuaGlobalFactory::GetInstance()

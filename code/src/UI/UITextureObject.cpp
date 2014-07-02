@@ -58,8 +58,13 @@ CUITextureObject::~CUITextureObject(void)
 
 int CUITextureObject::GetID(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITextureObject** ppThis = (CUITextureObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIControlBase* pThis = static_cast<CUIControlBase*>(*ppThis);
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	std::string strID = pThis->GetID();
 	lua_pushstring(L, strID.c_str());
 	return 1;
@@ -67,32 +72,52 @@ int CUITextureObject::GetID(lua_State* L)
 
 int CUITextureObject::GetStretch(lua_State* L)
 {
-	CUITextureObject* pThis = (CUITextureObject*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITextureObject** ppThis = (CUITextureObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITextureObject* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	lua_pushboolean(L, pThis->m_bStretch);
 	return 1;
 }
 
 int CUITextureObject::SetStretch(lua_State* L)
 {
-	CUITextureObject* pThis = (CUITextureObject*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITextureObject** ppThis = (CUITextureObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITextureObject* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	pThis->m_bStretch = (BOOL)lua_toboolean(L, -2);
 	return 0;
 }
 
 int CUITextureObject::GetVisible(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITextureObject** ppThis = (CUITextureObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIControlBase* pThis = static_cast<CUIControlBase*>(*ppThis);
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	lua_pushboolean(L, pThis->GetVisible());
 	return 1;
 }
 
 int CUITextureObject::SetVisible(lua_State* L)
 {
-	CUITextureObject* pThis = (CUITextureObject*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITextureObject** ppThis = (CUITextureObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITextureObject* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
 	pThis->SetAttr("visible", bVisible ? "true" : "false");
 	return 0;
@@ -100,16 +125,26 @@ int CUITextureObject::SetVisible(lua_State* L)
 
 int CUITextureObject::GetEnable(lua_State* L)
 {
-	CUIControlBase* pThis = (CUIControlBase*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITextureObject** ppThis = (CUITextureObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIControlBase* pThis = static_cast<CUIControlBase*>(*ppThis);
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	lua_pushboolean(L, pThis->GetEnable());
 	return 1;
 }
 
 int CUITextureObject::GetTexture(lua_State* L)
 {
-	CUITextureObject* pThis = (CUITextureObject*) lua_touserdata(L, -1);
-	ATLASSERT(pThis);
+	CUITextureObject** ppThis = (CUITextureObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITextureObject* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(pThis);
+		return 0;
+	}
 	CUITexture* pUITexture = UIResFactoryInstance->GetTexture(pThis->m_strTextureID.c_str());
 
 	UILuaPushClassObj(L, pUITexture);

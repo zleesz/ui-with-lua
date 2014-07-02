@@ -65,7 +65,7 @@ public: \
 		theObject.pfnGetObject = (fnGetObject)x::_GetInstance; \
 		UILuaRegisterGlobalObj(theObject, NULL);  \
 	}; \
-	const char* GetRigisterClassName() { \
+	static const char* GetRigisterClassName() { \
 		return #classname; \
 	};
 
