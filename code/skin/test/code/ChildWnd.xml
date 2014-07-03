@@ -39,8 +39,8 @@
 					<width>200</width>
 					<height>24</height>
 					<multiline>0</multiline>
-					<valign>true</valign>
-					<halign>true</halign>
+					<valign>top</valign>
+					<halign>left</halign>
 					<zorder>10</zorder>
 					<text>子窗口标题</text>
 				</attr>

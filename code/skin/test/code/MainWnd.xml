@@ -48,8 +48,8 @@
 					<width>40</width>
 					<height>24</height>
 					<multiline>0</multiline>
-					<valign>true</valign>
-					<halign>true</halign>
+					<valign>top</valign>
+					<halign>left</halign>
 					<zorder>10</zorder>
 					<text>标题</text>
 					<color>color.system.black</color>
@@ -132,11 +132,11 @@
 					<width>father.width-20</width>
 					<height>100</height>
 					<zorder>100</zorder>
-					<text>SimpleEdit</text>
+					<text>这是一个SimpleEdit文本输入框。</text>
 					<color>color.edit.default</color>
 					<font>font.edit.default</font>
-					<valign>left</valign>
-					<halign>top</halign>
+					<valign>center</valign>
+					<halign>center</halign>
 				</attr>
 			</obj>
 			<obj id="webbrowser" class="UIWebBrowser">
