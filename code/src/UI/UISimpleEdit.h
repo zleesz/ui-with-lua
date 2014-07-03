@@ -6,6 +6,20 @@
 #include "UIFont.h"
 #include "UIColor.h"
 
+typedef enum enumEditVAlign
+{
+	EVA_TOP,
+	EVA_CENTER,
+	EVA_BOTTOM
+} EditVAlign;
+
+typedef enum enumEditHAlign
+{
+	EHA_LEFT,
+	EHA_CENTER,
+	EHA_RIGHT
+} EditHAlign;
+
 class CUISimpleEdit :
 	public CUIControlBase
 {
@@ -27,17 +41,24 @@ public:
 	virtual void SetAttr(const std::string& strName, const std::string& strValue);
 private:
 	void CaclTextRect(RECT& rc);
+	LONG GetFormat();
 private:
 	std::wstring	m_strText;
 	std::string		m_strFontID;
 	std::string		m_strColorID;
 	BOOL			m_bPassword;
+	BOOL			m_bMultiLine;
+	BOOL			m_bWordBreak;
+	BOOL			m_bWordEllipsis;
+	EditVAlign		m_evalign;
+	EditHAlign		m_ehalign;
 
 public:
 	std::string SetText(const std::string& strText);
 	void GetText(std::wstring& strText);
 	std::string SetTextColor(const std::string& strTextColor);
 	void GetTextColor(std::string& strTextColor);
+	void GetTextExtent(const wchar_t* psz, LONG& lnWidth, LONG& lnHeight);
 	void GetTextExtent(LONG& lnWidth, LONG& lnHeight);
 	DWORD GetSel();
 	void GetSel(int& nStartChar, int& nEndChar);
