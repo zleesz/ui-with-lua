@@ -52,6 +52,7 @@ private:
 	BOOL			m_bWordEllipsis;
 	EditVAlign		m_evalign;
 	EditHAlign		m_ehalign;
+	BOOL			m_bInsert;
 
 public:
 	std::string SetText(const std::string& strText);

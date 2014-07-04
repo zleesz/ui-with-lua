@@ -501,6 +501,23 @@ LRESULT CUITreeContainer::OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 	return 0;
 }
 
+LRESULT CUITreeContainer::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	if (m_pFocusControl)
+	{
+		BOOL bAlt = ::GetKeyState(VK_MENU) < 0;
+		BOOL bCtrl = ::GetKeyState(VK_CONTROL) < 0;
+		BOOL bShift = ::GetKeyState(VK_SHIFT) < 0;
+		m_pFocusControl->OnKeyDown(wParam, bAlt, bCtrl, bShift, lParam & 0xFF);
+	}
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnKeyUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	return 0;
+}
+
 LRESULT CUITreeContainer::OnCaptureChanged(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
 {
 	LOG_DEBUG("lParam : " << (LONG)lParam);

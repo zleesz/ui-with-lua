@@ -65,8 +65,6 @@ public:
 	virtual void Render(CDCHandle dc);
 	virtual void OnInitControl();
 	virtual void OnDetroy();
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonDbClick);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseWheel);
 	virtual void OnMouseMove(int x, int y);
 	virtual void OnMouseLeave(int x, int y);
 	virtual void OnLButtonDown(int x, int y);

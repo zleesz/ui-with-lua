@@ -9,6 +9,7 @@ CUISimpleEdit::CUISimpleEdit(void)
 	m_bWordEllipsis = FALSE;
 	m_evalign = EVA_TOP;
 	m_ehalign = EHA_LEFT;
+	m_bInsert = FALSE;
 	RegisterClass(this);
 }
 
@@ -26,6 +27,7 @@ CUISimpleEdit::CUISimpleEdit(CUITreeContainer* pTree, LPXMLDOMNode pNode)
 	m_bWordEllipsis = FALSE;
 	m_evalign = EVA_TOP;
 	m_ehalign = EHA_LEFT;
+	m_bInsert = FALSE;
 	RegisterClass(this);
 	if(pNode == NULL || pNode->pMapAttr == NULL)
 		return;
@@ -129,6 +131,7 @@ CUISimpleEdit::CUISimpleEdit(CUITreeContainer* pTree)
 	m_bWordEllipsis = FALSE;
 	m_evalign = EVA_TOP;
 	m_ehalign = EHA_LEFT;
+	m_bInsert = FALSE;
 	RegisterClass(this);
 }
 

@@ -40,8 +40,9 @@ public:
 	CUIEventCtrlContainer* m_pUIEventControl;
 protected:
 	void TranslateFatherPos(std::wstring& strPos, const RECT& fatherRc);
-	void FireMouseEvent(std::string strName, int x, int y);
+	void FireMouseEvent(const std::string& strName, int x, int y);
 	void FireOnSetFocusEvent(BOOL bFocus);
+	void FireKeyBoardEvent(const std::string& strName, int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat);
 	void FirePosChange(int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom);
 public:
 	virtual ControlType GetType() = 0;
@@ -54,6 +55,8 @@ public:
 	virtual void OnMouseMove(int x, int y);
 	virtual void OnMouseLeave(int x, int y);
 	virtual void OnMouseWheel(int x, int y);
+	virtual void OnKeyDown(int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat);
+	virtual void OnKeyUp(int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat);
 	virtual void OnSetFocus(BOOL bFocus);
 	virtual LRESULT OnSetCursor(int x, int y);
 	virtual BOOL OnHitTest(int x, int y, LONG& nHitTest);

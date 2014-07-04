@@ -17,11 +17,6 @@ public:
 	void Render(CDCHandle dc);
 	virtual void OnInitControl();
 	virtual void OnDetroy();
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonUp);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnLButtonDbClick);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseMove);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseLeave);
-	UICONTROL_DEFAULT_MOUSE_METHOD(OnMouseWheel);
 	virtual void OnRButtonUp(int x, int y);
 	virtual void OnLButtonDown(int x, int y);
 	virtual void SetAttr(const std::string& strName, const std::string& strValue);
