@@ -355,6 +355,16 @@ void CUIControlBase::OnMouseWheel(int x, int y)
 	FireMouseEvent("OnMouseWheel", x, y);
 }
 
+void CUIControlBase::OnKeyDown(int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat)
+{
+	FireKeyBoardEvent("OnKeyDown", code, bAlt, bCtrl, bShift, repeat);
+}
+
+void CUIControlBase::OnKeyUp(int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat)
+{
+	FireKeyBoardEvent("OnKeyUp", code, bAlt, bCtrl, bShift, repeat);
+}
+
 void CUIControlBase::OnSetFocus(BOOL bFocus)
 {
 	if (m_bFocus == bFocus)
@@ -456,7 +466,7 @@ LRESULT CUIControlBase::OnSetCursor(int /*x*/, int /*y*/)
 	return FALSE;
 }
 
-void CUIControlBase::FireMouseEvent(std::string strName, int x, int y)
+void CUIControlBase::FireMouseEvent(const std::string& strName, int x, int y)
 {
 	LOG_AUTO();
 	CComVariant avarParams[3];
@@ -478,6 +488,24 @@ void CUIControlBase::FireOnSetFocusEvent(BOOL bFocus)
 	avarParams[1].boolVal = bFocus ? VARIANT_TRUE : VARIANT_FALSE;
 
 	UIDISPPARAMS params = { avarParams, "OnSetFocus", 2, 0 };
+	m_pUIEventControl->DispatchListener(params);
+}
+
+void CUIControlBase::FireKeyBoardEvent(const std::string& strName, int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat)
+{
+	CComVariant avarParams[6];
+	avarParams[0].vt = VT_BYREF | VT_I4;
+	avarParams[0].lVal = (LONG)(LONG_PTR)this;
+	avarParams[1] = code;
+	avarParams[2].vt = VT_BOOL;
+	avarParams[2] = bAlt ? VARIANT_TRUE : VARIANT_FALSE;
+	avarParams[3].vt = VT_BOOL;
+	avarParams[3] = bCtrl ? VARIANT_TRUE : VARIANT_FALSE;
+	avarParams[4].vt = VT_BOOL;
+	avarParams[4] = bShift ? VARIANT_TRUE : VARIANT_FALSE;
+	avarParams[5] = repeat;
+
+	UIDISPPARAMS params = { avarParams, strName.c_str(), 6, 0 };
 	m_pUIEventControl->DispatchListener(params);
 }
 
