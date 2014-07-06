@@ -170,7 +170,7 @@ LRESULT CUIFrameWindow::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, 
 	bHandled = FALSE;
 	if (wParam == SIZE_RESTORED)
 	{
-		SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) & ~WS_CAPTION);
+		//SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) & ~WS_CAPTION);
 	}
 	UpdateCornerRect();
 	return 0;
@@ -181,11 +181,11 @@ LRESULT CUIFrameWindow::OnSysCommand(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 	bHandled = FALSE;
 	if (wParam == SC_MINIMIZE)
 	{
-		SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) | WS_CAPTION);
+		//SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) | WS_CAPTION);
 	}
 	else if (wParam == SC_MAXIMIZE)
 	{
-		SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) & ~WS_CAPTION);
+		//SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) & ~WS_CAPTION);
 	}
 	return 0;
 }
