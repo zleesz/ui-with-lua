@@ -32,13 +32,16 @@ public:
 		MESSAGE_HANDLER(WM_NCHITTEST, OnNcHitTest)
 		MESSAGE_HANDLER(WM_LBUTTONDOWN, OnLButtonDown)
 		MESSAGE_HANDLER(WM_LBUTTONUP, OnLButtonUp)
+		MESSAGE_HANDLER(WM_LBUTTONDBLCLK, OnLButtonDbClick)
 		MESSAGE_HANDLER(WM_KEYDOWN, OnKeyDown)
 		MESSAGE_HANDLER(WM_KEYUP, OnKeyUp)
+		MESSAGE_HANDLER(WM_CHAR, OnChar)
 		MESSAGE_HANDLER(WM_CAPTURECHANGED, OnCaptureChanged)
 		MESSAGE_HANDLER(WM_SETCURSOR, OnSetCursor)
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
 		MESSAGE_HANDLER(WM_SETFOCUS, OnSetFocus)
 		MESSAGE_HANDLER(WM_KILLFOCUS, OnKillFocus)
+		MESSAGE_HANDLER(WM_IME_REQUEST, OnImeRequest)
 	END_MSG_MAP()
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnMouseMove(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
@@ -46,13 +49,16 @@ public:
 	LRESULT OnNcHitTest(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnLButtonDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnLButtonUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnLButtonDbClick(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnKeyUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnChar(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnCaptureChanged(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnSetCursor(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnImeRequest(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	BOOL ParserUITree(LPXMLDOMNode pNode);
 	BOOL OnPreCreate();
@@ -61,6 +67,9 @@ public:
 	void Render(CDCHandle dc);
 	CUIWindowBase* GetBindWnd(void);
 	BOOL SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture);
+	CUIControlBase* GetCaptureMouse();
+	BOOL SetFocusControl(CUIControlBase* pControl, BOOL bFocus);
+	CUIControlBase* GetFocusControl();
 public:
 	static int GetUIObject(lua_State* L);
 	static int GetOwnerWnd(lua_State* L);

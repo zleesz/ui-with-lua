@@ -315,6 +315,33 @@ void CUIControlBase::SetCaptureMouse(BOOL bCapture)
 	m_pTree->SetCaptureMouse(this, bCapture);
 }
 
+BOOL CUIControlBase::GetCaptureMouse()
+{
+	if (NULL == m_pTree)
+	{
+		return FALSE;
+	}
+	return this == m_pTree->GetCaptureMouse();
+}
+
+void CUIControlBase::SetFocus(BOOL bFocus)
+{
+	if (NULL == m_pTree)
+	{
+		return;
+	}
+	m_pTree->SetFocusControl(this, bFocus);
+}
+
+BOOL CUIControlBase::GetFocus()
+{
+	if (NULL == m_pTree)
+	{
+		return FALSE;
+	}
+	return m_pTree->GetFocusControl() == this;
+}
+
 void CUIControlBase::OnInitControl()
 {
 	
@@ -363,6 +390,11 @@ void CUIControlBase::OnKeyDown(int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int
 void CUIControlBase::OnKeyUp(int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat)
 {
 	FireKeyBoardEvent("OnKeyUp", code, bAlt, bCtrl, bShift, repeat);
+}
+
+void CUIControlBase::OnChar(const wchar_t& /*c*/, int /*repeat*/)
+{
+	//FireKeyBoardEvent("OnKeyUp", code, bAlt, bCtrl, bShift, repeat);
 }
 
 void CUIControlBase::OnSetFocus(BOOL bFocus)

@@ -6,7 +6,7 @@
 #include "UIText.h"
 #include "UIWebBrowser.h"
 #include "UICaption.h"
-#include "UISimpleEdit.h"
+#include "UIEdit.h"
 #include "UIWindowBase.h"
 
 CUITreeContainer::CUITreeContainer(void) : 
@@ -82,9 +82,9 @@ BOOL CUITreeContainer::ParserUITree(LPXMLDOMNode pNode)
 				{
 					pUICtrl = new CUICaption(this, pObjNode2);
 				}
-				else if ((*pAttrObj)["class"] == "UISimpleEdit")
+				else if ((*pAttrObj)["class"] == "UIEdit")
 				{
-					pUICtrl = new CUISimpleEdit(this, pObjNode2);
+					pUICtrl = new CUIEdit(this, pObjNode2);
 				}
 				else
 				{
@@ -313,9 +313,9 @@ int CUITreeContainer::CreateUIObject(lua_State* L)
 	{
 		pUICtrl = new CUICaption(pThis);
 	}
-	else if (strcmp(pszClass, "UISimpleEdit") == 0)
+	else if (strcmp(pszClass, "UIEdit") == 0)
 	{
-		pUICtrl = new CUISimpleEdit(pThis);
+		pUICtrl = new CUIEdit(pThis);
 	}
 	else
 	{
@@ -473,7 +473,8 @@ LRESULT CUITreeContainer::OnLButtonDown(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM
 				m_pFocusControl = m_pMouseControl;
 				m_pFocusControl->OnSetFocus(TRUE);
 			}
-			m_pMouseControl->OnLButtonDown(xPos, yPos);
+			const RECT rc = m_pMouseControl->GetObjPos();
+			m_pMouseControl->OnLButtonDown(xPos - rc.left, yPos - rc.top);
 		}
 	}
 	return 0;
@@ -495,7 +496,31 @@ LRESULT CUITreeContainer::OnLButtonUp(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM l
 		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos, nHitTest);
 		if (bHit)
 		{
-			m_pMouseControl->OnLButtonUp(xPos, yPos);
+			const RECT rc = m_pMouseControl->GetObjPos();
+			m_pMouseControl->OnLButtonUp(xPos - rc.left, yPos - rc.top);
+		}
+	}
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnLButtonDbClick(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	int xPos = GET_X_LPARAM(lParam);
+	int yPos = GET_Y_LPARAM(lParam);
+	if (NULL != m_pCaptrueControl)
+	{
+		const RECT rc = m_pCaptrueControl->GetObjPos();
+		m_pCaptrueControl->OnLButtonDbClick(xPos - rc.left, yPos - rc.top);
+		return 0;
+	}
+	if (NULL != m_pMouseControl)
+	{
+		LONG nHitTest = 0;
+		BOOL bHit = m_pMouseControl->OnHitTest(xPos, yPos, nHitTest);
+		if (bHit)
+		{
+			const RECT rc = m_pMouseControl->GetObjPos();
+			m_pMouseControl->OnLButtonDbClick(xPos - rc.left, yPos - rc.top);
 		}
 	}
 	return 0;
@@ -513,8 +538,25 @@ LRESULT CUITreeContainer::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam,
 	return 0;
 }
 
-LRESULT CUITreeContainer::OnKeyUp(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT CUITreeContainer::OnKeyUp(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
+	if (m_pFocusControl)
+	{
+		BOOL bAlt = ::GetKeyState(VK_MENU) < 0;
+		BOOL bCtrl = ::GetKeyState(VK_CONTROL) < 0;
+		BOOL bShift = ::GetKeyState(VK_SHIFT) < 0;
+		m_pFocusControl->OnKeyUp(wParam, bAlt, bCtrl, bShift, lParam & 0xFF);
+	}
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnChar(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
+{
+	wchar_t c = wchar_t(wParam);
+	if (m_pFocusControl)
+	{
+		m_pFocusControl->OnChar(c, lParam & 0xFF);
+	}
 	return 0;
 }
 
@@ -559,6 +601,10 @@ LRESULT CUITreeContainer::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
 LRESULT CUITreeContainer::OnSetFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	bHandled = FALSE;
+	if (m_pFocusControl)
+	{
+		m_pFocusControl->OnSetFocus(TRUE);
+	}
 	return 0;
 }
 
@@ -568,22 +614,100 @@ LRESULT CUITreeContainer::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPa
 	if (m_pFocusControl)
 	{
 		m_pFocusControl->OnSetFocus(FALSE);
-		m_pFocusControl = NULL;
+	}
+	if (m_pCaptrueControl)
+	{
+		m_pCaptrueControl = NULL;
+	}
+	return 0;
+}
+
+LRESULT CUITreeContainer::OnImeRequest(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	if (wParam == IMR_QUERYCHARPOSITION)
+	{
+		IMECHARPOSITION* pImeChPos = (IMECHARPOSITION*)lParam;
+		pImeChPos->pt.x = 100;
+		pImeChPos->pt.y = 100;
+		pImeChPos->cLineHeight = 30;
+		pImeChPos->dwCharPos = 3;
+		pImeChPos->dwSize = sizeof(IMECHARPOSITION);
+		RECT rc = {0};
+		m_pBindWnd->GetWindowRect(&rc);
+		pImeChPos->rcDocument.left = rc.left;
+		pImeChPos->rcDocument.top = rc.top;
+		pImeChPos->rcDocument.right = rc.right;
+		pImeChPos->rcDocument.bottom = rc.bottom;
+		return sizeof(IMECHARPOSITION);
 	}
 	return 0;
 }
 
 BOOL CUITreeContainer::SetCaptureMouse(CUIControlBase* pControl, BOOL bCapture)
 {
-	if(bCapture)
+	if (bCapture)
 	{
 		m_pCaptrueControl = pControl;
 		::SetCapture(m_pBindWnd->m_hWnd);
 		return TRUE;
 	}
-	else
+	else if (m_pCaptrueControl)
 	{
 		m_pCaptrueControl = NULL;
 		return ::ReleaseCapture();
 	}
+	return FALSE;
+}
+
+CUIControlBase* CUITreeContainer::GetCaptureMouse()
+{
+	return m_pCaptrueControl;
+}
+
+BOOL CUITreeContainer::SetFocusControl(CUIControlBase* pControl, BOOL bFocus)
+{
+	if (bFocus)
+	{
+		if (m_pFocusControl == pControl)
+		{
+			return TRUE;
+		}
+		if (!m_pBindWnd->IsWindow() || m_pBindWnd->m_hWnd != ::GetFocus())
+		{
+			// 当前窗口无焦点，不触发控件事件。
+			m_pFocusControl = pControl;
+			return FALSE;
+		}
+		if (m_pFocusControl)
+		{
+			m_pFocusControl->OnSetFocus(FALSE);
+		}
+		m_pFocusControl = pControl;
+		m_pFocusControl->OnSetFocus(TRUE);
+	}
+	else if (m_pFocusControl)
+	{
+		if (m_pFocusControl != pControl)
+		{
+			return TRUE;
+		}
+		if (!m_pBindWnd->IsWindow() || m_pBindWnd->m_hWnd != ::GetFocus())
+		{
+			m_pFocusControl = NULL;
+			return FALSE;
+		}
+		CUIControlBase* pFocusCtrl = m_pFocusControl;
+		m_pFocusControl = NULL;
+		pFocusCtrl->OnSetFocus(FALSE);
+	}
+	return FALSE;
+}
+
+CUIControlBase* CUITreeContainer::GetFocusControl()
+{
+	if (!m_pBindWnd->IsWindow() || m_pBindWnd->m_hWnd != ::GetFocus())
+	{
+		return NULL;
+	}
+	return m_pFocusControl;
 }

@@ -24,7 +24,7 @@ BOOL CUIFrameWindow::Render(CDCHandle dc)
 
 DWORD CUIFrameWindow::GetStyle()
 {
-	DWORD dwStyle = WS_POPUP | WS_CLIPCHILDREN | /*WS_THICKFRAME | */WS_CLIPSIBLINGS | WS_SYSMENU | WS_TABSTOP | CUIWindowBase::GetStyle();
+	DWORD dwStyle = WS_OVERLAPPED | WS_SYSMENU | WS_THICKFRAME | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CUIWindowBase::GetStyle();
 	return dwStyle;
 }
 
@@ -133,8 +133,6 @@ LRESULT CUIFrameWindow::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 LRESULT CUIFrameWindow::OnNcPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	LOG_AUTO();
-	HDC WindowDC = ::GetWindowDC(m_hWnd);
-	::ReleaseDC(m_hWnd, WindowDC);
 	return 0;
 }
 
@@ -155,6 +153,7 @@ void CUIFrameWindow::UpdateCornerRect()
 
 LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
+	SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) & ~WS_CAPTION);
 	CComVariant vTitle = m_mapAttr["title"];
 	if(vTitle.vt == VT_BSTR)
 	{
@@ -169,8 +168,25 @@ LRESULT CUIFrameWindow::OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/
 LRESULT CUIFrameWindow::OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
 {
 	bHandled = FALSE;
-	//TryUpdateWindow();
+	if (wParam == SIZE_RESTORED)
+	{
+		SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) & ~WS_CAPTION);
+	}
 	UpdateCornerRect();
+	return 0;
+}
+
+LRESULT CUIFrameWindow::OnSysCommand(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	if (wParam == SC_MINIMIZE)
+	{
+		SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) | WS_CAPTION);
+	}
+	else if (wParam == SC_MAXIMIZE)
+	{
+		SetWindowLong(GWL_STYLE, GetWindowLong(GWL_STYLE) & ~WS_CAPTION);
+	}
 	return 0;
 }
 

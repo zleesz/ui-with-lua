@@ -168,3 +168,10 @@ void CUIColor::RestoreObject(CDCHandle dc)
 {
 	dc.SetTextColor(m_oldColor);
 }
+
+COLORREF CUIColor::GetReversalColor()
+{
+	BYTE uRed, uGreen, uBlue, uAlpha = 0;
+	GetRGBAValue(&uRed, &uGreen, &uBlue, &uAlpha);
+	return RGB(0xFF-uRed, 0xFF-uGreen, 0xFF-uBlue);
+}

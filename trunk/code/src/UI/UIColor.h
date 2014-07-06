@@ -27,6 +27,7 @@ public:
 	void SetHSLValue();
 	void SelectObject(CDCHandle dc);
 	void RestoreObject(CDCHandle dc);
+	COLORREF GetReversalColor();
 public:
 	BEGIN_LUA_CALL_MAP(CUIColor)
 	END_LUA_CALL_MAP

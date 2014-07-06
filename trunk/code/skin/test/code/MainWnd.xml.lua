@@ -65,6 +65,7 @@ function OnCloseClick(self)
 	UITest.LuaClass:Exit()
 end
 
+--[[
 SetOnceTimer(function()
 	local windowFactory = UILuaGetObject("UI.WindowFactory")
 	local mainwnd = windowFactory:GetWindow("mainwnd")
@@ -76,3 +77,4 @@ SetOnceTimer(function()
 	--local title = maintree:GetUIObject("text.title")
 	--title:SetObjPos(50, 30, 200, 24)
 end, 3000)
+]]
