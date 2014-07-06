@@ -21,9 +21,10 @@ public:
 		MESSAGE_HANDLER(WM_ERASEBKGND, OnEraseBackground)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
+		MESSAGE_HANDLER(WM_SYSCOMMAND , OnSysCommand)
 		MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
-		//MESSAGE_HANDLER(WM_NCCALCSIZE, OnNcCalcSize)
-		//MESSAGE_HANDLER(WM_ACTIVATE, OnActivate)
+		MESSAGE_HANDLER(WM_NCCALCSIZE, OnNcCalcSize)
+		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
 		CHAIN_MSG_MAP_MEMBER((*m_pUIEventWindow))
 		CHAIN_MSG_MAP_MEMBER((*m_pUIWindowResizer))
 		CHAIN_MSG_MAP_MEMBER((*m_pUITreeContainer))
@@ -34,6 +35,7 @@ public:
 	LRESULT OnNcPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnSysCommand(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	virtual WindowType GetType() { return WT_FrameHostWnd; };
 	virtual BOOL Render(CDCHandle dc);

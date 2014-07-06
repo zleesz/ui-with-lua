@@ -66,10 +66,14 @@ public:
 	BOOL GetResizable();
 	BOOL SetResizable(BOOL bResizable);
 	void GetWindowRect(LPRECT rc);
+
+	void Min();
+	void Max();
+	void Restore();
 public:
 	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnNcCalcSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	LRESULT OnActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnNcActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	static int GetID(lua_State* luaState);
 	static int GetTitle(lua_State* luaState);

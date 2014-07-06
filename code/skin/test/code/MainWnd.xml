@@ -14,6 +14,7 @@
 			<resize>1</resize>
 			<resizerect>3,3,3,3,7,7,7,7</resizerect>
 			<cornereclipse>4</cornereclipse>
+			<boderrect>4,4,4,4</boderrect>
 			<minwidth>120</minwidth>
 			<minheight>150</minheight>
 		</attr>
@@ -125,7 +126,7 @@
 					<event name="OnClick" file="MainWnd.xml.lua" func="OnCloseClick" />
 				</eventlist>
 			</obj>
-			<obj id="SimpleEdit" class="UISimpleEdit">
+			<obj id="SimpleEdit" class="UIEdit">
 				<attr>
 					<left>10</left>
 					<top>30</top>
@@ -133,9 +134,13 @@
 					<height>100</height>
 					<zorder>100</zorder>
 					<text>这是一个SimpleEdit文本输入框。</text>
+					<normalbkg>texture.mainframe.system.close.btn.normal</normalbkg>
+					<hoverbkg>texture.mainframe.system.close.btn.hover</hoverbkg>
+					<downbkg>texture.mainframe.system.close.btn.down</downbkg>
+					<disablebkg>texture.mainframe.system.close.btn.disable</disablebkg>
 					<color>color.edit.default</color>
 					<font>font.edit.default</font>
-					<valign>center</valign>
+					<valign>bottom</valign>
 					<halign>center</halign>
 				</attr>
 			</obj>

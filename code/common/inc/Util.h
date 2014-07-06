@@ -6,6 +6,9 @@
 #include <map>
 #include <vector>
 
+#define RECT_WIDTH(rc) (rc.right - rc.left)
+#define RECT_HEIGHT(rc) (rc.bottom - rc.top)
+
 namespace Util
 {
 	static bool BSTRToString( BSTR src, std::string& dest)
@@ -56,9 +59,16 @@ namespace Util
 	}
 	static bool UTF8_to_Unicode(const char* src, std::wstring& wstr)
 	{
-		if(!src)
+		if (src == NULL)
+		{
 			return false;
+		}
 		int iLen = (int)strlen(src);
+		if (iLen == 0)
+		{
+			wstr = L"";
+			return true;
+		}
 		wchar_t* szm = new wchar_t[iLen * 4];
 		ZeroMemory(szm, iLen * 4);
 		int nLen = MultiByteToWideChar(CP_UTF8, 0, src,iLen, szm, iLen*4); 
@@ -103,4 +113,91 @@ namespace Util
 		hr = spCF->CreateInstance(NULL, riid, ppv);	
 		return hr;
 	}
+	static bool IsWordChar(const char ch)
+	{
+		if ((UCHAR)ch < 0x20) 
+			return false;
+
+		switch(ch)
+		{
+		case ' ':
+		case '	':
+		case '\n':
+		case '\r':
+		case '.':
+		case ',':
+		case '?':
+		case ';':
+		case ':':
+		case '!':
+		case '(':
+		case ')':
+		case '[':
+		case ']':
+		case '+':
+		case '-':
+		case '*':
+		case '/':
+		case '#':
+		case '@':
+		case '^':
+		case '%':
+		case '$':
+		case '"':
+		case '\'':
+		case '~':
+		case '&':
+		case '{':
+		case '}':
+		case '|':
+		case '=':
+		case '<':
+		case '>':
+		case '\\':
+			return false;
+		}
+		return true;
+	};
+	static bool IsWordChar(const wchar_t ch)
+	{
+		switch(ch)
+		{
+		case L' ':
+		case L'	':
+		case L'\n':
+		case L'\r':
+		case L'.':
+		case L',':
+		case L'?':
+		case L';':
+		case L':':
+		case L'!':
+		case L'(':
+		case L')':
+		case L'[':
+		case L']':
+		case L'+':
+		case L'-':
+		case L'*':
+		case L'/':
+		case L'#':
+		case L'@':
+		case L'^':
+		case L'%':
+		case L'$':
+		case L'"':
+		case L'\'':
+		case L'~':
+		case L'&':
+		case L'{':
+		case L'}':
+		case L'|':
+		case L'=':
+		case L'<':
+		case L'>':
+		case L'\\':
+			return false;
+		}
+		return true;
+	};
 };

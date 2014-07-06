@@ -179,7 +179,10 @@ void CUIWebBrowser::SetVisible(BOOL bVisible)
 
 void CUIWebBrowser::OnPosChange(int left, int top, int right, int bottom, int /*oldLeft*/, int /*oldTop*/, int /*oldRight*/, int /*oldBottom*/)
 {
-	m_pWebBrowserObj->MoveWindow(left, top, right - left, bottom - top);
+	if (m_pWebBrowserObj->IsWindow())
+	{
+		m_pWebBrowserObj->MoveWindow(left, top, right - left, bottom - top);
+	}
 }
 
 void CUIWebBrowser::SetAttr(const std::string& /*strName*/, const std::string& /*strValue*/)

@@ -19,7 +19,7 @@ typedef enum enumControlType {
 	CT_UIWebBrowser,
 	CT_UICaption,
 	CT_UIMenuItem,
-	CT_UISimpleEdit,
+	CT_UIEdit,
 } ControlType;
 
 class CUIControlBase
@@ -57,6 +57,7 @@ public:
 	virtual void OnMouseWheel(int x, int y);
 	virtual void OnKeyDown(int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat);
 	virtual void OnKeyUp(int code, BOOL bAlt, BOOL bCtrl, BOOL bShift, int repeat);
+	virtual void OnChar(const wchar_t& c, int repeat);
 	virtual void OnSetFocus(BOOL bFocus);
 	virtual LRESULT OnSetCursor(int x, int y);
 	virtual BOOL OnHitTest(int x, int y, LONG& nHitTest);
@@ -80,6 +81,9 @@ public:
 	void Invalidate();
 	void InvalidateRect(const RECT& rc);
 	void SetCaptureMouse(BOOL bCapture);
+	BOOL GetCaptureMouse();
+	void SetFocus(BOOL bFocus);
+	BOOL GetFocus();
 public:
 	static int GetID(lua_State* L);
 	static int GetVisible(lua_State* L);

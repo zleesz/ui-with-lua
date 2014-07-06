@@ -277,8 +277,31 @@ void CUIWindowBase::GetWindowRect(LPRECT rc)
 	rc->bottom = vBottom.vt == VT_I4 ? vBottom.intVal : 0;
 }
 
-LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& /*bHandled*/)
+void CUIWindowBase::Min()
 {
+	SendMessage(WM_SYSCOMMAND, SC_MINIMIZE, 0);
+}
+
+void CUIWindowBase::Max()
+{
+	SendMessage(WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+}
+
+void CUIWindowBase::Restore()
+{
+	SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0);
+}
+
+LRESULT CUIWindowBase::OnNcActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	if (IsIconic())
+		bHandled = FALSE;
+	return (wParam == 0) ? TRUE : FALSE;
+}
+
+LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
+{
+
 	MINMAXINFO *mminfo = (PMINMAXINFO)lParam;
 	CComVariant vMaxWidth, vMaxHeight, vMinWidth, vMinHeight;
 	GetAttr("maxwidth", &vMaxWidth);
@@ -326,54 +349,6 @@ LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
 
 LRESULT CUIWindowBase::OnNcCalcSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& /*bHandled*/)
 {
-	int xFrame = 0; /*左右边框的厚度*/
-	int yFrame = 0; /*下边框的厚度*/
-	int nTHight = 0; /*标题栏的高度*/
-	NCCALCSIZE_PARAMS * p; /*TRUE是的指针*/
-	RECT * rc; /*FALSE是的指针*/
-	RECT aRect;
-	RECT bRect;
-	RECT bcRect;
-
-
-	if(wParam == TRUE)
-	{
-		p = (NCCALCSIZE_PARAMS *)lParam; 
-
-
-		/*复制A B矩形位置*/
-		CopyRect(&aRect,&p->rgrc[1]); 
-		CopyRect(&bRect,&p->rgrc[0]);
-
-
-		/*指定BC的矩形的位置*/
-		bcRect.left = bRect.left + xFrame;
-		bcRect.top = bRect.top + nTHight;
-		bcRect.right = bRect.right - xFrame;
-		bcRect.bottom = bRect.bottom - yFrame;
-
-
-		/*各个矩形归位成BC B A*/
-		CopyRect(&p->rgrc[0],&bcRect);
-		CopyRect(&p->rgrc[1],&bRect);
-		CopyRect(&p->rgrc[2],&aRect);
-	}
-	else
-	{
-		rc = (RECT *)lParam;
-
-
-		rc->left = rc->left + xFrame;
-		rc->top = rc->top + nTHight;
-		rc->right = rc->right - xFrame;
-		rc->bottom = rc->bottom - yFrame;
-	}
-	return TRUE;
-}
-
-LRESULT CUIWindowBase::OnActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
-{
-	//Invalidate(TRUE);
 	return 0;
 }
 
@@ -526,11 +501,7 @@ int CUIWindowBase::Min(lua_State* L)
 	{
 		return 0;
 	}
-	if (!pThis->m_hWnd)
-	{
-		return 0;
-	}
-	::SendMessage(pThis->m_hWnd, WM_SYSCOMMAND, SC_MINIMIZE, 0);
+	pThis->Min();
 	return 0;
 }
 
@@ -542,11 +513,7 @@ int CUIWindowBase::Max(lua_State* L)
 	{
 		return 0;
 	}
-	if (!pThis->m_hWnd)
-	{
-		return 0;
-	}
-	::SendMessage(pThis->m_hWnd, WM_SYSCOMMAND, SC_MAXIMIZE, 0);
+	pThis->Max();
 	return 0;
 }
 
@@ -558,11 +525,7 @@ int CUIWindowBase::Restore(lua_State* L)
 	{
 		return 0;
 	}
-	if (!pThis->m_hWnd)
-	{
-		return 0;
-	}
-	::SendMessage(pThis->m_hWnd, WM_SYSCOMMAND, SC_RESTORE, 0);
+	pThis->Restore();
 	return 0;
 }
 
