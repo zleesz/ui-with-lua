@@ -24,7 +24,7 @@ private:
 	std::string	m_strPath;
 	Package m_package;
 public:
-	const std::string& SetSkinPath(CComBSTR bstrPath);
+	BOOL SetSkinPath(CComBSTR bstrPath, std::string& strOnload);
 private:
 	BOOL PreCheckSkinValid();
 	BOOL CheckSkinValid();

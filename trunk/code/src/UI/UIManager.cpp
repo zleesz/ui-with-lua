@@ -58,12 +58,20 @@ void CUIManager::FinalRelease()
 
 STDMETHODIMP CUIManager::LoadSkin(BSTR bstrPath)
 {
-	// TODO: Add your implementation code here
 	LOG_AUTO();
 	m_bstrPath = bstrPath;
-	const std::string strOnload = m_XmlParser.SetSkinPath(m_bstrPath);
+	std::string strOnload;
+	BOOL bValid = m_XmlParser.SetSkinPath(m_bstrPath, strOnload);
+	if (!bValid)
+	{
+#ifdef _DEBUG
+		return E_FAIL;
+#else
+		return S_FALSE;
+#endif
+	}
 
-	if(strOnload.length() > 0 && ::PathFileExistsA(strOnload.c_str()))
+	if (strOnload.length() > 0 && ::PathFileExistsA(strOnload.c_str()))
 	{
 		//lua_State* luaState = UILuaGetLuaVM(NULL);
 		int b = UILuaDoFile(strOnload.c_str(), NULL);

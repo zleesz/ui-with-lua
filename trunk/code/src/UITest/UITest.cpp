@@ -27,7 +27,7 @@ int Run(LPTSTR /*lpstrCmdLine*/, int /*nCmdShow*/)
 	return nRet;
 }
 
-void InitUIModule(IUIManager** ppUIManager)
+BOOL InitUIModule(IUIManager** ppUIManager)
 {
 	TCHAR tszPath[MAX_PATH] = {0};
 	::GetModuleFileName(NULL, tszPath, MAX_PATH);
@@ -45,11 +45,12 @@ void InitUIModule(IUIManager** ppUIManager)
 #ifdef _DEBUG
 	::PathAppend(tszSkinPath, _T("..\\..\\code\\skin\\test"));
 #else
-	::PathAppend(tszSkinPath, _T("skin"));
+	::PathAppend(tszSkinPath, _T("skin\\test"));
 #endif
 	ATLASSERT(::PathFileExists(tszSkinPath));
 	CComBSTR bstrPath(tszSkinPath);
-	(*ppUIManager)->LoadSkin(bstrPath);
+	HRESULT hr = (*ppUIManager)->LoadSkin(bstrPath);
+	return hr == S_OK;
 }
 
 int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lpstrCmdLine, int nCmdShow)
@@ -69,7 +70,13 @@ int WINAPI _tWinMain(HINSTANCE hInstance, HINSTANCE /*hPrevInstance*/, LPTSTR lp
 	ATLASSERT(SUCCEEDED(hRes));
 
 	CComPtr<IUIManager> spManager;
-	InitUIModule(&spManager);
+	BOOL bInit = InitUIModule(&spManager);
+	if (!bInit)
+	{
+		_Module.Term();
+		::CoUninitialize();
+		return -2;
+	}
 
 	int nRet = Run(lpstrCmdLine, nCmdShow);
 
