@@ -151,8 +151,8 @@
 					<width>father.width-20</width>
 					<height>father.height-40</height>
 					<zorder>100</zorder>
-					<visible>false</visible>
-					<!--url>http://aplayer.open.xunlei.com/</url-->
+					<visible>true</visible>
+					<url>http://aplayer.open.xunlei.com/</url>
 				</attr>
 			</obj>
 		</uitree>

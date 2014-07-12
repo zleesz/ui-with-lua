@@ -43,37 +43,39 @@ BOOL CUIXmlParser::CheckSkinValid()
 	return TRUE;
 }
 
-const std::string& CUIXmlParser::SetSkinPath(CComBSTR bstrPath)
+BOOL CUIXmlParser::SetSkinPath(CComBSTR bstrPath, std::string& strOnload)
 {
 	LOG_AUTO();
 	BOOL bRet = FALSE;
 	Util::BSTRToString(bstrPath, m_strPath);
 	BOOL bValid = PreCheckSkinValid();
 	ATLASSERT(bValid);
-	if(bValid)
+	if (!bValid)
 	{
-		CXmlParser xmlParser;
-		LPXMLDOMNode pNode = NULL;
-		bRet = xmlParser.SetXmlPath(m_package.strPackagePath, pNode);
+		return FALSE;
+	}
+	CXmlParser xmlParser;
+	LPXMLDOMNode pNode = NULL;
+	bRet = xmlParser.SetXmlPath(m_package.strPackagePath, pNode);
+	if (bRet)
+	{
+		ParserSkinXml(pNode);
+		bRet = CheckSkinValid();
+		ATLASSERT(bRet && "invalid skin package!");
 		if(bRet)
 		{
-			ParserSkinXml(pNode);
-			bRet = CheckSkinValid();
-			ATLASSERT(bRet && "invalid skin package!");
+			// 解析资源xml...
+			CResXmlParser resParser;
+			bRet = resParser.SetResPath(m_package.strResPath);
 			if(bRet)
 			{
-				// 解析资源xml...
-				CResXmlParser resParser;
-				bRet = resParser.SetResPath(m_package.strResPath);
-				if(bRet)
-				{
-					CCodeXmlParser codeParser;
-					bRet = codeParser.SetCodePath(m_package.strCodePath);
-				}
+				CCodeXmlParser codeParser;
+				bRet = codeParser.SetCodePath(m_package.strCodePath);
 			}
 		}
 	}
-	return m_package.strOnload;
+	strOnload = m_package.strOnload;
+	return TRUE;
 }
 
 CUIXmlParser::~CUIXmlParser(void)

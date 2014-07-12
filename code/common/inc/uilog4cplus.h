@@ -1,10 +1,11 @@
 #pragma once
 #include <Shlwapi.h>
+#pragma comment(lib, "shlwapi.lib")
 #include <tchar.h>
 #include <string>
 
 //////////////////////// log4cplus ////////////////////////////////
-#include <log4cplus/logger.h>
+#include <log4cplus/loggingmacros.h>
 #include <log4cplus/configurator.h>
 
 #define LOG_INIT()                              log4cplus::PropertyConfigurator::doConfigure(LOG4CPLUS_TEXT("log4cplus.cfg"))

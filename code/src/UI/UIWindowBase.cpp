@@ -301,7 +301,6 @@ LRESULT CUIWindowBase::OnNcActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPara
 
 LRESULT CUIWindowBase::OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM lParam, BOOL& bHandled)
 {
-
 	MINMAXINFO *mminfo = (PMINMAXINFO)lParam;
 	CComVariant vMaxWidth, vMaxHeight, vMinWidth, vMinHeight;
 	GetAttr("maxwidth", &vMaxWidth);
