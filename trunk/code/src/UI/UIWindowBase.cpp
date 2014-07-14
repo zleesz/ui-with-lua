@@ -353,7 +353,7 @@ LRESULT CUIWindowBase::OnNcCalcSize(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam,
 
 int CUIWindowBase::GetID(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -367,7 +367,7 @@ int CUIWindowBase::GetID(lua_State* L)
 
 int CUIWindowBase::GetTitle(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -378,7 +378,7 @@ int CUIWindowBase::GetTitle(lua_State* L)
 	if(vTitle.vt == VT_BSTR)
 	{
 		std::string strTitle;
-		Util::BSTRToString(vTitle.bstrVal, strTitle);
+		Util::Unicode_to_UTF8(vTitle.bstrVal, strTitle);
 		lua_pushstring(L, strTitle.c_str());
 	}
 	return 1;
@@ -386,14 +386,14 @@ int CUIWindowBase::GetTitle(lua_State* L)
 
 int CUIWindowBase::SetTitle(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
 	ATLASSERT(pThis);
-	const char* pszTitle = lua_tostring(L, -1);
+	const char* pszTitle = lua_tostring(L, 2);
 	pThis->SetAttr("title", pszTitle);
 	if (!pThis->m_hWnd)
 	{
@@ -409,7 +409,7 @@ int CUIWindowBase::SetTitle(lua_State* L)
 
 int CUIWindowBase::GetVisible(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -421,7 +421,7 @@ int CUIWindowBase::GetVisible(lua_State* L)
 
 int CUIWindowBase::SetVisible(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -434,20 +434,20 @@ int CUIWindowBase::SetVisible(lua_State* L)
 
 int CUIWindowBase::Show(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
-	int nCmd = (int)lua_tointeger(L, -2);
+	int nCmd = (int)lua_tointeger(L, 2);
 	pThis->ShowWindow(nCmd);
 	return 0;
 }
 
 int CUIWindowBase::GetTreeContainer(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -460,7 +460,7 @@ int CUIWindowBase::GetTreeContainer(lua_State* L)
 
 int CUIWindowBase::AddInputFilter(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -472,7 +472,7 @@ int CUIWindowBase::AddInputFilter(lua_State* L)
 
 int CUIWindowBase::AttachListener(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -483,7 +483,7 @@ int CUIWindowBase::AttachListener(lua_State* L)
 
 int CUIWindowBase::DetachListener(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -494,7 +494,7 @@ int CUIWindowBase::DetachListener(lua_State* L)
 
 int CUIWindowBase::Min(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -506,7 +506,7 @@ int CUIWindowBase::Min(lua_State* L)
 
 int CUIWindowBase::Max(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -518,7 +518,7 @@ int CUIWindowBase::Max(lua_State* L)
 
 int CUIWindowBase::Restore(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -530,7 +530,7 @@ int CUIWindowBase::Restore(lua_State* L)
 
 int CUIWindowBase::GetLayered(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -542,14 +542,14 @@ int CUIWindowBase::GetLayered(lua_State* L)
 
 int CUIWindowBase::SetMaxTrackSize(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
-	LONG lnWidth = (LONG)lua_tointeger(L, -2);
-	LONG lnHeight = (LONG)lua_tointeger(L, -3);
+	LONG lnWidth = (LONG)lua_tointeger(L, 2);
+	LONG lnHeight = (LONG)lua_tointeger(L, 3);
 	char szWidth[10] = {0}, szHeight[10] = {0};
 	_itoa(lnWidth, szWidth, 10);
 	_itoa(lnHeight, szHeight, 10);
@@ -560,14 +560,14 @@ int CUIWindowBase::SetMaxTrackSize(lua_State* L)
 
 int CUIWindowBase::SetMinTrackSize(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
-	LONG lnWidth = (LONG)lua_tointeger(L, -2);
-	LONG lnHeight = (LONG)lua_tointeger(L, -3);
+	LONG lnWidth = (LONG)lua_tointeger(L, 2);
+	LONG lnHeight = (LONG)lua_tointeger(L, 3);
 	char szWidth[10] = {0}, szHeight[10] = {0};
 	_itoa(lnWidth, szWidth, 10);
 	_itoa(lnHeight, szHeight, 10);
@@ -578,20 +578,20 @@ int CUIWindowBase::SetMinTrackSize(lua_State* L)
 
 int CUIWindowBase::SetResizable(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
-	BOOL bResizable = (BOOL)lua_toboolean(L, -2);
+	BOOL bResizable = (BOOL)lua_toboolean(L, 2);
 	pThis->SetResizable(bResizable);
 	return 0;
 }
 
 int CUIWindowBase::GetWindowRect(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -608,7 +608,7 @@ int CUIWindowBase::GetWindowRect(lua_State* L)
 
 int CUIWindowBase::GetParent(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -622,7 +622,7 @@ int CUIWindowBase::GetParent(lua_State* L)
 
 int CUIWindowBase::SetParent(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -630,13 +630,13 @@ int CUIWindowBase::SetParent(lua_State* L)
 	}
 	CWindowImpl<CUIWindowBase>* pWindow = static_cast<CWindowImpl<CUIWindowBase>*>(pThis);
 	HWND hWnd = NULL;
-	if (lua_isuserdata(L, -2))
+	if (lua_isuserdata(L, 2))
 	{
-		hWnd = (HWND)lua_touserdata(L, -2);
+		hWnd = (HWND)lua_touserdata(L, 2);
 	}
-	else if (lua_isnumber(L, -2))
+	else if (lua_isnumber(L, 2))
 	{
-		hWnd = (HWND)(LONG)lua_tonumber(L, -2);
+		hWnd = (HWND)(LONG)lua_tonumber(L, 2);
 	}
 	if (hWnd == NULL)
 	{
@@ -648,7 +648,7 @@ int CUIWindowBase::SetParent(lua_State* L)
 
 int CUIWindowBase::GetHWND(lua_State* L)
 {
-	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, -1);
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
 	if (!pThis)
 	{

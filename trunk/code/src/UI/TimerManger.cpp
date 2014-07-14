@@ -86,7 +86,7 @@ int CUITimerManger::AsynCall(lua_State* L)
 	CUITimerManger* pThis = UITimerManagerInstance;
 	if(pThis == NULL)
 		return 0;
-	if(!lua_isfunction(L, -1))
+	if(!lua_isfunction(L, 1))
 	{
 		ATLASSERT(FALSE);
 		return 0;
@@ -96,7 +96,7 @@ int CUITimerManger::AsynCall(lua_State* L)
 	td.bOnce = TRUE;
 	td.lnId = pThis->m_lnTimerID;
 	td.lnElapse = 0;
-	lua_pushvalue(L, -1);
+	lua_pushvalue(L, 1);
 	td.nFuncIndex = luaL_ref(L, LUA_REGISTRYINDEX);
 	pThis->SetTimer(td.lnId, td.lnElapse, NULL);
 	pThis->m_mapID2TimerData.insert(std::make_pair(td.lnId, td));

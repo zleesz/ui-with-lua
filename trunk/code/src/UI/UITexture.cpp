@@ -89,7 +89,7 @@ TEXTURE_HANDLE CUITexture::CreateTextureFromBitmap(LPXMLAttrMap pMapAttr)
 
 int CUITexture::GetID(lua_State* L)
 {
-	CUITexture** ppThis = (CUITexture**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITexture** ppThis = (CUITexture**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIResBase* pThis = static_cast<CUIResBase*>(*ppThis);
 	if (!pThis)
 	{
@@ -102,7 +102,7 @@ int CUITexture::GetID(lua_State* L)
 
 int CUITexture::GetBitmap(lua_State* L)
 {
-	CUITexture** ppThis = (CUITexture**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITexture** ppThis = (CUITexture**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUITexture* pThis = *ppThis;
 	if (!pThis)
 	{

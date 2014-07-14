@@ -12,24 +12,71 @@ extern "C"
 #include <assert.h>
 #include <string>
 
+static bool Unicode_to_Ansi( const wchar_t* src, std::string& dest)
+{
+	if (!src)
+	{
+		return false;
+	}
+	int  iLen = (int)wcslen(src);
+	if (iLen <= 0)
+	{
+		return false;
+	}
+	char* szdest = new  char[iLen * 4];
+	if(NULL == szdest)
+	{
+		return false;
+	}
+	ZeroMemory(szdest, iLen * 4);			
+	int nLen = WideCharToMultiByte(936, NULL, src, iLen, szdest, iLen * 4, 0, 0);
+	szdest[nLen] = '\0'; 
+	dest = szdest;
+	delete [] szdest ;
+	return true;
+}
+
+static bool UTF8_to_Unicode(const char* src, std::wstring& wstr)
+{
+	if (src == NULL)
+	{
+		return false;
+	}
+	int iLen = (int)strlen(src);
+	if (iLen == 0)
+	{
+		wstr = L"";
+		return true;
+	}
+	wchar_t* szm = new wchar_t[iLen * 4];
+	ZeroMemory(szm, iLen * 4);
+	int nLen = MultiByteToWideChar(CP_UTF8, 0, src,iLen, szm, iLen*4); 
+	szm [nLen] = '\0';
+	wstr = szm;
+	delete [] szm;
+	return false;
+}
+
 std::string UILuaUtil::strStack;
 int UILuaUtil::UIMessageBox(lua_State* luaState)
 {
 	int top = lua_gettop(luaState);
 	assert(top > 0);
-	if(!lua_isstring(luaState, -1))
+	if(!lua_isstring(luaState, 1))
 	{
 		return 0;
 	}
-	std::string strContent = lua_tostring(luaState, -1);
+	std::string strContent;
 	std::string strTitle;
-	if(top == 1)
+	if (top == 1)
 	{
-		strTitle = strContent;
+		strTitle = "信息";
+		strContent = lua_tostring(luaState, 1);
 	}
 	else
 	{
-		std::string strContent = lua_tostring(luaState, -2);
+		strTitle = lua_tostring(luaState, 1);
+		strContent = lua_tostring(luaState, 2);
 	}
 	MessageBoxA(NULL, strContent.c_str(), strTitle.c_str(), MB_OK);
 	return 0;
@@ -95,65 +142,74 @@ int UILuaUtil::UILuaDoFile(lua_State* luaState)
 	int top = lua_gettop(luaState);
 	assert(top > 0);
 	char szError[_MAX_PATH] = {0};
-	const char* filename = lua_tostring(luaState, -1);
+	const char* pszFileName = lua_tostring(luaState, 1);
 	top = lua_gettop(luaState);
 	int bret = 0;
-	if(::PathFileExistsA(filename))
+	std::wstring wstrFileName;
+	std::string strFileName;
+	UTF8_to_Unicode(pszFileName, wstrFileName);
+
+	TCHAR tszFileName[MAX_PATH] = {0};
+	::PathCanonicalize(tszFileName, wstrFileName.c_str());
+
+	Unicode_to_Ansi(tszFileName, strFileName);
+	if (::PathFileExists(tszFileName))
 	{
 		lua_pushcclosure(luaState, on_error, 0);
 		int errfunc = lua_gettop(luaState);
-		if(luaL_loadfile(luaState, filename) == 0)
+		if (luaL_loadfile(luaState, strFileName.c_str()) == 0)
 		{
-			//int nFunIndex = luaL_ref(luaState, LUA_REGISTRYINDEX);
+			int nFunIndex = luaL_ref(luaState, LUA_REGISTRYINDEX);
 			lua_newtable(luaState);
-			luaL_newmetatable(luaState, filename);
+			// t.__document = path
+			lua_pushstring(luaState, "__document");
+			lua_pushstring(luaState, pszFileName);
+			lua_settable(luaState, -3);
+
+			luaL_newmetatable(luaState, pszFileName);
 			lua_pushstring(luaState, "__index");
 			lua_pushvalue(luaState, LUA_GLOBALSINDEX);
+			// t.__index = metatable
 			lua_settable(luaState, -3);
+			// fun.metatable = t
 			lua_setmetatable(luaState, -2);
-			//lua_rawgeti(luaState, LUA_REGISTRYINDEX, nFunIndex);
-			//lua_pushvalue(luaState, -2);
+			lua_rawgeti(luaState, LUA_REGISTRYINDEX, nFunIndex);
+			lua_pushvalue(luaState, -2);
 			lua_setfenv(luaState, -2);
 			int ret = lua_pcall(luaState, 0, 0, errfunc);
-			if(ret == 0)
+			if (ret == 0)
 			{
 				lua_pop(luaState, 1);
 				bret = 1;
-				/*
+
 				lua_rawgeti(luaState, LUA_REGISTRYINDEX, nFunIndex);
 				lua_getfenv(luaState, -1);
-				lua_pushnil(luaState);
-				while(lua_next(luaState, -2) != 0)
-				{
-					const char* pszFuncName = lua_tostring(luaState, -2);
-					int nEnvFunIndex = luaL_ref(luaState, LUA_REGISTRYINDEX);
-				}
-				luaL_unref(luaState, LUA_REGISTRYINDEX, nFunIndex);
-				*/
+				return 1;
 			}
 			else
 			{
 				const char* szcError = lua_tostring(luaState, -1);
-				sprintf_s(szError, _MAX_PATH, "path : %s\r\nerror:\r\n%s", filename, szcError);
+				sprintf_s(szError, _MAX_PATH, "path : %s\r\nerror:\r\n%s", pszFileName, szcError);
+				luaL_unref(luaState, LUA_REGISTRYINDEX, nFunIndex);
 			}
 		}
 		else
 		{
 			const char* szcError = lua_tostring(luaState, -1);
-			sprintf_s(szError, _MAX_PATH, "path : %s\r\nerror:\r\n%s", filename, szcError);
+			sprintf_s(szError, _MAX_PATH, "path : %s\r\nerror:\r\n%s", pszFileName, szcError);
 		}
 		lua_pop(luaState, 1);
 	}
 	else
 	{
-		sprintf_s(szError, _MAX_PATH, "加载lua失败,lua文件不存在, path=%s", filename);
+		sprintf_s(szError, _MAX_PATH, "加载lua失败,lua文件不存在, path=%s", pszFileName);
 	}
-	if(bret == 0)
+	if (bret == 0)
 	{
-		if(strStack.length() > 0)
+		if (strStack.length() > 0)
 		{
 			int ret = MessageBoxA(NULL, szError, "加载lua文件失败", MB_OKCANCEL);
-			if(ret != IDCANCEL)
+			if (ret != IDCANCEL)
 			{
 				MessageBoxA(NULL, strStack.c_str(), "加载lua文件失败", MB_OK | MB_ICONEXCLAMATION);
 			}
@@ -163,8 +219,7 @@ int UILuaUtil::UILuaDoFile(lua_State* luaState)
 			MessageBoxA(NULL, szError, "加载lua文件失败", MB_OK);
 		}
 	}
-	lua_pushboolean(luaState, bret);
-	return 1;
+	return 0;
 }
 
 int UILuaUtil::UILuaCall(lua_State* luaState, int args, int results)
@@ -240,19 +295,26 @@ int UILuaUtil::UILuaLog(lua_State* luaState)
 		{
 			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
 			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "lightuserdata:%x", ln);
+			sprintf_s(szLn, 30, "lightuserdata:0X%08X", ln);
 			strInfo += szLn;
 		}
 		else if(lua_isuserdata(luaState, i))
 		{
 			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
 			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "userdata:%x", ln);
+			sprintf_s(szLn, 30, "userdata:0X%08X", ln);
 			strInfo += szLn;
 		}
 		else if(lua_istable(luaState, i))
 		{
 			strInfo += "?table?";
+		}
+		else if(lua_isfunction(luaState, i))
+		{
+			LONG ln = (LONG)(LONG_PTR)lua_topointer(luaState, i);
+			char szLn[30] = {0};
+			sprintf_s(szLn, 30, "function:0X%08X", ln);
+			strInfo += szLn;
 		}
 		else
 		{
@@ -263,6 +325,7 @@ int UILuaUtil::UILuaLog(lua_State* luaState)
 		strInfo += " ";
 	}
 	LOG_DEBUG(strInfo.c_str());
+	OutputDebugStringA(strInfo.c_str());
 	return 0;
 }
 
@@ -307,8 +370,8 @@ LUA_API int UILuaDoFile(const char* szFilePath, const char* szVMName)
 	if(luaState)
 	{
 		lua_pushstring(luaState, szFilePath);
-		UILuaUtil::UILuaDoFile(luaState);
-		return lua_toboolean(luaState, -1);
+		lua_insert(luaState, 1);
+		return UILuaUtil::UILuaDoFile(luaState);
 	}
 	return 0;
 }

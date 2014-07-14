@@ -75,7 +75,7 @@ CUIImagelist::CUIImagelist(LPXMLDOMNode pNode, const char* pszPath)
 
 int CUIImagelist::GetID(lua_State* L)
 {
-	CUIResBase* pThis = (CUIResBase*) lua_touserdata(L, -1);
+	CUIResBase* pThis = (CUIResBase*) lua_touserdata(L, 1);
 	ATLASSERT(pThis);
 	std::string strID = pThis->GetPrivateID();
 	lua_pushstring(L, strID.c_str());

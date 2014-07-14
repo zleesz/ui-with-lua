@@ -131,7 +131,7 @@ CUIWindowBase* CUITreeContainer::GetBindWnd(void)
 
 int CUITreeContainer::GetUIObject(lua_State* L)
 {
-	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUITreeContainer* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -158,7 +158,7 @@ int CUITreeContainer::GetUIObject(lua_State* L)
 
 int CUITreeContainer::GetOwnerWnd(lua_State* L)
 {
-	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUITreeContainer* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -171,7 +171,7 @@ int CUITreeContainer::GetOwnerWnd(lua_State* L)
 
 int CUITreeContainer::RemoveUIObject(lua_State* L)
 {
-	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUITreeContainer* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -179,9 +179,9 @@ int CUITreeContainer::RemoveUIObject(lua_State* L)
 		return 0;
 	}
 	CUIControlBase* pControl = NULL;
-	if(lua_isstring(L, -2))
+	if(lua_isstring(L, 2))
 	{
-		const char* pszID = lua_tostring(L, -2);
+		const char* pszID = lua_tostring(L, 2);
 		ID2ControlMap::iterator it = pThis->m_mapCtrl.find(pszID);
 		if(it == pThis->m_mapCtrl.end())
 		{
@@ -231,7 +231,7 @@ int CUITreeContainer::RemoveUIObject(lua_State* L)
 
 int CUITreeContainer::AddUIObject(lua_State* L)
 {
-	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUITreeContainer* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -263,7 +263,7 @@ int CUITreeContainer::AddUIObject(lua_State* L)
 
 int CUITreeContainer::CreateUIObject(lua_State* L)
 {
-	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUITreeContainer** ppThis = (CUITreeContainer**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUITreeContainer* pThis = *ppThis;
 	if (!pThis)
 	{

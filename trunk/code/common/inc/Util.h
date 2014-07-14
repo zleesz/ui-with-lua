@@ -11,7 +11,7 @@
 
 namespace Util
 {
-	static bool BSTRToString( BSTR src, std::string& dest)
+	static bool Unicode_to_Ansi( const wchar_t* src, std::string& dest)
 	{
 		if (!src)
 		{
@@ -28,7 +28,7 @@ namespace Util
 			return false;
 		}
 		ZeroMemory(szdest, iLen * 4);			
-		int nLen = WideCharToMultiByte(CP_UTF8, NULL, src, iLen, szdest, iLen * 4, 0, 0);
+		int nLen = WideCharToMultiByte(936, NULL, src, iLen, szdest, iLen * 4, 0, 0);
 		szdest[nLen] = '\0'; 
 		dest = szdest;
 		delete [] szdest ;

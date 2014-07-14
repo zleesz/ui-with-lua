@@ -193,7 +193,7 @@ void CUIWebBrowser::SetAttr(const std::string& /*strName*/, const std::string& /
 int CUIWebBrowser::Navigate(lua_State* L)
 {
 	LOG_AUTO();
-	CUIWebBrowser** ppThis = (CUIWebBrowser**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIWebBrowser** ppThis = (CUIWebBrowser**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIWebBrowser* pThis = *ppThis;
 	if (!pThis)
 	{

@@ -87,7 +87,7 @@ namespace lua
 		case VT_BSTR:
 			{
 				std::string str;
-				Util::BSTRToString(pv->bstrVal,str);
+				Util::Unicode_to_UTF8(pv->bstrVal,str);
 				lua_pushlstring(L, str.c_str(), str.length());
 			}				
 			break;

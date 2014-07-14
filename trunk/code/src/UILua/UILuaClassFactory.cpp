@@ -130,6 +130,7 @@ int UILuaClassFactory::proxy(lua_State* L)
 		assert(false);
 		return 0;
 	}
+	lua_remove(L, 1);
 	int i = (int)lua_tonumber(L, lua_upvalueindex(2));
 
 	assert(NULL != pTheObj);
@@ -146,6 +147,7 @@ int UILuaClassFactory::proxy(lua_State* L)
 	*((void**)p) = ud->p;
 	luaL_getmetatable(L, pTheObj->ObjName);
 	lua_setmetatable(L, -2);
+	lua_insert(L, 1);
 	return pTheObj->MemberFunctions[i].func(L);
 }
 
