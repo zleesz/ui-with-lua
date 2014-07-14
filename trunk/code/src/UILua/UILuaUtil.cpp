@@ -295,14 +295,14 @@ int UILuaUtil::UILuaLog(lua_State* luaState)
 		{
 			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
 			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "lightuserdata:0X%08X", ln);
+			sprintf_s(szLn, 30, "lightuserdata:0x%08X", ln);
 			strInfo += szLn;
 		}
 		else if(lua_isuserdata(luaState, i))
 		{
 			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
 			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "userdata:0X%08X", ln);
+			sprintf_s(szLn, 30, "userdata:0x%08X", ln);
 			strInfo += szLn;
 		}
 		else if(lua_istable(luaState, i))
@@ -313,7 +313,7 @@ int UILuaUtil::UILuaLog(lua_State* luaState)
 		{
 			LONG ln = (LONG)(LONG_PTR)lua_topointer(luaState, i);
 			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "function:0X%08X", ln);
+			sprintf_s(szLn, 30, "function:0x%08X", ln);
 			strInfo += szLn;
 		}
 		else
