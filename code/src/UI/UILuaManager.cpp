@@ -10,25 +10,39 @@ int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 	int top = lua_gettop(luaState);
 	assert(top > 0);
 	char szError[_MAX_PATH] = {0};
-	const char* filename = lua_tostring(luaState, -1);
+	const char* pszFileName = lua_tostring(luaState, -1);
 	top = lua_gettop(luaState);
 	int bret = 0;
-	char szPath[MAX_PATH] = {0};
-	strcpy_s(szPath, MAX_PATH, filename);
-	_strlwr(szPath);
-	if(::PathFileExistsA(szPath))
+	std::wstring wstrFileName;
+	std::string strFileName;
+	Util::UTF8_to_Unicode(pszFileName, wstrFileName);
+
+	TCHAR tszFileName[MAX_PATH] = {0};
+	::PathCanonicalize(tszFileName, wstrFileName.c_str());
+
+	Util::Unicode_to_Ansi(tszFileName, strFileName);
+	std::string strLowFileName(strFileName);
+	std::transform(strLowFileName.begin(), strLowFileName.end(), strLowFileName.begin(), tolower);
+	if (::PathFileExists(tszFileName))
 	{
 		lua_pushlightuserdata(luaState, (void*)this);
 		lua_pushcclosure(luaState, on_error, 1);
 		int errfunc = lua_gettop(luaState);
-		if(luaL_loadfile(luaState, szPath) == 0)
+		if (luaL_loadfile(luaState, strFileName.c_str()) == 0)
 		{
 			int nFunIndex = luaL_ref(luaState, LUA_REGISTRYINDEX);
 			lua_newtable(luaState);
-			luaL_newmetatable(luaState, szPath);
+
+			// t.__document = path
+			lua_pushstring(luaState, "__document");
+			lua_pushstring(luaState, pszFileName);
+			lua_settable(luaState, -3);
+
+			luaL_newmetatable(luaState, pszFileName);
 			lua_pushstring(luaState, "__index");
 			lua_pushvalue(luaState, LUA_GLOBALSINDEX);
 			lua_settable(luaState, -3);
+
 			lua_setmetatable(luaState, -2);
 			lua_rawgeti(luaState, LUA_REGISTRYINDEX, nFunIndex);
 			lua_pushvalue(luaState, -2);
@@ -47,11 +61,11 @@ int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 				}
 				LPFuncName2IndexMap pMapFuncName2Index = NULL;
 				LPPath2FuncMap pMapPath2Func = it->second;
-				Path2FuncMap::const_iterator it2 = pMapPath2Func->find(std::string(szPath));
+				Path2FuncMap::const_iterator it2 = pMapPath2Func->find(strLowFileName);
 				if(it2 == pMapPath2Func->end())
 				{
 					pMapFuncName2Index = new FuncName2IndexMap;
-					pMapPath2Func->insert(std::make_pair(szPath, pMapFuncName2Index));
+					pMapPath2Func->insert(std::make_pair(strLowFileName, pMapFuncName2Index));
 				}
 				else
 				{
@@ -70,20 +84,20 @@ int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 			else
 			{
 				const char* szcError = lua_tostring(luaState, -1);
-				sprintf_s(szError, _MAX_PATH, "path : %s\r\nerror:\r\n%s", szPath, szcError);
+				sprintf_s(szError, _MAX_PATH, "path : %s\r\nerror:\r\n%s", pszFileName, szcError);
 				luaL_unref(luaState, LUA_REGISTRYINDEX, nFunIndex);
 			}
 		}
 		else
 		{
 			const char* szcError = lua_tostring(luaState, -1);
-			sprintf_s(szError, _MAX_PATH, "path : %s\r\nerror:\r\n%s", szPath, szcError);
+			sprintf_s(szError, _MAX_PATH, "path : %s\r\nerror:\r\n%s", pszFileName, szcError);
 		}
 		lua_pop(luaState, 1);
 	}
 	else
 	{
-		sprintf_s(szError, _MAX_PATH, "加载lua失败,lua文件不存在, path=%s", filename);
+		sprintf_s(szError, _MAX_PATH, "加载lua失败,lua文件不存在, path=%s", pszFileName);
 	}
 	if(bret == 0)
 	{

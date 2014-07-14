@@ -58,7 +58,7 @@ CUIBitmap::CUIBitmap(LPXMLDOMNode pNode, CUIImagelist* pImagelist)
 
 int CUIBitmap::GetID(lua_State* L)
 {
-	CUIBitmap** ppThis = (CUIBitmap**) luaL_checkudata(L, -1, CUIBitmap::GetRigisterClassName());
+	CUIBitmap** ppThis = (CUIBitmap**) luaL_checkudata(L, 1, CUIBitmap::GetRigisterClassName());
 	CUIResBase* pThis = static_cast<CUIResBase*>(*ppThis);
 	if (!pThis)
 	{

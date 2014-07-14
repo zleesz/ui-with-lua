@@ -121,7 +121,7 @@ std::string CUIText::SetTextColor(const std::string& strTextColor)
 
 int CUIText::GetText(lua_State* L)
 {
-	CUIText** ppThis = (CUIText**) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
+	CUIText** ppThis = (CUIText**) luaL_checkudata(L, 1, CUIText::GetRigisterClassName());
 	CUIText* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -135,13 +135,13 @@ int CUIText::GetText(lua_State* L)
 
 int CUIText::SetText(lua_State* L)
 {
-	CUIText** ppThis = (CUIText**) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
+	CUIText** ppThis = (CUIText**) luaL_checkudata(L, 1, CUIText::GetRigisterClassName());
 	CUIText* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
-	const char* pszText = lua_tostring(L, -2);
+	const char* pszText = lua_tostring(L, 2);
 	if (pszText == NULL)
 		pszText = "";
 	std::string strOldText = pThis->SetText(pszText);
@@ -151,7 +151,7 @@ int CUIText::SetText(lua_State* L)
 
 int CUIText::GetTextColor(lua_State* L)
 {
-	CUIText** ppThis = (CUIText**) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
+	CUIText** ppThis = (CUIText**) luaL_checkudata(L, 1, CUIText::GetRigisterClassName());
 	CUIText* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -165,13 +165,13 @@ int CUIText::GetTextColor(lua_State* L)
 
 int CUIText::SetTextColor(lua_State* L)
 {
-	CUIText** ppThis = (CUIText**) luaL_checkudata(L, -1, CUIText::GetRigisterClassName());
+	CUIText** ppThis = (CUIText**) luaL_checkudata(L, 1, CUIText::GetRigisterClassName());
 	CUIText* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
-	const char* pszTextColor = lua_tostring(L, -2);
+	const char* pszTextColor = lua_tostring(L, 2);
 	if (pszTextColor == NULL)
 		pszTextColor = "";
 	std::string strOldTextColor = pThis->SetTextColor(pszTextColor);

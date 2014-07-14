@@ -47,7 +47,7 @@ BOOL CUIXmlParser::SetSkinPath(CComBSTR bstrPath, std::string& strOnload)
 {
 	LOG_AUTO();
 	BOOL bRet = FALSE;
-	Util::BSTRToString(bstrPath, m_strPath);
+	Util::Unicode_to_Ansi(bstrPath, m_strPath);
 	BOOL bValid = PreCheckSkinValid();
 	ATLASSERT(bValid);
 	if (!bValid)

@@ -1300,7 +1300,7 @@ void CUIEdit::GetTextExtent(const wchar_t* psz, LONG lnSize, LONG& lnWidth, LONG
 
 int CUIEdit::GetText(lua_State* L)
 {
-	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, -1, CUIEdit::GetRigisterClassName());
+	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, 1, CUIEdit::GetRigisterClassName());
 	CUIEdit* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -1316,13 +1316,13 @@ int CUIEdit::GetText(lua_State* L)
 
 int CUIEdit::SetText(lua_State* L)
 {
-	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, -1, CUIEdit::GetRigisterClassName());
+	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, 1, CUIEdit::GetRigisterClassName());
 	CUIEdit* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
-	const char* pszText = lua_tostring(L, -2);
+	const char* pszText = lua_tostring(L, 2);
 	if (pszText == NULL)
 		pszText = "";
 	std::string strOldText = pThis->SetText(pszText);
@@ -1332,7 +1332,7 @@ int CUIEdit::SetText(lua_State* L)
 
 int CUIEdit::GetTextColor(lua_State* L)
 {
-	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, -1, CUIEdit::GetRigisterClassName());
+	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, 1, CUIEdit::GetRigisterClassName());
 	CUIEdit* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -1346,13 +1346,13 @@ int CUIEdit::GetTextColor(lua_State* L)
 
 int CUIEdit::SetTextColor(lua_State* L)
 {
-	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, -1, CUIEdit::GetRigisterClassName());
+	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, 1, CUIEdit::GetRigisterClassName());
 	CUIEdit* pThis = *ppThis;
 	if (!pThis)
 	{
 		return 0;
 	}
-	const char* pszTextColor = lua_tostring(L, -2);
+	const char* pszTextColor = lua_tostring(L, 2);
 	if (pszTextColor == NULL)
 		pszTextColor = "";
 	std::string strOldText = pThis->SetTextColor(pszTextColor);
@@ -1362,7 +1362,7 @@ int CUIEdit::SetTextColor(lua_State* L)
 
 int CUIEdit::GetTextExtent(lua_State* L)
 {
-	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, -1, CUIEdit::GetRigisterClassName());
+	CUIEdit** ppThis = (CUIEdit**) luaL_checkudata(L, 1, CUIEdit::GetRigisterClassName());
 	CUIEdit* pThis = *ppThis;
 	if (!pThis)
 	{

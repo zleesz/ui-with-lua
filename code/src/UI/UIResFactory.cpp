@@ -156,7 +156,7 @@ CUITexture* CUIResFactory::GetTexture(const char* id)
 template <class T, ResourceType pt>
 int CUIResFactory::PushResObject(lua_State* L)
 {
-	const char* pszID = lua_tostring(L, -2);
+	const char* pszID = lua_tostring(L, 2);
 	T* pObject = GetResObject<T, pt>(pszID);
 	ATLASSERT(pObject);
 	if(pObject)
@@ -175,7 +175,7 @@ int CUIResFactory::GetColor(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIResFactory* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -193,7 +193,7 @@ int CUIResFactory::GetFont(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIResFactory* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -211,7 +211,7 @@ int CUIResFactory::GetBitmap(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIResFactory* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -229,7 +229,7 @@ int CUIResFactory::GetIcon(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIResFactory* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -247,7 +247,7 @@ int CUIResFactory::GetImagelist(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIResFactory* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -265,7 +265,7 @@ int CUIResFactory::GetTexture(lua_State* L)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIResFactory** ppThis = (CUIResFactory**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIResFactory* pThis = *ppThis;
 	if (!pThis)
 	{

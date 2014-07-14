@@ -59,7 +59,7 @@ CUIImageObject::~CUIImageObject(void)
 
 int CUIImageObject::GetStretch(lua_State* L)
 {
-	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIImageObject* pThis = *ppThis;
 	if (!pThis)
 	{
@@ -72,20 +72,20 @@ int CUIImageObject::GetStretch(lua_State* L)
 
 int CUIImageObject::SetStretch(lua_State* L)
 {
-	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIImageObject* pThis = *ppThis;
 	if (!pThis)
 	{
 		ATLASSERT(pThis);
 		return 0;
 	}
-	pThis->m_bStretch = (BOOL)lua_toboolean(L, -2);
+	pThis->m_bStretch = (BOOL)lua_toboolean(L, 2);
 	return 0;
 }
 
 int CUIImageObject::GetVisible(lua_State* L)
 {
-	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIControlBase* pThis = static_cast<CUIControlBase*>(*ppThis);
 	if (!pThis)
 	{
@@ -98,21 +98,21 @@ int CUIImageObject::GetVisible(lua_State* L)
 
 int CUIImageObject::SetVisible(lua_State* L)
 {
-	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIImageObject* pThis = *ppThis;
 	if (!pThis)
 	{
 		ATLASSERT(pThis);
 		return 0;
 	}
-	BOOL bVisible = (BOOL)lua_toboolean(L, -2);
+	BOOL bVisible = (BOOL)lua_toboolean(L, 2);
 	pThis->SetAttr("visible", bVisible ? "true" : "false");
 	return 0;
 }
 
 int CUIImageObject::GetEnable(lua_State* L)
 {
-	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIControlBase* pThis = static_cast<CUIControlBase*>(*ppThis);
 	if (!pThis)
 	{
@@ -125,7 +125,7 @@ int CUIImageObject::GetEnable(lua_State* L)
 
 int CUIImageObject::GetImage(lua_State* L)
 {
-	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, -1, GetRigisterClassName());
+	CUIImageObject** ppThis = (CUIImageObject**)luaL_checkudata(L, 1, GetRigisterClassName());
 	CUIImageObject* pThis = *ppThis;
 	if (!pThis)
 	{
