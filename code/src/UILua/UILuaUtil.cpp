@@ -266,7 +266,7 @@ int UILuaUtil::UILuaLog(lua_State* luaState)
 		{
 			int n = (int)lua_tointeger(luaState, i);
 			char szN[30] = {0};
-			_itoa(n, szN, 10);
+			_itoa_s(n, szN, 10);
 			strInfo += szN;
 		}
 		else if(lua_isstring(luaState, i))
@@ -367,13 +367,15 @@ LUA_API int UILuaDoFile(const char* szFilePath, const char* szVMName)
 	}
 	lua_State* luaState = UILuaGetLuaVM(szVMName);
 	assert(luaState);
-	if(luaState)
+	if (!luaState)
 	{
-		lua_pushstring(luaState, szFilePath);
-		lua_insert(luaState, 1);
-		return UILuaUtil::UILuaDoFile(luaState);
+		return 0;
 	}
-	return 0;
+	lua_pushstring(luaState, szFilePath);
+	lua_insert(luaState, 1);
+	int ret = UILuaUtil::UILuaDoFile(luaState);
+	lua_remove(luaState, 1);
+	return ret;
 }
 
 LUA_API int UILuaCall(int args, int results, const char* szVMName)

@@ -5,13 +5,196 @@ CUILuaManager::CUILuaManager()
 {
 }
 
+static std::string GetTableStr(lua_State* luaState, int nIndex, const std::string strTableName, int nFloor)
+{
+	bool bTable = lua_istable(luaState, nIndex);
+	ATLASSERT(bTable);
+	if(!bTable)
+		return false;
+	lua_pushnil(luaState);
+	std::string strTableAll(strTableName + " = {\r\n");
+
+	std::map<int, std::string> mapArrary;
+	while(lua_next(luaState, nIndex)) 
+	{
+		std::string strKey;
+		int t = lua_type(luaState, -2);
+
+		std::string strTable("");
+		int iIndex = -1;
+		//key
+		if(lua_isnumber(luaState, -2) && t == LUA_TNUMBER)
+		{
+			int n = (int)lua_tointeger(luaState, -2);
+			char szIndex[30] = {0};
+			_itoa(n, szIndex, 10);
+			strKey += "[";
+			strKey += szIndex;
+			strKey += "]";
+			iIndex = n;
+		}
+		else if(lua_isstring(luaState, -2))
+		{
+			std::string strKey1 = (const char*)lua_tostring(luaState, -2);
+			strKey += "[\"";
+			strKey += strKey1;
+			strKey += "\"]";
+		}
+		else
+		{
+			ATLASSERT(FALSE && "table key only support number or string!");
+		}
+
+		//value
+		if(lua_istable(luaState, -1))
+		{
+			//strTable += "\r\n";
+// 			for(int i = 0; i < nFloor; i++)
+// 				strTable += "\t";
+// 			//ofs.write(strTable.c_str(), (std::streamsize)strTable.length());
+// 			strTable += GetTableStr(luaState, lua_gettop(luaState), strKey, nFloor + 1);
+			// 			strTable += ", \r\n";
+			lua_pop(luaState, 1);
+		}
+		else
+		{
+			for(int i = 0; i < nFloor; i++)
+				strTable += "\t";
+			strTable += strKey;
+			strTable += " = ";
+			t = lua_type(luaState, -1);
+			if(lua_isboolean(luaState, -1))
+			{
+				int b = lua_toboolean(luaState, -1);
+				strTable += (b ? "true, \r\n" : "false, \r\n");
+			}
+			else if(lua_isnumber(luaState, -1) && t == LUA_TNUMBER)
+			{
+				double dbValue = (double)lua_tonumber(luaState, -1);
+				char szValue[30] = {0};
+				//itoa(nValue, szValue, 10);
+				sprintf_s(szValue, _countof(szValue), "%f", dbValue);
+				char* p = szValue + strlen(szValue) - 1;
+				while(*p == '0')
+					p--;
+				if (*p == '.')
+					p--;
+				*(p+1) = '\0';
+				strTable += szValue;
+				strTable += ", \r\n";
+			}
+			else if(lua_isstring(luaState, -1))
+			{
+				std::string strValue = (const char*)lua_tostring(luaState, -1);
+				strTable += "\"";
+				strTable += strValue;
+				strTable += "\", \r\n";
+			}
+			// table的已经内部弹出堆栈了，非table才用弹出堆栈
+			lua_pop(luaState, 1);
+		}
+		if(0 > iIndex)
+		{
+			strTableAll += strTable;
+		}
+		else
+		{
+			mapArrary.insert(std::pair<int, std::string>(iIndex, strTable));
+		}
+	}
+	for(std::map<int, std::string>::iterator it = mapArrary.begin(); it != mapArrary.end(); it++ )
+	{
+		strTableAll += it->second;
+	}
+	for(int i = 0; i < nFloor - 1; i++)
+		strTableAll += "\t";
+	strTableAll += "}";
+	//ofs.write(strTable.c_str(), (std::streamsize)strTable.length());
+	return strTableAll;
+}
+
+static int UILuaLog(lua_State* luaState)
+{
+	// LOG_METHOD();
+	int top = lua_gettop(luaState);
+	std::string strInfo("<UILOG> ");
+	for(int i = 1; i <= top; i++)
+	{
+		int t = lua_type(luaState, i);
+		if(lua_isnumber(luaState, i) && t==LUA_TNUMBER)
+		{
+			int n = (int)lua_tointeger(luaState, i);
+			char szN[30] = {0};
+			_itoa(n, szN, 10);
+			strInfo += szN;
+		}
+		else if(lua_isstring(luaState, i))
+		{
+			size_t nLen = 0;
+			const char* sz = (const char*)lua_tolstring(luaState, i, &nLen);
+			strInfo += sz;
+		}
+		else if(lua_isboolean(luaState, i))
+		{
+			int b = lua_toboolean(luaState, i);
+			if(b == 0)
+			{
+				strInfo += "false";
+			}
+			else
+			{
+				strInfo += "true";
+			}
+		}
+		else if(lua_isnoneornil(luaState, i))
+		{
+			strInfo += "nil";
+		}
+		else if(lua_islightuserdata(luaState, i))
+		{
+			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
+			char szLn[30] = {0};
+			sprintf_s(szLn, 30, "lightuserdata:0x%08X", ln);
+			strInfo += szLn;
+		}
+		else if(lua_isuserdata(luaState, i))
+		{
+			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
+			char szLn[30] = {0};
+			sprintf_s(szLn, 30, "userdata:0x%08X", ln);
+			strInfo += szLn;
+		}
+		else if(lua_istable(luaState, i))
+		{
+			strInfo += "table:" + GetTableStr(luaState, i, "", 2);
+		}
+		else if(lua_isfunction(luaState, i))
+		{
+			LONG ln = (LONG)(LONG_PTR)lua_topointer(luaState, i);
+			char szLn[30] = {0};
+			sprintf_s(szLn, 30, "function:0x%08X", ln);
+			strInfo += szLn;
+		}
+		else
+		{
+			char szLn[30] = {0};
+			sprintf_s(szLn, 30, "unknown:t=%d", t);
+			strInfo += szLn;
+		}
+		strInfo += " ";
+	}
+	LOG_DEBUG(strInfo.c_str());
+	OutputDebugStringA(strInfo.c_str());
+	OutputDebugStringA("\r\n");
+	return 0;
+}
+
 int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 {
 	int top = lua_gettop(luaState);
 	assert(top > 0);
 	char szError[_MAX_PATH] = {0};
-	const char* pszFileName = lua_tostring(luaState, -1);
-	top = lua_gettop(luaState);
+	const char* pszFileName = lua_tostring(luaState, 1);
 	int bret = 0;
 	std::wstring wstrFileName;
 	std::string strFileName;
@@ -48,7 +231,7 @@ int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 			lua_pushvalue(luaState, -2);
 			lua_setfenv(luaState, -2);
 			int ret = lua_pcall(luaState, 0, 0, errfunc);
-			if(ret == 0)
+			if (ret == 0)
 			{
 				lua_pop(luaState, 1);
 				bret = 1;
@@ -99,7 +282,7 @@ int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 	{
 		sprintf_s(szError, _MAX_PATH, "加载lua失败,lua文件不存在, path=%s", pszFileName);
 	}
-	if(bret == 0)
+	if (bret == 0)
 	{
 		if(m_strStack.length() > 0)
 		{
@@ -114,8 +297,8 @@ int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 			MessageBoxA(NULL, szError, "加载lua文件失败", MB_OK);
 		}
 	}
-	lua_pushboolean(luaState, bret);
-	return 1;
+	lua_settop(luaState, top);
+	return bret;
 }
 
 void CUILuaManager::call_stack(lua_State* L, int n, std::string &strStack)
@@ -225,13 +408,15 @@ int CUILuaManager::DoXmlLuaFile(const char* szFilePath, const char* szVMName)
 	}
 	lua_State* luaState = UILuaGetLuaVM(szVMName);
 	assert(luaState);
-	if(luaState)
+	if (!luaState)
 	{
-		lua_pushstring(luaState, szFilePath);
-		UILuaManagerInstance.UIDoLuaFile(luaState);
-		return lua_toboolean(luaState, -1);
+		return 0;
 	}
-	return 0;
+	lua_pushstring(luaState, szFilePath);
+	lua_insert(luaState, 1);
+	int ret = UILuaManagerInstance.UIDoLuaFile(luaState);
+	lua_remove(luaState, 1);
+	return ret;
 }
 
 int CUILuaManager::GetLuaFuncIndex(const std::string& strPath, const std::string& strFuncName, const char* szVMName)

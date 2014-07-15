@@ -21,13 +21,16 @@ lua_State* UILuaVMManager::CreateLuaVM(const char* szVMName)
 		return it->second;
 	}
 	lua_State* luaState = luaL_newstate();
+	if (!luaState)
+	{
+		assert(false);
+		return NULL;
+	}
+	int n = lua_gettop(luaState);
 	luaopen_base(luaState);
 	luaL_openlibs(luaState);
-	assert(luaState);
-	if(luaState)
-	{
-		m_mapLuaVM.insert(std::make_pair(strVMName, luaState));
-	}
+	lua_settop(luaState, n);
+	m_mapLuaVM.insert(std::make_pair(strVMName, luaState));
 	UILuaUtil::InitUtilFunc(luaState);
 	return luaState;
 }
