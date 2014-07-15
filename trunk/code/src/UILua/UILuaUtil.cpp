@@ -143,7 +143,6 @@ int UILuaUtil::UILuaDoFile(lua_State* luaState)
 	assert(top > 0);
 	char szError[_MAX_PATH] = {0};
 	const char* pszFileName = lua_tostring(luaState, 1);
-	top = lua_gettop(luaState);
 	int bret = 0;
 	std::wstring wstrFileName;
 	std::string strFileName;
@@ -219,6 +218,7 @@ int UILuaUtil::UILuaDoFile(lua_State* luaState)
 			MessageBoxA(NULL, szError, "¼ÓÔØluaÎÄ¼þÊ§°Ü", MB_OK);
 		}
 	}
+	lua_settop(luaState, top);
 	return 0;
 }
 
@@ -371,10 +371,11 @@ LUA_API int UILuaDoFile(const char* szFilePath, const char* szVMName)
 	{
 		return 0;
 	}
+	int top = lua_gettop(luaState);
 	lua_pushstring(luaState, szFilePath);
 	lua_insert(luaState, 1);
 	int ret = UILuaUtil::UILuaDoFile(luaState);
-	lua_remove(luaState, 1);
+	lua_settop(luaState, top);
 	return ret;
 }
 
