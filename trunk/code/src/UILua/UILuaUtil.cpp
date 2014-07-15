@@ -226,8 +226,9 @@ int UILuaUtil::UILuaCall(lua_State* luaState, int args, int results)
 {
 	lua_pushcclosure(luaState, on_error, 0);
 	int errfunc = lua_gettop(luaState);
-	int ret = lua_pcall(luaState, args, results, errfunc);
-	if(ret == 0)
+	lua_insert(luaState, errfunc-1-args);
+	int ret = lua_pcall(luaState, args, results, errfunc-1-args);
+	if (ret == 0)
 	{
 		lua_pop(luaState, 1);
 		return 0;
