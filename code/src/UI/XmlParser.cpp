@@ -1,7 +1,5 @@
 #include "StdAfx.h"
 #include ".\xmlparser.h"
-#include "ResXmlParser.h"
-#include "CodeXmlParser.h"
 
 #define XML_FMT_INT_MOD "l"
 
@@ -62,15 +60,13 @@ BOOL CUIXmlParser::SetSkinPath(CComBSTR bstrPath, std::string& strOnload)
 		ParserSkinXml(pNode);
 		bRet = CheckSkinValid();
 		ATLASSERT(bRet && "invalid skin package!");
-		if(bRet)
+		if (bRet)
 		{
 			// ½âÎö×ÊÔ´xml...
-			CResXmlParser resParser;
-			bRet = resParser.SetResPath(m_package.strResPath);
+			bRet = m_package.resParser.SetResPath(m_package.strResPath);
 			if(bRet)
 			{
-				CCodeXmlParser codeParser;
-				bRet = codeParser.SetCodePath(m_package.strCodePath);
+				bRet = m_package.codeParser.SetCodePath(m_package.strCodePath);
 			}
 		}
 	}

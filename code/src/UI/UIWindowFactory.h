@@ -9,8 +9,15 @@ private:
 	CUIWindowFactory(void);
 	virtual ~CUIWindowFactory(void);
 private:
+	typedef struct tagWindowXMLNode
+	{
+		LPXMLDOMNode	pXMLDOMNode;
+		std::string		strPath;
+	}WindowXMLNode;
+	typedef std::map<std::string, WindowXMLNode> UIWindowXMLMap;
 	typedef std::map<std::string, CUIWindowBase*> UIWindowMap;
-	UIWindowMap m_mapID2Window;
+	UIWindowXMLMap	m_mapWindowXML;
+	UIWindowMap		m_mapID2Window;
 public:
 	void ParserWindowDOM(const std::string& strPath, LPXMLDOMNode pNode);
 public:

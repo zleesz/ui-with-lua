@@ -4,6 +4,12 @@
 
 CCodeXmlParser::CCodeXmlParser(void)
 {
+	ListXmlParser::iterator it = m_lstXmlParser.begin();
+	for (; it != m_lstXmlParser.end(); it++)
+	{
+		delete (*it);
+	}
+	m_lstXmlParser.clear();
 }
 
 CCodeXmlParser::~CCodeXmlParser(void)
@@ -13,9 +19,10 @@ CCodeXmlParser::~CCodeXmlParser(void)
 BOOL CCodeXmlParser::ParserCodeXml(const char* szPath)
 {
 	LOG_AUTO();
-	CXmlParser xmlParser;
+	CXmlParser* pXMLParser = new CXmlParser;
+	m_lstXmlParser.push_back(pXMLParser);
 	LPXMLDOMNode pNode = NULL;
-	BOOL bRet = xmlParser.SetXmlPath(szPath, pNode);
+	BOOL bRet = pXMLParser->SetXmlPath(szPath, pNode);
 	if(bRet)
 	{
 		bRet = ParserCodeDOM(szPath, pNode);

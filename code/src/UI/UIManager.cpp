@@ -51,91 +51,24 @@ HRESULT CUIManager::FinalConstruct()
 void CUIManager::FinalRelease()
 {
 	LOG_AUTO();
+	MapUIXmlParser::iterator it = m_mapUIXmlParser.begin();
+	for (; it != m_mapUIXmlParser.end(); it++)
+	{
+		delete it->second;
+	}
+	m_mapUIXmlParser.clear();
 	UILuaDestroyLuaVM(NULL);
 	UIGraphicInstance->UnInitGraphic();
 	::OleUninitialize();
 }
 
-static int UILuaLog(lua_State* luaState)
-{
-	// LOG_METHOD();
-	int top = lua_gettop(luaState);
-	std::string strInfo("<UILOG> ");
-	for(int i = 1; i <= top; i++)
-	{
-		int t = lua_type(luaState, i);
-		if(lua_isnumber(luaState, i) && t==LUA_TNUMBER)
-		{
-			int n = (int)lua_tointeger(luaState, i);
-			char szN[30] = {0};
-			_itoa_s(n, szN, 10);
-			strInfo += szN;
-		}
-		else if(lua_isstring(luaState, i))
-		{
-			size_t nLen = 0;
-			const char* sz = (const char*)lua_tolstring(luaState, i, &nLen);
-			strInfo += sz;
-		}
-		else if(lua_isboolean(luaState, i))
-		{
-			int b = lua_toboolean(luaState, i);
-			if(b == 0)
-			{
-				strInfo += "false";
-			}
-			else
-			{
-				strInfo += "true";
-			}
-		}
-		else if(lua_isnoneornil(luaState, i))
-		{
-			strInfo += "nil";
-		}
-		else if(lua_islightuserdata(luaState, i))
-		{
-			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
-			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "lightuserdata:0x%08X", ln);
-			strInfo += szLn;
-		}
-		else if(lua_isuserdata(luaState, i))
-		{
-			LONG ln = (LONG)(LONG_PTR)lua_touserdata(luaState, i);
-			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "userdata:0x%08X", ln);
-			strInfo += szLn;
-		}
-		else if(lua_istable(luaState, i))
-		{
-			strInfo += "?table?";
-		}
-		else if(lua_isfunction(luaState, i))
-		{
-			LONG ln = (LONG)(LONG_PTR)lua_topointer(luaState, i);
-			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "function:0x%08X", ln);
-			strInfo += szLn;
-		}
-		else
-		{
-			char szLn[30] = {0};
-			sprintf_s(szLn, 30, "unknown:t=%d", t);
-			strInfo += szLn;
-		}
-		strInfo += " ";
-	}
-	LOG_DEBUG(strInfo.c_str());
-	OutputDebugStringA(strInfo.c_str());
-	return 0;
-}
 STDMETHODIMP CUIManager::LoadSkin(BSTR bstrPath)
 {
 	LOG_AUTO();
-	m_bstrPath = bstrPath;
 	std::string strOnload;
-	BOOL bValid = m_XmlParser.SetSkinPath(m_bstrPath, strOnload);
+	CUIXmlParser* pUIXmlParser = new CUIXmlParser;
+	m_mapUIXmlParser[bstrPath] = pUIXmlParser;
+	BOOL bValid = pUIXmlParser->SetSkinPath(bstrPath, strOnload);
 	if (!bValid)
 	{
 #ifdef _DEBUG

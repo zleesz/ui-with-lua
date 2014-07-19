@@ -13,15 +13,9 @@ CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
 	LPXMLAttrMap pMapAttr = pNode->pMapAttr;
 	if(pMapAttr == NULL)
 		return;
-	assert((*pMapAttr)["id"].length() > 0);
-	if((*pMapAttr)["id"].length() <= 0)
-	{
-		return;
-	}
 	m_pUIEventWindow = new CUIEventWndContainer(this);
 	m_pUITreeContainer = new CUITreeContainer(this);
 	m_pUIWindowResizer = new CUIWindowResizer(this);
-	SetID((*pMapAttr)["id"]);
 	m_strXMLPath = strPath;
 	std::transform(strPath.begin(),strPath.end(),m_strXMLPath.begin(),tolower);
 	//PathCanonicalizeA(m_strXMLPath, m_strXMLPath);
