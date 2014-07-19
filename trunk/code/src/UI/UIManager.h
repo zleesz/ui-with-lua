@@ -37,9 +37,9 @@ END_COM_MAP()
 public:
 	STDMETHOD(LoadSkin)(BSTR bstrPath);
 
+	typedef std::map<CComBSTR, CUIXmlParser*> MapUIXmlParser;
 private:
-	CComBSTR m_bstrPath;
-	CUIXmlParser m_XmlParser;
+	MapUIXmlParser	m_mapUIXmlParser;
 
 private:
 	void InitLog4CPlus();

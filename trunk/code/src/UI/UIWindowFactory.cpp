@@ -39,29 +39,66 @@ int CUIWindowFactory::Create(lua_State* luaState)
 		ATLASSERT(FALSE);
 		return 0;
 	}
-	std::string strID = lua_tostring(luaState, 2);
-	ATLASSERT(strID.length() > 0);
-	HWND hParent = NULL;
 	int top = lua_gettop(luaState);
-	if (top >= 3)
+	if (top < 3)
 	{
-		if (lua_isnumber(luaState, 3))
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	std::string strWindowTypeID = lua_tostring(luaState, 2);
+	std::string strID = lua_tostring(luaState, 3);
+	HWND hParent = NULL;
+	if (top >= 4)
+	{
+		if (lua_isnumber(luaState, 4))
 		{
-			hParent = (HWND)(LONG_PTR)(LONG)lua_tonumber(luaState, 3);
+			hParent = (HWND)(LONG_PTR)(LONG)lua_tonumber(luaState, 4);
 		}
-		else if (lua_isuserdata(luaState, 3))
+		else if (lua_isuserdata(luaState, 4))
 		{
-			hParent = (HWND)lua_touserdata(luaState, 3);
+			hParent = (HWND)lua_touserdata(luaState, 4);
 		}
+	}
+	UIWindowMap::iterator itWindow = pThis->m_mapID2Window.find(strID);
+	if (itWindow != pThis->m_mapID2Window.end())
+	{
+		itWindow->second->CreateWnd(::IsWindow(hParent) ? hParent : NULL);
+		UILuaPushClassObj(luaState, (void*)itWindow->second);
+		return 1;
 	}
 
-	CUIWindowBase* pUIWindow = pThis->m_mapID2Window[strID];
-	ATLASSERT(pUIWindow);
-	if(pUIWindow)
+	ATLASSERT(strWindowTypeID.length() > 0 && strID.length() > 0);
+	UIWindowXMLMap::iterator it = pThis->m_mapWindowXML.find(strWindowTypeID);
+	if (it == pThis->m_mapWindowXML.end())
 	{
-		// 调用Create
-		pUIWindow->CreateWnd(::IsWindow(hParent) ? hParent : NULL);
+		ATLASSERT(FALSE);
+		return 0;
 	}
+	LPXMLDOMNode pNode = it->second.pXMLDOMNode;
+	LPXMLAttrMap pMapAttr = pNode->pMapAttr;
+	if(pMapAttr == NULL)
+	{
+		return 0;
+	}
+	// add hostwnd
+	CUIWindowBase* pUIWindow = NULL;
+	if((*pMapAttr)["type"] == "FrameHostWnd")
+	{
+		pUIWindow = new CUIFrameWindow(it->second.strPath, pNode);
+	}
+	else if((*pMapAttr)["type"] == "ModalHostWnd")
+	{
+		pUIWindow = new CUIModalWindow(it->second.strPath, pNode);
+	}
+	else
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	pThis->m_mapID2Window[strID] = pUIWindow;
+	pUIWindow->SetID(strID);
+	// 调用Create
+	pUIWindow->CreateWnd(::IsWindow(hParent) ? hParent : NULL);
 	UILuaPushClassObj(luaState, (void*)pUIWindow);
 	return 1;
 }
@@ -73,24 +110,13 @@ void CUIWindowFactory::ParserWindowDOM(const std::string& strPath, LPXMLDOMNode 
 	LPXMLAttrMap pMapAttr = pNode->pMapAttr;
 	if(pMapAttr == NULL)
 		return;
-	// add hostwnd
-	CUIWindowBase* pUIWindow = NULL;
-	if((*pMapAttr)["type"] == "FrameHostWnd")
+	std::string strID = (*pMapAttr)["id"];
+	if (strID.length() <= 0)
 	{
-		pUIWindow = new CUIFrameWindow(strPath, pNode);
-	}
-	else if((*pMapAttr)["type"] == "ModalHostWnd")
-	{
-		pUIWindow = new CUIModalWindow(strPath, pNode);
-	}
-	std::string strID = pUIWindow->GetID();
-	if(strID.length() > 0)
-	{
-		m_mapID2Window[strID] = pUIWindow;
-	}
-	else
-	{
-		delete pUIWindow;
 		return;
 	}
+	WindowXMLNode xmlNode;
+	xmlNode.pXMLDOMNode = pNode;
+	xmlNode.strPath = strPath;
+	m_mapWindowXML[strID] = xmlNode;
 }

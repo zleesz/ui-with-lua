@@ -1,7 +1,10 @@
 #pragma once
 #include <stdio.h>
+#include <list>
 #include <Util.h>
 #include <UIParser.h>
+#include "ResXmlParser.h"
+#include "CodeXmlParser.h"
 
 typedef struct _tagPackage
 {
@@ -13,6 +16,9 @@ typedef struct _tagPackage
 	std::string strResPath;
 	std::string strCodePath;
 	std::string strOnload;
+
+	CResXmlParser resParser;
+	CCodeXmlParser codeParser;
 } Package;
 
 class CUIXmlParser

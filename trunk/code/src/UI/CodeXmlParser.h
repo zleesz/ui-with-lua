@@ -1,6 +1,7 @@
 #pragma once
 #include <Util.h>
 #include <string>
+#include <list>
 #include <UIParser.h>
 
 class CCodeXmlParser
@@ -8,8 +9,10 @@ class CCodeXmlParser
 public:
 	CCodeXmlParser(void);
 	virtual ~CCodeXmlParser(void);
+	typedef std::list<CXmlParser*> ListXmlParser;
 private:
-	std::string m_strPath;
+	std::string		m_strPath;
+	ListXmlParser	m_lstXmlParser;
 private:
 	BOOL ParserDirectory(const std::string strPath);
 	BOOL ParserCodeXml(const char* szPath);
