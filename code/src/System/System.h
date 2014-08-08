@@ -3,21 +3,6 @@
 
 // This should probably be moved to platform.h at some point
 
-#if defined(_M_X64) || defined(_M_AMD64) || defined(__amd64__)
-#  define SYSTEM_AMD64
-#elif defined(_M_IX86) || defined(__i386__) || defined(_X86_)
-#  define SYSTEM_X86
-#else
-#  error "Unknown architecture!"
-#endif
-
-#ifdef _WIN64
-#  define SYSFMT_HEXPTR _T("0x%016IX")
-#else
-#  define SYSFMT_HEXPTR _T("0x%08X")
-#endif
-
-
 // The following ifdef block is the standard way of creating macros which make exporting 
 // from a DLL simpler. All files within this DLL are compiled with the SYSTEM_EXPORTS
 // symbol defined on the command line. this symbol should not be defined on any project
@@ -63,7 +48,7 @@
 // Input/Output Source/Destination
 #define IOT_NONE    0
 #define IOT_REG     1
-#define IOT_INLINE  (__INST_LAST+1) // should replace pointer to inline input
+#define IOT_INLINE  (USER_VAR_COUNT+1) // should replace pointer to inline input
 // #define INLINE_INPUT -> any other value, will contain pointer to input string
 
 // Options
@@ -125,10 +110,10 @@ struct tag_CallbackThunk
 extern const int ParamSizeByType[];   // Size of every parameter type (*4 bytes)
 
 extern HANDLE CreateCallback(SystemProc *cbproc);
-extern SystemProc* PrepareProc(BOOL NeedForCall, TCHAR *p);
+extern SystemProc* PrepareProc(TCHAR *p);
 extern void ParamAllocate(SystemProc *proc);
 extern void ParamsDeAllocate(SystemProc *proc);
-extern void ParamsIn(SystemProc *proc, TCHAR *variables);
+extern void ParamsIn(SystemProc *proc);
 extern void ParamsOut(SystemProc *proc);
 extern SystemProc* CallProc(SystemProc *proc);
 extern SystemProc* CallBack(SystemProc *proc);
