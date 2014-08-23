@@ -154,7 +154,7 @@ int CUIEventContainerBase::AttachListener(lua_State* L)
 	return 1;
 }
 
-int CUIEventContainerBase::DetachListener(lua_State* L)
+int CUIEventContainerBase::DetachListener(lua_State* /*L*/)
 {
 	return 0;
 }
@@ -162,12 +162,14 @@ int CUIEventContainerBase::DetachListener(lua_State* L)
 void CUIEventContainerBase::DispatchListener(UIDISPPARAMS& params)
 {
 	LOG_AUTO();
+	LOG_DEBUG("event : " << params.strName.c_str());
 	lua_State* L = UILuaGetLuaVM(NULL);
 	LuaEventMap::const_iterator itLuaEvent = m_mapEvent.find(params.strName);
 	if (itLuaEvent == m_mapEvent.end())
 	{
 		return;
 	}
+	int top = lua_gettop(L);
 	LPVecEvent pVecEvent = itLuaEvent->second;
 	for(VecEvent::size_type st = 0; st < pVecEvent->size(); st ++)
 	{
@@ -195,6 +197,7 @@ void CUIEventContainerBase::DispatchListener(UIDISPPARAMS& params)
 		}
 		lua_pop(L, (int)params.nRet + 1);
 	}
+	lua_settop(L, top);
 }
 
 BOOL CUIEventContainerBase::OnBindEvent(const std::string& strPath)
@@ -213,9 +216,13 @@ BOOL CUIEventContainerBase::OnBindEvent(const std::string& strPath)
 			char szLuaPath[MAX_PATH] = {0};
 			LPEventNode pEventNode = (*pVecEvent)[st];
 			::PathCombineA(szLuaPath, szPath, pEventNode->strPath.c_str());
-			UILuaManagerInstance.DoXmlLuaFile(szLuaPath, NULL);
-			pEventNode->strPath = szLuaPath;
-			pEventNode->nFuncIndex = UILuaManagerInstance.GetLuaFuncIndex(szLuaPath, pEventNode->strFuncName, NULL);
+			std::wstring wstrLuaPath;
+			Util::Ansi_to_Unicode(szLuaPath, wstrLuaPath);
+			std::string strLuaPath;
+			Util::Unicode_to_UTF8(wstrLuaPath.c_str(), strLuaPath);
+			UILuaManagerInstance.DoXmlLuaFile(strLuaPath.c_str(), NULL);
+			pEventNode->strPath = strLuaPath;
+			pEventNode->nFuncIndex = UILuaManagerInstance.GetLuaFuncIndex(strLuaPath.c_str(), pEventNode->strFuncName, NULL);
 		}
 	}
 	return TRUE;

@@ -5,10 +5,12 @@
 
 CUIWindowFactory::CUIWindowFactory(void)
 {
+	RegisterGlobalObj();
 }
 
 CUIWindowFactory::~CUIWindowFactory(void)
 {
+	UnRegisterGlobalObj();
 }
 
 int CUIWindowFactory::GetWindow(lua_State* luaState)
@@ -101,6 +103,57 @@ int CUIWindowFactory::Create(lua_State* luaState)
 	pUIWindow->CreateWnd(::IsWindow(hParent) ? hParent : NULL);
 	UILuaPushClassObj(luaState, (void*)pUIWindow);
 	return 1;
+}
+
+int CUIWindowFactory::DestroyWindow(lua_State* luaState)
+{
+	CUIWindowFactory** ppThis = (CUIWindowFactory**) luaL_checkudata(luaState, 1, CUIWindowFactory::GetRigisterClassName());
+	CUIWindowFactory* pThis = *ppThis;
+	if (!pThis)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	int top = lua_gettop(luaState);
+	if (top < 2)
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	std::string strID;
+	if (lua_isuserdata(luaState, 2))
+	{
+		CUIWindowBase** ppWindow = (CUIWindowBase**)lua_touserdata(luaState, 2);
+		CUIWindowBase* pWindow = *ppWindow;
+		if (!pWindow)
+		{
+			ATLASSERT(FALSE);
+			return 0;
+		}
+		strID = pWindow->GetID();
+	}
+	else if (lua_isstring(luaState, 2))
+	{
+		strID = lua_tostring(luaState, 2);
+	}
+	else
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	if (strID.length() <= 0)
+	{
+		return 0;
+	}
+	UIWindowMap::iterator itWindow = pThis->m_mapID2Window.find(strID);
+	if (itWindow == pThis->m_mapID2Window.end())
+	{
+		ATLASSERT(FALSE);
+		return 0;
+	}
+	itWindow->second->Destroy();
+	pThis->m_mapID2Window.erase(itWindow);
+	return 0;
 }
 
 void CUIWindowFactory::ParserWindowDOM(const std::string& strPath, LPXMLDOMNode pNode)

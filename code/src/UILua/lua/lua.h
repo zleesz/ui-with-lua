@@ -404,13 +404,15 @@ typedef struct tagUILuaObject
 LUA_API void UILuaRegisterGlobalObj(UILuaObject theObj, const char* szVMName);
 LUA_API void UILuaRegisterClass(UILuaObject theObj, const char* szVMName);
 
+LUA_API void UILuaUnRegisterGlobalObj(const char* szName, const char* szVMName);
+LUA_API void UILuaUnRegisterClass(void* obj, const char* szVMName);
+
 // luastate
 LUA_API lua_State* UILuaCreateLuaVM(const char* szVMName);
 LUA_API lua_State* UILuaGetLuaVM(const char* szVMName);
 LUA_API void UILuaDestroyLuaVM(const char* szVMName);
 LUA_API int UILuaDoFile(const char* szFilePath, const char* szVMName);
 LUA_API void UILuaPushClassObj(lua_State* luaState, const void* obj);
-LUA_API void UILuaUnRegisterClass(void* obj, const char* szVMName);
 LUA_API int UILuaCall(int args, int results, const char* szVMName);
 LUA_API void UILuaPushGlobalObj(lua_State* luaState, const char* szObjName);
 

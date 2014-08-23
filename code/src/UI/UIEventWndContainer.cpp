@@ -4,16 +4,18 @@
 
 CUIEventWndContainer::CUIEventWndContainer(void)
 {
+	m_bTrackLeave = FALSE;
 }
 
-CUIEventWndContainer::CUIEventWndContainer(CUIWindowBase* p) : m_pBindWnd(p)
+CUIEventWndContainer::CUIEventWndContainer(CUIWindowBase* p)
 {
+	m_pBindWnd = p;
+	m_bTrackLeave = FALSE;
 }
 
 CUIEventWndContainer::~CUIEventWndContainer(void)
 {
 }
-
 
 LRESULT CUIEventWndContainer::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
 {
@@ -200,11 +202,83 @@ LRESULT CUIEventWndContainer::OnKillFocus(UINT /*uMsg*/, WPARAM wParam, LPARAM /
 	return 0;
 }
 
+LRESULT CUIEventWndContainer::OnDestroy(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	LOG_AUTO();
+	bHandled = FALSE;
+	CComVariant avarParams[1];
+	avarParams[0].vt = VT_BYREF | VT_I4;
+	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
+
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnDestroy", 1, 1, avarRets };
+	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
+	return 0;
+}
+
+LRESULT CUIEventWndContainer::OnMouseMove(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	if (!m_bTrackLeave)
+	{
+		// 鼠标移入窗时，请求 WM_MOUSELEAVE 消息
+		TRACKMOUSEEVENT tme;
+		tme.cbSize = sizeof(tme);
+		tme.hwndTrack = m_pBindWnd->m_hWnd;
+		tme.dwFlags = TME_LEAVE;
+		tme.dwHoverTime = HOVER_DEFAULT;
+		m_bTrackLeave = TrackMouseEvent(&tme);
+	}
+	int xPos = GET_X_LPARAM(lParam);
+	int yPos = GET_Y_LPARAM(lParam);
+	CComVariant avarParams[3];
+	avarParams[0].vt = VT_BYREF | VT_I4;
+	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
+	avarParams[1] = CComVariant(xPos);
+	avarParams[2] = CComVariant(yPos);
+
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnMouseMove", 3, 1, avarRets };
+	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
+	return 0;
+}
+
+LRESULT CUIEventWndContainer::OnMouseLeave(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	int xPos = GET_X_LPARAM(lParam);
+	int yPos = GET_Y_LPARAM(lParam);
+	m_bTrackLeave = FALSE;
+	CComVariant avarParams[3];
+	avarParams[0].vt = VT_BYREF | VT_I4;
+	avarParams[0].lVal = (LONG)(LONG_PTR)m_pBindWnd;
+	avarParams[1] = CComVariant(xPos);
+	avarParams[2] = CComVariant(yPos);
+
+	CComVariant avarRets[1];
+	UIDISPPARAMS params = { avarParams, "OnMouseLeave", 3, 1, avarRets };
+	DispatchListener(params);
+	if (avarRets[0].vt == VT_BOOL)
+	{
+		bHandled = avarRets[0].boolVal ? TRUE : FALSE;
+	}
+	return 0;
+}
+
 LRESULT CUIEventWndContainer::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled)
 {
 	//LOG_AUTO();
 	bHandled = FALSE;
 	lua_State* L = UILuaGetLuaVM(NULL);
+	int top = lua_gettop(L);
 	for(int i = 0; i < (int)m_vecFilter.size(); i++)
 	{
 		UILuaPushClassObj(L, (void*)m_pBindWnd);
@@ -221,6 +295,7 @@ LRESULT CUIEventWndContainer::OnInputMessage(UINT uMsg, WPARAM wParam, LPARAM lP
 			}
 		}
 	}
+	lua_settop(L, top);
 	return 0;
 }
 

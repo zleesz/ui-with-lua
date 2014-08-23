@@ -32,7 +32,7 @@ CUIImagelist::CUIImagelist(LPXMLDOMNode pNode, const char* pszPath)
 	PathRemoveFileSpecA(szPath);
 	PathCombineA(szPath, szPath, strPath.c_str());
 	std::wstring wstrPath;
-	Util::UTF8_to_Unicode(szPath, m_strPath);
+	Util::Ansi_to_Unicode(szPath, m_strPath);
 	
 	m_hBitmap = UIGraphicInstance->LoadBitmapFromFile(m_strPath.c_str());
 	if (m_hBitmap == NULL)

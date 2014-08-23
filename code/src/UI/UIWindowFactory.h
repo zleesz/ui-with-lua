@@ -23,11 +23,13 @@ public:
 public:
 	static int GetWindow(lua_State* luaState);
 	static int Create(lua_State* luaState);
+	static int DestroyWindow(lua_State* luaState);
 public:
 	
 	BEGIN_LUA_CALL_MAP(CUIWindowFactory)
 		LUA_CALL_ENTRY(GetWindow)
 		LUA_CALL_ENTRY(Create)
+		LUA_CALL_ENTRY(DestroyWindow)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_SINGLETON_OBJECT(CUIWindowFactory, UI.WindowFactory);
 };

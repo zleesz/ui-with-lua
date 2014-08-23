@@ -204,7 +204,7 @@ int CUILuaManager::UIDoLuaFile(lua_State* luaState)
 	::PathCanonicalize(tszFileName, wstrFileName.c_str());
 
 	Util::Unicode_to_Ansi(tszFileName, strFileName);
-	std::string strLowFileName(strFileName);
+	std::string strLowFileName(pszFileName);
 	std::transform(strLowFileName.begin(), strLowFileName.end(), strLowFileName.begin(), tolower);
 	if (::PathFileExists(tszFileName))
 	{
@@ -360,7 +360,7 @@ BOOL CUILuaManager::UILuaCall(lua_State* luaState, int nArgs, int nRet)
 	int ret = lua_pcall(luaState, nArgs, nRet, errfunc-1-nArgs);
 	if(ret == 0)
 	{
-		lua_pop(luaState, 1);
+		lua_settop(luaState, top);
 		return TRUE;
 	}
 	const char* szcError = lua_tostring(luaState, -1);

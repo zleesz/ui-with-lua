@@ -80,6 +80,9 @@ STDMETHODIMP CUIManager::LoadSkin(BSTR bstrPath)
 
 	if (strOnload.length() > 0 && ::PathFileExistsA(strOnload.c_str()))
 	{
+		std::wstring wstrOnload;
+		Util::Ansi_to_Unicode(strOnload.c_str(), wstrOnload);
+		Util::Unicode_to_UTF8(wstrOnload.c_str(), strOnload);
 		lua_State* luaState = UILuaGetLuaVM(NULL);
 		int b = UILuaDoFile(strOnload.c_str(), NULL);
 		ATLASSERT(b == 1);

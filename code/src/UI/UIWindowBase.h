@@ -51,6 +51,7 @@ protected:
 	CUITreeContainer*		m_pUITreeContainer;
 	CUIEventWndContainer*	m_pUIEventWindow;
 	CUIWindowResizer*		m_pUIWindowResizer;
+	int						m_nUserData;
 public:
 	virtual WindowType GetType() = 0;
 	virtual BOOL Render(CDCHandle dc) = 0;
@@ -70,6 +71,8 @@ public:
 	void Min();
 	void Max();
 	void Restore();
+	void Destroy();
+	void Move(LONG lnLeft, LONG lnTop, LONG lnWidth, LONG lnHeight);
 public:
 	LRESULT OnGetMinMaxInfo(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnNcCalcSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
@@ -88,6 +91,7 @@ public:
 	static int Min(lua_State* luaState);
 	static int Max(lua_State* luaState);
 	static int Restore(lua_State* luaState);
+	static int Destroy(lua_State* luaState);
 	static int GetLayered(lua_State* luaState);
 	static int SetMaxTrackSize(lua_State* luaState);
 	static int SetMinTrackSize(lua_State* luaState);
@@ -96,7 +100,15 @@ public:
 	static int GetParent(lua_State* luaState);
 	static int SetParent(lua_State* luaState);
 	static int GetHWND(lua_State* luaState);
+	static int Move(lua_State* luaState);
+	static int SetUserData(lua_State* luaState);
+	static int GetUserData(lua_State* luaState);
 protected:
+	void OnFinalMessage(HWND /*hWnd*/)
+	{
+		LOG_AUTO();
+		delete this;
+	}
 	virtual const char* _GetRigisterClassName()
 	{
 		ATLASSERT(FALSE && "√ª∂®“Â GetRigisterClassName" );
