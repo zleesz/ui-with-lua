@@ -48,7 +48,7 @@ BOOL InitUIModule(IUIManager** ppUIManager)
 	::PathAppend(tszSkinPath, _T("skin\\test"));
 #endif
 	ATLASSERT(::PathFileExists(tszSkinPath));
-	CComBSTR bstrPath(tszSkinPath);
+	CComBSTR bstrPath(_T("E:\\обть\\test"));
 	HRESULT hr = (*ppUIManager)->LoadSkin(bstrPath);
 	return hr == S_OK;
 }

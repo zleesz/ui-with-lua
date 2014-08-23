@@ -4,6 +4,7 @@
 
 CUIGraphic::CUIGraphic(void)
 {
+	RegisterGlobalObj();
 	m_hGraphicDll = NULL;
 	m_fnInitGraphicLib = NULL;
 	m_fnUnInitGraphicLib = NULL;
@@ -38,6 +39,7 @@ CUIGraphic::CUIGraphic(void)
 
 CUIGraphic::~CUIGraphic(void)
 {
+	UnRegisterGlobalObj();
 }
 
 void CUIGraphic::InitGdiplus()

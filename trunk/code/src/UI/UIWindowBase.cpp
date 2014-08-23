@@ -5,7 +5,8 @@
 CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
 	: m_pUITreeContainer(NULL), 
 	m_pUIEventWindow(NULL), 
-	m_pUIWindowResizer(NULL)
+	m_pUIWindowResizer(NULL),
+	m_nUserData(0)
 {
 	LOG_AUTO();
 	if(pNode == NULL || pNode->pMapAttr == NULL)
@@ -38,6 +39,15 @@ CUIWindowBase::CUIWindowBase(const std::string& strPath, LPXMLDOMNode pNode)
 
 CUIWindowBase::~CUIWindowBase(void)
 {
+	if (m_nUserData > 0)
+	{
+		lua_State* L = UILuaGetLuaVM(NULL);
+		luaL_unref(L, LUA_REGISTRYINDEX, m_nUserData);
+	}
+	if (m_hWnd)
+	{
+		DestroyWindow();
+	}
 	if(NULL != m_pUIEventWindow)
 	{
 		delete m_pUIEventWindow;
@@ -113,6 +123,7 @@ void CUIWindowBase::SetAttr(const std::string& strName, const std::string& strVa
 	else if(strName == "visible" ||
 		strName == "layered" ||
 		strName == "appwindow" ||
+		strName == "toolwindow" ||
 		strName == "min" || strName == "max")
 	{
 		CComVariant v;
@@ -210,7 +221,19 @@ DWORD CUIWindowBase::GetStyleEx()
 	if (m_mapAttr["topmost"].vt == VT_I2 && m_mapAttr["topmost"].boolVal == VARIANT_TRUE)
 	{
 		dwExStyle |= WS_EX_TOPMOST;
-	}	
+	}
+	if (m_mapAttr["appwindow"].vt == VT_I2 && m_mapAttr["appwindow"].boolVal == VARIANT_TRUE)
+	{
+		dwExStyle |= WS_EX_APPWINDOW;
+	}
+	if (m_mapAttr["toolwindow"].vt == VT_I2 && m_mapAttr["toolwindow"].boolVal == VARIANT_TRUE)
+	{
+		dwExStyle |= WS_EX_TOOLWINDOW;
+	}
+	if (m_mapAttr["topmost"].vt == VT_I2 && m_mapAttr["topmost"].boolVal == VARIANT_TRUE)
+	{
+		dwExStyle |= WS_EX_TOPMOST;
+	}
 	return dwExStyle;
 }
 
@@ -261,9 +284,9 @@ void CUIWindowBase::GetWindowRect(LPRECT rc)
 	}
 	CComVariant vLeft, vTop, vRight, vBottom;
 	GetAttr("left", &vLeft);
-	GetAttr("left", &vTop);
-	GetAttr("left", &vRight);
-	GetAttr("left", &vBottom);
+	GetAttr("top", &vTop);
+	GetAttr("right", &vRight);
+	GetAttr("bottom", &vBottom);
 
 	rc->left = vLeft.vt == VT_I4 ? vLeft.intVal : 0;
 	rc->top = vTop.vt == VT_I4 ? vTop.intVal : 0;
@@ -284,6 +307,34 @@ void CUIWindowBase::Max()
 void CUIWindowBase::Restore()
 {
 	SendMessage(WM_SYSCOMMAND, SC_RESTORE, 0);
+}
+
+void CUIWindowBase::Destroy()
+{
+	DestroyWindow();
+}
+
+void CUIWindowBase::Move(LONG lnLeft, LONG lnTop, LONG lnWidth, LONG lnHeight)
+{
+	if (m_hWnd)
+	{
+		MoveWindow(lnLeft, lnTop, lnWidth, lnHeight);
+		return;
+	}
+	char szLeft[10] = {0};
+	char szTop[10] = {0};
+	char szWidth[10] = {0};
+	char szHeight[10] = {0};
+
+	_itoa_s(lnLeft, szLeft, _countof(szLeft), 10);
+	_itoa_s(lnTop, szTop, _countof(szLeft), 10);
+	_itoa_s(lnWidth, szWidth, _countof(szLeft), 10);
+	_itoa_s(lnHeight, szHeight, _countof(szLeft), 10);
+
+	SetAttr("left", szLeft);
+	SetAttr("top", szTop);
+	SetAttr("width", szWidth);
+	SetAttr("height", szHeight);
 }
 
 LRESULT CUIWindowBase::OnNcActivate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
@@ -434,6 +485,7 @@ int CUIWindowBase::Show(lua_State* L)
 	{
 		return 0;
 	}
+
 	int nCmd = (int)lua_tointeger(L, 2);
 	pThis->ShowWindow(nCmd);
 	return 0;
@@ -522,7 +574,7 @@ int CUIWindowBase::Restore(lua_State* L)
 	return 0;
 }
 
-int CUIWindowBase::GetLayered(lua_State* L)
+int CUIWindowBase::Destroy(lua_State* L)
 {
 	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
 	CUIWindowBase* pThis = *ppThis;
@@ -530,7 +582,69 @@ int CUIWindowBase::GetLayered(lua_State* L)
 	{
 		return 0;
 	}
-	lua_pushboolean(L, pThis->GetLayered());
+	pThis->Destroy();
+	return 0;
+}
+
+int CUIWindowBase::Move(lua_State* L)
+{
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(L, 1);
+	CUIWindowBase* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
+	LONG lnLeft = lua_tointeger(L, 2);
+	LONG lnTop = lua_tointeger(L, 3);
+	LONG lnWidth = lua_tointeger(L, 4);
+	LONG lnHeight = lua_tointeger(L, 5);
+	pThis->Move(lnLeft, lnTop, lnWidth, lnHeight);
+	return 0;
+}
+
+int CUIWindowBase::SetUserData(lua_State* luaState)
+{
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(luaState, 1);
+	CUIWindowBase* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
+	if (lua_gettop(luaState) < 2 || lua_isnil(luaState, 2))
+	{
+		pThis->m_nUserData = 0;
+		return 0;
+	}
+	lua_pushvalue(luaState, 2);
+	pThis->m_nUserData = luaL_ref(luaState, LUA_REGISTRYINDEX);
+	return 0;
+}
+
+int CUIWindowBase::GetUserData(lua_State* luaState)
+{
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(luaState, 1);
+	CUIWindowBase* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
+	if (pThis->m_nUserData <= 0)
+	{
+		return 0;
+	}
+	lua_rawgeti(luaState, LUA_REGISTRYINDEX, pThis->m_nUserData);
+	return 1;
+}
+
+int CUIWindowBase::GetLayered(lua_State* luaState)
+{
+	CUIWindowBase** ppThis = (CUIWindowBase**) lua_touserdata(luaState, 1);
+	CUIWindowBase* pThis = *ppThis;
+	if (!pThis)
+	{
+		return 0;
+	}
+	lua_pushboolean(luaState, pThis->GetLayered());
 	return 1;
 }
 

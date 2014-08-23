@@ -3,10 +3,12 @@
 
 CUILuaClass::CUILuaClass(void)
 {
+	RegisterGlobalObj();
 }
 
 CUILuaClass::~CUILuaClass(void)
 {
+	UnRegisterGlobalObj();
 }
 
 int CUILuaClass::Exit(lua_State* /*L*/)

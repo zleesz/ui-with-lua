@@ -25,6 +25,8 @@ public:
 		MESSAGE_HANDLER(WM_GETMINMAXINFO, OnGetMinMaxInfo)
 		MESSAGE_HANDLER(WM_NCCALCSIZE, OnNcCalcSize)
 		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
+		MESSAGE_HANDLER(WM_SHOWWINDOW, OnShowWindow)
+		MESSAGE_HANDLER(WM_TIMER, OnTimer)
 		CHAIN_MSG_MAP_MEMBER((*m_pUIEventWindow))
 		CHAIN_MSG_MAP_MEMBER((*m_pUIWindowResizer))
 		CHAIN_MSG_MAP_MEMBER((*m_pUITreeContainer))
@@ -36,6 +38,8 @@ public:
 	LRESULT OnCreate(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnSize(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnSysCommand(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 public:
 	virtual WindowType GetType() { return WT_FrameHostWnd; };
 	virtual BOOL Render(CDCHandle dc);
@@ -66,12 +70,17 @@ public:
 		LUA_CALL_ENTRY(Min)
 		LUA_CALL_ENTRY(Max)
 		LUA_CALL_ENTRY(Restore)
+		LUA_CALL_ENTRY(Destroy)
 		LUA_CALL_ENTRY(GetLayered)
 		LUA_CALL_ENTRY(SetMaxTrackSize)
 		LUA_CALL_ENTRY(SetMinTrackSize)
 		LUA_CALL_ENTRY(SetParent)
 		LUA_CALL_ENTRY(GetParent)
 		LUA_CALL_ENTRY(GetHWND)
+		LUA_CALL_ENTRY(GetWindowRect)
+		LUA_CALL_ENTRY(Move)
+		LUA_CALL_ENTRY(SetUserData)
+		LUA_CALL_ENTRY(GetUserData)
 	END_LUA_CALL_MAP
 	LUA_CALL_REGISTER_OBJECT(CUIFrameWindow, UI.FrameWindow);
 public:

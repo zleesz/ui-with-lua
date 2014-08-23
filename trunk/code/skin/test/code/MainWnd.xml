@@ -5,11 +5,11 @@
 			<top>100</top>
 			<width>400</width>
 			<height>400</height>
-			<visible>1</visible>
+			<visible>0</visible>
 			<min>1</min>
 			<max>1</max>
 			<appwindow>1</appwindow>
-			<layered>0</layered>
+			<layered>1</layered>
 			<title>测试窗口</title>
 			<resize>1</resize>
 			<resizerect>3,3,3,3,7,7,7,7</resizerect>
@@ -164,6 +164,7 @@
 			<event name="OnMoving" file="MainWnd.xml.lua" func="OnMoving" />
 			<event name="OnFocusChange" file="MainWnd.xml.lua" func="OnFocusChange" />
 			<event name="OnSize" file="MainWnd.xml.lua" func="OnSize" />
+			<event name="OnDestroy" file="MainWnd.xml.lua" func="OnDestroy" />
 		</eventlist>
 	</hostwnd>
 </ui>

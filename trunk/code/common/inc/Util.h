@@ -77,6 +77,26 @@ namespace Util
 		delete [] szm;
 		return false;
 	}
+	static bool Ansi_to_Unicode(const char* src, std::wstring& wstr)
+	{
+		if (src == NULL)
+		{
+			return false;
+		}
+		int iLen = (int)strlen(src);
+		if (iLen == 0)
+		{
+			wstr = L"";
+			return true;
+		}
+		wchar_t* szm = new wchar_t[iLen * 4];
+		ZeroMemory(szm, iLen * 4);
+		int nLen = MultiByteToWideChar(936, 0, src,iLen, szm, iLen*4); 
+		szm [nLen] = '\0';
+		wstr = szm;
+		delete [] szm;
+		return false;
+	}
 	static std::wstring& ReplaceAll(std::wstring& str, const std::wstring& old_value, const std::wstring& new_value)
 	{
 		while (true)

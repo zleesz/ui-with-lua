@@ -3,6 +3,7 @@
 
 CUITimerManger::CUITimerManger(void) : m_lnTimerID(0)
 {
+	RegisterGlobalObj();
 	Create(HWND_MESSAGE, NULL, NULL, WS_POPUP, WS_EX_TOOLWINDOW);
 	static UILuaGlobalAPI UILuaUtilFunc[] = 
 	{
@@ -20,6 +21,7 @@ CUITimerManger::CUITimerManger(void) : m_lnTimerID(0)
 
 CUITimerManger::~CUITimerManger(void)
 {
+	UnRegisterGlobalObj();
 	if(m_hWnd)
 	{
 		DestroyWindow();
@@ -142,8 +144,10 @@ LRESULT CUITimerManger::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
 
 	//const char* szName = GetRigisterClassName();
 	lua_State* luaState = UILuaGetLuaVM(NULL);
+	int top = lua_gettop(luaState);
 	UILuaPushGlobalObj(luaState, GetRigisterClassName());
 	lua_pushinteger(luaState, lnID);
 	UILuaManagerInstance.CallLuaFuncByIndex(nFuncIndex, 2, 0, NULL);
+	lua_settop(luaState, top);
 	return 0;
 }

@@ -1,6 +1,8 @@
 #include "StdAfx.h"
 #include "UIFrameWindow.h"
 
+#define TIMERID_UPDATELAYERED 1
+
 CUIFrameWindow::~CUIFrameWindow(void)
 {
 	UnRegisterClass(this);
@@ -31,10 +33,6 @@ DWORD CUIFrameWindow::GetStyle()
 DWORD CUIFrameWindow::GetStyleEx()
 {
 	DWORD dwExStyle = CUIWindowBase::GetStyleEx(); 
-	if (m_mapAttr["appwindow"].vt == VT_I2 && m_mapAttr["appwindow"].boolVal == VARIANT_TRUE)
-	{
-		dwExStyle |= WS_EX_APPWINDOW;
-	}
 	return dwExStyle;
 }
 
@@ -65,11 +63,14 @@ BOOL CUIFrameWindow::CreateWnd(HWND hParent)
 	if (m_mapAttr["visible"].vt == VT_I2 && m_mapAttr["visible"].boolVal == VARIANT_TRUE)
 	{
 		ShowWindow(SW_SHOW);
-		if (m_mapAttr["layered"].vt == VT_I2 && m_mapAttr["layered"].boolVal == VARIANT_TRUE)
+		if (GetLayered())
 		{
 			TryUpdateWindow();
 		}
-		UpdateWindow();
+		else
+		{
+			UpdateWindow();
+		}
 	}
 	return TRUE;
 }
@@ -190,6 +191,26 @@ LRESULT CUIFrameWindow::OnSysCommand(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPar
 	return 0;
 }
 
+LRESULT CUIFrameWindow::OnTimer(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	if (wParam == TIMERID_UPDATELAYERED)
+	{
+		KillTimer(wParam);
+		TryUpdateWindow();
+	}
+	return 0;
+}
+
+LRESULT CUIFrameWindow::OnShowWindow(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& bHandled)
+{
+	bHandled = FALSE;
+	if (wParam && GetLayered())
+	{
+		SetTimer(TIMERID_UPDATELAYERED, 0);
+	}
+	return 0;
+}
+
 void CUIFrameWindow::TryUpdateWindow()
 {
 	CPaintDC dc(m_hWnd);
@@ -292,7 +313,7 @@ void CUIFrameWindow::DoPaint(CDCHandle dc)
 		}
 		m_pUITreeContainer->Render(hDC);
 
-		MixAlpha(hDIBitmap, pBitmapBits, dwSize);
+		//MixAlpha(hDIBitmap, pBitmapBits, dwSize);
 		POINT pt = {rc.left, rc.top};
 		SIZE sz = {rc.right - rc.left, rc.bottom - rc.top};
 		POINT ptSrc = {0, 0};

@@ -8,14 +8,15 @@ function Filter(wnd, msg, wparam, lparam)
 	UILog("Filter", wnd:GetID(), msg, wparam, lparam)
 end
 
-function OnClose(self)
-	--UIMessageBox(self:GetID())
+function OnShowWindow(self, visible)
+	--UIMessageBox(tostring(visible))
 end
 
 function bbbb()
 	local windowFactory = UILuaGetObject("UI.WindowFactory")
-	mainwnd = windowFactory:Create("mainwnd")
-	mainwnd:AttachListener("OnClose", OnClose, false)
+	mainwnd = windowFactory:Create("mainwnd", "mainwnd.instance")
+	mainwnd:AttachListener("OnShowWindow", OnShowWindow, false)
+	mainwnd:Show(4)
 	--mainwnd:AddInputFilter(Filter)
 	--[[
 	local tree = mainwnd:GetTreeContainer()

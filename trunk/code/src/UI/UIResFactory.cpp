@@ -3,10 +3,12 @@
 
 CUIResFactory::CUIResFactory(void)
 {
+	RegisterGlobalObj();
 }
 
 CUIResFactory::~CUIResFactory(void)
 {
+	UnRegisterGlobalObj();
 	PT2MapResMap::const_iterator itMap = m_mapRes.begin();
 	for(; itMap != m_mapRes.end(); itMap++)
 	{

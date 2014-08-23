@@ -9,8 +9,7 @@ function OnCreate(self)
 end
 
 function OnClose(self)
-	--UIMessageBox(self:GetID())
-	UITest.LuaClass:Exit()
+	self:Destroy()
 end
 
 function OnShowWindow(self, visible)
@@ -62,6 +61,12 @@ function OnRestoreClick(self)
 end
 
 function OnCloseClick(self)
+	local windowFactory = UILuaGetObject("UI.WindowFactory")
+	local hostwnd = self:GetOwnerTree():GetOwnerWnd()
+	windowFactory:DestroyWindow(hostwnd)
+end
+
+function OnDestroy(self)
 	UITest.LuaClass:Exit()
 end
 

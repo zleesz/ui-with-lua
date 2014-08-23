@@ -48,7 +48,6 @@ public: \
 		if(pTheOne == NULL) \
 		{ \
 			pTheOne = new x(); \
-			x::RegisterClass(); \
 		} \
 		return pTheOne; \
 	}; \
@@ -57,13 +56,16 @@ public: \
 	};
 #define LUA_CALL_REGISTER_SINGLETON_OBJECT(x, classname) \
 	LUA_CALL_GETSINGLETON(x); \
-	static void RegisterClass() { \
+	static void RegisterGlobalObj() { \
 		UILuaObject theObject; \
 		theObject.MemberFunctions = _GetLuaCallEntries(); \
 		theObject.ObjName = #classname; \
 		theObject.userData = NULL; \
 		theObject.pfnGetObject = (fnGetObject)x::_GetInstance; \
 		UILuaRegisterGlobalObj(theObject, NULL);  \
+	}; \
+	static void UnRegisterGlobalObj() { \
+		UILuaUnRegisterGlobalObj(#classname, NULL); \
 	}; \
 	static const char* GetRigisterClassName() { \
 		return #classname; \

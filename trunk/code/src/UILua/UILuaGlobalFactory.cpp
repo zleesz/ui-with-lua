@@ -71,7 +71,7 @@ void UILuaGlobalFactory::RegisterGlobal(lua_State* L, UILuaObject theObj)
 	lua_settop(L, top);
 }
 
-void UILuaGlobalFactory::UnRegisterGlobal(const char* /*szName*/)
+void UILuaGlobalFactory::UnRegisterGlobal(lua_State* L, const char* szName)
 {
 }
 
@@ -186,6 +186,16 @@ LUA_API void UILuaRegisterGlobalObj(UILuaObject theObj, const char* szVMName)
 	if(luaState)
 	{
 		UIluaGlobalFactoryInstance.RegisterGlobal(luaState, theObj);
+	}
+}
+
+LUA_API void UILuaUnRegisterGlobalObj(const char* szName, const char* szVMName)
+{
+	lua_State* luaState = UILuaGetLuaVM(szVMName);
+	assert(luaState);
+	if(luaState)
+	{
+		UIluaGlobalFactoryInstance.UnRegisterGlobal(luaState, szName);
 	}
 }
 
